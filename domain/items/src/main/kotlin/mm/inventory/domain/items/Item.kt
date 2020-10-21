@@ -1,3 +1,5 @@
 package mm.inventory.domain.items
 
-data class Item(val code: String)
+import mm.inventory.domain.itemclasses.ItemClass
+
+data class Item(val code: String, val itemClass: ItemClass)
