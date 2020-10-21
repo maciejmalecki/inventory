@@ -1,0 +1,32 @@
+@startuml
+
+class ItemClass {
+    String name
+    String description
+}
+
+class Attribute {
+    String name
+}
+abstract class AttributeType
+class ScalarType
+class DictionaryType
+class DictionaryValue {
+    String value
+}
+
+class Unit {
+    String name
+    String code
+}
+
+AttributeType <|-- ScalarType
+AttributeType <|-- DictionaryType
+ScalarType o-- "1" Unit: unit
+DictionaryType *-- "*" DictionaryValue: values
+
+Attribute o-- "1" AttributeType: type
+
+ItemClass o-- "*" Attribute: attributes
+
+@enduml
