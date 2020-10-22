@@ -1,9 +1,18 @@
 @startuml
 
+class Category {
+   String name,
+   String description
+}
+
+Category "*" --- "0..1" Category: parent
+
 class ItemClass {
     String name
     String description
 }
+
+ItemClass "*" --- "*" Category: belongs
 
 class Attribute {
     String name
