@@ -5,6 +5,8 @@ plugins {
     kotlin("plugin.spring") version "1.3.72"
 }
 
+val collectionsImmutableVersion: String by project
+
 dependencies {
     implementation(project(":domain:itemclasses"))
     implementation(project(":adapters:store:sql"))
@@ -15,4 +17,6 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
+    implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:$collectionsImmutableVersion")
+
 }
