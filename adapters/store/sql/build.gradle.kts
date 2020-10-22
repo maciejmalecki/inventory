@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm")
+    id("org.liquibase.gradle") version "2.0.4"
 }
 
 val collectionsImmutableVersion: String by project

@@ -1,0 +1,9 @@
+@startuml
+:Data Provisioner: as Provisioner
+(Import units) as (ImportUnits)
+(Import item classes) as (ImportItemClasses)
+
+Provisioner -> (ImportUnits)
+Provisioner -> (ImportItemClasses)
+
+@enduml
