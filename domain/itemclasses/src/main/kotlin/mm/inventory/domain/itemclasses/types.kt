@@ -9,7 +9,7 @@ import kotlinx.collections.immutable.ImmutableSet
  */
 data class Unit(val code: String, val name: String)
 
-interface AttributeType<T> {
+interface AttributeType<in T> {
     fun isValid(value: T): Boolean
 }
 
