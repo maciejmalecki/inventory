@@ -7,7 +7,7 @@ import kotlinx.collections.immutable.ImmutableSet
  * @param code SI symbol (i.e.: s, m, kg)
  * @param name SI base unit name (i.e.: second, meter, kilogram)
  */
-data class Unit(val code: String, val name: String)
+data class UnitOfMeasurement(val code: String, val name: String)
 
 interface AttributeType<in T> {
     fun isValid(value: T): Boolean
@@ -18,7 +18,7 @@ interface AttributeType<in T> {
  * @param unit unit of measurement for this type
  */
 data class ScalarType(
-        val unit: Unit) : AttributeType<Double> {
+        val unit: UnitOfMeasurement) : AttributeType<Double> {
     override fun isValid(value: Double) = true
 }
 
