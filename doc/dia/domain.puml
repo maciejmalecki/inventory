@@ -1,41 +1,62 @@
 @startuml
+package "domain.itemclasses" #lightgrey {
+    class Category {
+       +name: String,
+       +description: String
+    }
 
-class Category {
-   String name,
-   String description
+    Category "*" --- "0..1" Category: parent
+
+    class ItemClass {
+        +name: String
+        +description: String
+    }
+
+    class ItemClassVersion {
+        +version: Int
+    }
+
+    ItemClass "*" --- "*" Category: belongs
+    ItemClassVersion "1" ---> "1" ItemClass: itemClass
+
+    class Attribute {
+        +name: String
+    }
+    abstract class AttributeType
+    class ScalarType
+    class DictionaryType
+    class DictionaryItem {
+        +value: String
+    }
+
+    class Unit {
+        +name: String
+        +code: String
+    }
+
+    AttributeType <|-- ScalarType
+    AttributeType <|-- DictionaryType
+    ScalarType o-- "1" Unit: unit
+    DictionaryType *-- "*" DictionaryItem: items
+
+    Attribute o-- "1" AttributeType: type
+
+    ItemClass o-- "*" Attribute: attributes
 }
+package "domain.items" #lightblue {
+    class Item
+    abstract class Value
+    class ScalarValue {
+        value: Double
+    }
+    class DictionaryValue {
+        value: String
+    }
 
-Category "*" --- "0..1" Category: parent
-
-class ItemClass {
-    String name
-    String description
+    Value <|-- ScalarValue
+    Value <|-- DictionaryValue
+    Item "*" --> "1" ItemClassVersion
+    Value "*" --* "1" Item: valuation
+    Value "*" --> "1" Attribute: of
 }
-
-ItemClass "*" --- "*" Category: belongs
-
-class Attribute {
-    String name
-}
-abstract class AttributeType
-class ScalarType
-class DictionaryType
-class DictionaryValue {
-    String value
-}
-
-class Unit {
-    String name
-    String code
-}
-
-AttributeType <|-- ScalarType
-AttributeType <|-- DictionaryType
-ScalarType o-- "1" Unit: unit
-DictionaryType *-- "*" DictionaryValue: values
-
-Attribute o-- "1" AttributeType: type
-
-ItemClass o-- "*" Attribute: attributes
-
 @enduml

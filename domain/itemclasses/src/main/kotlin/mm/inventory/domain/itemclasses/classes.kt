@@ -10,5 +10,11 @@ val ROOT_CATEGORY = Category("root", "", null)
 
 data class ItemClass(
         val name: String,
-        val description: String)
+        val description: String,
+        val amountUnit: Unit)
+
+data class ItemClassVersion(
+        val itemClass: ItemClass,
+        val version: Int)
+
 
