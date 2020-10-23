@@ -7,5 +7,10 @@
 ## Domain
 ![Domain](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.github.com/maciejmalecki/inventory/develop/doc/dia/domain.puml)
 
+## Dependency model
+The approach assumes segregation of concepts so that the most abstract concepts uses the least technical dependencies.
+![Dependencies](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.github.com/maciejmalecki/inventory/develop/doc/dia/zerodependency.puml)
+
+
 ## Application use cases
 ![Use cases](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.github.com/maciejmalecki/inventory/develop/doc/dia/usecases.puml)
