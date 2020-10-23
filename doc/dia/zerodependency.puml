@@ -1,18 +1,18 @@
 @startuml
 
+together {
+    [R2dbc-client] as r2dbc
+    [R2dbc-postgresql] as psql
+    [Webflux]
+    [Springboot]
+}
+
 package "Domain" #lightyellow {
 [ItemClasses] <... [Items]
 }
 
 package "Adapters" #lightblue {
 [Sql] <... [Spring]
-}
-
-together {
-    [R2dbc-client] as r2dbc
-    [R2dbc-postgresql] as psql
-    [Webflux]
-    [Springboot]
 }
 
 Sql ...> ItemClasses

@@ -21,6 +21,4 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:$collectionsImmutableVersion")
     implementation("io.r2dbc:r2dbc-client:$r2dbcClientVersion")
     implementation("io.r2dbc:r2dbc-postgresql:$r2dbcPostgresqlVersion")
-
-//    runtimeOnly("org.postgresql:postgresql")
 }
