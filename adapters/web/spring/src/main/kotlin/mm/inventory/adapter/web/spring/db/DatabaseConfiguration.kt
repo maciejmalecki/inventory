@@ -1,4 +1,4 @@
-package mm.inventory.adapter.web.spring
+package mm.inventory.adapter.web.spring.db
 
 import io.r2dbc.client.R2dbc
 import io.r2dbc.postgresql.PostgresqlConnectionConfiguration
@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-class Db {
+class DatabaseConfiguration {
 
     @Bean
     fun connectionFactory() = PostgresqlConnectionFactory(
