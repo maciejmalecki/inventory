@@ -10,7 +10,6 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:$collectionsImmutableVersion")
-    runtimeOnly("io.r2dbc:r2dbc-postgresql")
-    runtimeOnly("org.postgresql:postgresql")
-
+//    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
+    implementation("io.r2dbc:r2dbc-client:0.8.0.RC1")
 }

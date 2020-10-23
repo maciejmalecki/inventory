@@ -1,10 +1,22 @@
 package mm.inventory.adapters.store.sql
 
-import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.toImmutableList
+import io.r2dbc.client.R2dbc
+import io.r2dbc.spi.Result
+import io.r2dbc.spi.Row
+import io.r2dbc.spi.RowMetadata
 import mm.inventory.domain.itemclasses.UnitOfMeasurement
-import mm.inventory.domain.itemclasses.UnitRepository
+import mm.inventory.domain.itemclasses.UnitOfMeasurementRepository
+import reactor.core.publisher.Flux
 
-class UnitRepositorySqlImpl : UnitRepository {
-    override suspend fun findAll() = persistentListOf(UnitOfMeasurement("s", "second")).toImmutableList()
+class UnitRepositorySqlImpl(private val r: R2dbc) : UnitOfMeasurementRepository {
+
+    override suspend fun findAll(): Flux<UnitOfMeasurement> =
+            r.withHandle {
+                it.select("select code, name from Units").mapResult { result: Result ->
+                    result.map { row: Row, _: RowMetadata ->
+                        UnitOfMeasurement(row.get("code", String::class.java)!!, row.get("name", String::class.java)!!)
+                    }
+                }
+            }
+
 }
