@@ -12,8 +12,8 @@ class UnitOfMeasurementSqlRepository(private val r: R2dbc) : UnitOfMeasurementRe
 
     override suspend fun findAll(): Flux<UnitOfMeasurement> =
             r.withHandle {
-                it.select("select code, name from Units").mapResult { result: Result ->
-                    result.map { row: Row, _: RowMetadata ->
+                it.select("select code, name from Units").mapResult { result ->
+                    result.map { row, _ ->
                         UnitOfMeasurement(row.get("code", String::class.java)!!, row.get("name", String::class.java)!!)
                     }
                 }
