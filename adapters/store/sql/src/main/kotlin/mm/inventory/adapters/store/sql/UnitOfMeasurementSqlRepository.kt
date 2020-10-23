@@ -8,7 +8,7 @@ import mm.inventory.domain.itemclasses.UnitOfMeasurement
 import mm.inventory.domain.itemclasses.UnitOfMeasurementRepository
 import reactor.core.publisher.Flux
 
-class UnitRepositorySqlImpl(private val r: R2dbc) : UnitOfMeasurementRepository {
+class UnitOfMeasurementSqlRepository(private val r: R2dbc) : UnitOfMeasurementRepository {
 
     override suspend fun findAll(): Flux<UnitOfMeasurement> =
             r.withHandle {
