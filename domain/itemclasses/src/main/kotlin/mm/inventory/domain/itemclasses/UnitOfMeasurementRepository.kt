@@ -1,7 +1,7 @@
 package mm.inventory.domain.itemclasses
 
-import reactor.core.publisher.Flux
+import kotlinx.coroutines.flow.Flow
 
 interface UnitOfMeasurementRepository {
-    suspend fun findAll(): Flux<UnitOfMeasurement>
+    suspend fun findAll(): Flow<UnitOfMeasurement>
 }
