@@ -12,7 +12,7 @@ val kotlinxCoroutinesVersion: String by project
 
 dependencies {
     implementation(project(":domain:itemclasses"))
-    implementation(project(":adapters:store:sql"))
+    implementation(project(":adapters:store:r2dbc"))
 
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")

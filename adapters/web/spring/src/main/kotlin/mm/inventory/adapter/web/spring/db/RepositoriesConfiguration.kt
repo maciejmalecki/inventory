@@ -1,7 +1,7 @@
 package mm.inventory.adapter.web.spring.db
 
 import io.r2dbc.client.R2dbc
-import mm.inventory.adapters.store.sql.UnitOfMeasurementSqlRepository
+import mm.inventory.adapters.store.r2dbc.UnitOfMeasurementSqlRepository
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 

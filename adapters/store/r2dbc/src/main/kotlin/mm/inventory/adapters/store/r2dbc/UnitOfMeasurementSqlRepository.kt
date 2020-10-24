@@ -1,4 +1,4 @@
-package mm.inventory.adapters.store.sql
+package mm.inventory.adapters.store.r2dbc
 
 import io.r2dbc.client.R2dbc
 import kotlinx.collections.immutable.ImmutableList

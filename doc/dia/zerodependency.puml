@@ -8,20 +8,23 @@
 [kotlinx-reactor] as reactor
 
 package "Domain" #lightyellow {
-[ItemClasses] <... [Items]
+    [ItemClasses] <... [Items]
 }
 
 package "Adapters" #lightblue {
-[Sql] <... [Spring]
+    [store:r2dbc] as storer2dbc
+    [web:Spring] as Spring
 }
+
+storer2dbc <... Spring
 
 ItemClasses ...> immutable
 Items ...> immutable
 
-Sql ...> ItemClasses
-Sql ...> r2dbc
-Sql ...> immutable
-Sql ...> reactor
+storer2dbc ...> ItemClasses
+storer2dbc ...> r2dbc
+storer2dbc ...> immutable
+storer2dbc ...> reactor
 
 Spring ...> ItemClasses
 Spring ...> psql
