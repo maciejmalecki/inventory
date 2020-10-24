@@ -16,7 +16,7 @@ import reactor.core.publisher.Flux
 class CategoryCrudR2dbcRepository(private val r: R2dbc) : CategoryCrudRepository {
 
     override suspend fun create(code: String, name: String): Category =
-             r.inTransaction {
+            r.inTransaction {
                 insertIntoCategories(it, code, name).flatMap { categoryId ->
                     insertRootIntoCategoryTreePath(it, categoryId).flatMap { _ ->
                         selectCategoryById(it, categoryId)
@@ -57,10 +57,10 @@ class CategoryCrudR2dbcRepository(private val r: R2dbc) : CategoryCrudRepository
                 it.toImmutableSet()
             }.awaitFirst()
 
-    private fun insertIntoCategories(it: Handle, code: String, name: String): Flux<Long> {
-        it.execute("INSERT INTO Categories (code, name) VALUES ($1, $2)", code, name)
-        return it.select("SELECT LASTVAL()").mapResult(extractLong(1))
-    }
+    private fun insertIntoCategories(it: Handle, code: String, name: String): Flux<Long> =
+            it.execute("INSERT INTO Categories (code, name) VALUES ($1, $2)", code, name).flatMap { _ ->
+                it.select("SELECT LASTVAL()").mapResult(extractLong(0))
+            }
 
     private fun insertRootIntoCategoryTreePath(it: Handle, categoryId: Long): Flux<Int> =
             it.execute("""INSERT INTO Categories_Tree_Path (ancestor_id, descendant_id, depth)
@@ -73,7 +73,7 @@ class CategoryCrudR2dbcRepository(private val r: R2dbc) : CategoryCrudRepository
                             |WHERE p.descendant_id=$1 AND c.ancestor_id=$2""".trimMargin(), parentId, leafId)
 
     private fun extractLong(param: Int): (Result) -> Publisher<Long> = { result: Result ->
-        result.map { row, _ -> row.get(param, Long::class.java) }
+        result.map { row, _ -> row.get(param) as Long }
     }
 
     private fun selectCategoryById(it: Handle, id: Long): Flux<Category> =

@@ -14,8 +14,8 @@ class UnitOfMeasurementR2dbcRepository(private val r: R2dbc) : UnitOfMeasurement
                 it.select("select code, name from Units").mapResult {
                     it.map { row, _ ->
                         UnitOfMeasurement(
-                                row.get("code", String::class.java)!!,
-                                row.get("name", String::class.java)!!)
+                                row.get("code") as String,
+                                row.get("name") as String)
                     }
                 }
             }.collectList().map {
