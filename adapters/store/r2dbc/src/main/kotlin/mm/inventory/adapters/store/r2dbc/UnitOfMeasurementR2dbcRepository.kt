@@ -7,7 +7,7 @@ import kotlinx.coroutines.reactive.awaitFirst
 import mm.inventory.domain.itemclasses.UnitOfMeasurement
 import mm.inventory.domain.itemclasses.UnitOfMeasurementRepository
 
-class UnitOfMeasurementSqlRepository(private val r: R2dbc) : UnitOfMeasurementRepository {
+class UnitOfMeasurementR2dbcRepository(private val r: R2dbc) : UnitOfMeasurementRepository {
 
     override suspend fun findAll(): ImmutableList<UnitOfMeasurement> =
             r.withHandle {
