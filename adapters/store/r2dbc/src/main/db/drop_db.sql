@@ -1,1 +1,1 @@
-drop table Units;
+DROP TABLE Units;
