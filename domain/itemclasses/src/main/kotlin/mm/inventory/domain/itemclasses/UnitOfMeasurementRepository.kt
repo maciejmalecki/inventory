@@ -1,7 +1,7 @@
 package mm.inventory.domain.itemclasses
 
-import kotlinx.coroutines.flow.Flow
+import kotlinx.collections.immutable.ImmutableList
 
 interface UnitOfMeasurementRepository {
-    suspend fun findAll(): Flow<UnitOfMeasurement>
+    suspend fun findAll(): ImmutableList<UnitOfMeasurement>
 }

@@ -1,11 +1,11 @@
 @startuml
 
-together {
-    [R2dbc-client] as r2dbc
-    [R2dbc-postgresql] as psql
-    [Webflux]
-    [Springboot]
-}
+[R2dbc-client] as r2dbc
+[R2dbc-postgresql] as psql
+[kotlinx-immutable] as immutable
+[Webflux]
+[Springboot]
+[kotlinx-reactor] as reactor
 
 package "Domain" #lightyellow {
 [ItemClasses] <... [Items]
@@ -15,12 +15,19 @@ package "Adapters" #lightblue {
 [Sql] <... [Spring]
 }
 
+ItemClasses ...> immutable
+Items ...> immutable
+
 Sql ...> ItemClasses
 Sql ...> r2dbc
+Sql ...> immutable
+Sql ...> reactor
 
 Spring ...> ItemClasses
 Spring ...> psql
 Spring ...> r2dbc
 Spring ...> Webflux
 Spring ...> Springboot
+Spring ...> immutable
+Spring ...> reactor
 @enduml
