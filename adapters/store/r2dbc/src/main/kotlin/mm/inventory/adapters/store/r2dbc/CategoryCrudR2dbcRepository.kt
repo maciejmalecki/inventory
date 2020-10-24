@@ -62,12 +62,7 @@ class CategoryCrudR2dbcRepository(private val r: R2dbc) : CategoryCrudRepository
 
     private fun selectCategoryById(it: Handle, id: Long): Flux<Category> =
             it.select("SELECT category_id, code, name FROM Categories WHERE category_id=$1", id).mapResult { result ->
-                result.map { row, _ ->
-                    Category(
-                            row.get("category_id", Long::class.java)!!,
-                            row.get("code", String::class.java)!!,
-                            row.get("name", String::class.java)!!)
-                }
+                result.map(::categoryMapper)
             }
 
 }
