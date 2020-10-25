@@ -76,7 +76,7 @@ class CategoryCrudR2dbcRepository(private val db: R2dbc) : CategoryCrudRepositor
 
     private fun selectPath(it: Handle, leafId: Long): Flux<Category> =
             it.select("""SELECT category_id, code, name 
-                           |FROM Categories c JOIN Categories_Tree_path t ON c.category_id=t.descendant_id
+                           |FROM Categories c JOIN Categories_Tree_path t ON c.category_id=t.ancestor_id
                            |WHERE t.descendant_id = $1
                            |ORDER BY t.depth DESC""".trimMargin(), leafId).mapRow(::categoryMapper)
 

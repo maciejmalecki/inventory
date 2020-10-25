@@ -8,6 +8,7 @@ import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
 import org.springframework.web.reactive.function.server.awaitBody
 import org.springframework.web.reactive.function.server.bodyValueAndAwait
+import java.util.stream.Collectors
 
 @RestController
 class CategoriesHandler(val repository: CategoryCrudRepository) {
@@ -38,6 +39,16 @@ class CategoriesHandler(val repository: CategoryCrudRepository) {
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValueAndAwait(repository.create(newCategoryDto.code, newCategoryDto.name, req.pathVariable("categoryId").toLong()))
+    }
+
+    suspend fun path(req: ServerRequest): ServerResponse {
+        val path = repository.findPathById(req.pathVariable("categoryId").toLong())
+        return ServerResponse
+                .ok()
+                .contentType(MediaType.TEXT_PLAIN)
+                .bodyValueAndAwait(path.stream().map {
+                    it.name
+                }.collect(Collectors.joining("/")))
     }
 }
 
