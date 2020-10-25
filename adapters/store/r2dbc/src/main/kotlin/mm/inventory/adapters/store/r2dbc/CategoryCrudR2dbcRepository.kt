@@ -88,7 +88,8 @@ class CategoryCrudR2dbcRepository(private val db: R2dbc) : CategoryCrudRepositor
     private fun selectCategoryWithNoParent(it: Handle): Flux<Category> =
             it.select("""SELECT category_id, code, name
                            |FROM Categories c JOIN Categories_Tree_Path t ON c.category_id=t.descendant_id
-                           |WHERE t.depth = 0""".trimMargin()).mapResult { result ->
+                           |WHERE t.depth = $1 AND t.ancestor_id NOT IN
+                             |(SELECT descendant_id FROM Categories_Tree_Path WHERE depth=$2)""".trimMargin(), 0, 1).mapResult { result ->
                 result.map(::categoryMapper)
             }
 
