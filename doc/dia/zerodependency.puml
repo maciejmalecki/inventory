@@ -1,26 +1,36 @@
 @startuml
 
+[R2dbc-client] as r2dbc
+[R2dbc-postgresql] as psql
+[kotlinx-immutable] as immutable
+[Webflux]
+[Springboot]
+[kotlinx-reactor] as reactor
+
 package "Domain" #lightyellow {
-[ItemClasses] <... [Items]
+    [ItemClasses] <... [Items]
 }
 
 package "Adapters" #lightblue {
-[Sql] <... [Spring]
+    [store:r2dbc] as storer2dbc
+    [web:Spring] as Spring
 }
 
-together {
-    [R2dbc-client] as r2dbc
-    [R2dbc-postgresql] as psql
-    [Webflux]
-    [Springboot]
-}
+storer2dbc <... Spring
 
-Sql ...> ItemClasses
-Sql ...> r2dbc
+ItemClasses ...> immutable
+Items ...> immutable
+
+storer2dbc ...> ItemClasses
+storer2dbc ...> r2dbc
+storer2dbc ...> immutable
+storer2dbc ...> reactor
 
 Spring ...> ItemClasses
 Spring ...> psql
 Spring ...> r2dbc
 Spring ...> Webflux
 Spring ...> Springboot
+Spring ...> immutable
+Spring ...> reactor
 @enduml
