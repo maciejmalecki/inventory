@@ -18,12 +18,26 @@ class CategoriesHandler(val repository: CategoryCrudRepository) {
                     .contentType(MediaType.APPLICATION_JSON)
                     .bodyValueAndAwait(repository.findAllRoot())
 
+    suspend fun children(req: ServerRequest): ServerResponse =
+            ServerResponse
+                    .ok()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValueAndAwait(repository.findAll(req.pathVariable("categoryId").toLong()))
+
     suspend fun createRoot(req: ServerRequest): ServerResponse {
         val newCategoryDto: NewCategoryDto = req.awaitBody()
         return ServerResponse
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValueAndAwait(repository.create(newCategoryDto.code, newCategoryDto.name))
+    }
+
+    suspend fun createChild(req: ServerRequest): ServerResponse {
+        val newCategoryDto: NewCategoryDto = req.awaitBody()
+        return ServerResponse
+                .ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValueAndAwait(repository.create(newCategoryDto.code, newCategoryDto.name, req.pathVariable("categoryId").toLong()))
     }
 }
 
