@@ -24,13 +24,11 @@ class CategoryCrudR2dbcRepository(private val db: R2dbc) : CategoryCrudRepositor
             }.awaitSingle()
 
     override suspend fun create(code: String, name: String, parentId: Long): Category =
-            db.inTransaction { handle ->
-                insertIntoCategories(handle, code, name).flatMap { categoryId ->
-                    insertRootIntoCategoryTreePath(handle, categoryId).flatMap {
-                        insertIntoCategoryTreePath(handle, parentId, categoryId).flatMap {
-                            selectCategoryById(handle, categoryId)
-                        }
-                    }
+            db.inTransaction {
+                insertIntoCategories(it, code, name).flatMap { categoryId ->
+                    insertRootIntoCategoryTreePath(it, categoryId)
+                            .thenMany(insertIntoCategoryTreePath(it, parentId, categoryId))
+                            .thenMany(selectCategoryById(it, categoryId))
                 }
             }.awaitSingle()
 
