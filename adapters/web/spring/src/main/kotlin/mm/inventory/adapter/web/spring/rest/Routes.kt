@@ -13,5 +13,7 @@ class Routes {
         GET("/units", unitsHandler::allUnits)
         GET("/categories", categoriesHandler::roots)
         POST("/categories", categoriesHandler::createRoot)
+        GET("/categories/{categoryId}", categoriesHandler::children)
+        POST("/categories/{categoryId}", categoriesHandler::createChild)
     }
 }

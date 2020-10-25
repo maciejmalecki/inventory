@@ -95,7 +95,7 @@ class CategoryCrudR2dbcRepository(private val db: R2dbc) : CategoryCrudRepositor
     private fun selectCategoryForParent(it: Handle, parentId: Long): Flux<Category> =
             it.select("""SELECT category_id, code, name
                            |FROM Categories c JOIN Categories_Tree_Path t ON c.category_id=t.descendant_id
-                           |WHERE t.ancestor_id = $1""".trimMargin(), parentId).mapResult { result ->
+                           |WHERE t.ancestor_id = $1 AND t.depth = $2""".trimMargin(), parentId, 1).mapResult { result ->
                 result.map(::categoryMapper)
             }
 }
