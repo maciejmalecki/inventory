@@ -7,7 +7,6 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toImmutableSet
-import kotlinx.coroutines.reactive.awaitFirst
 import kotlinx.coroutines.reactive.awaitSingle
 import mm.inventory.app.categories.Category
 import mm.inventory.app.categories.CategoryCrudRepository
@@ -47,14 +46,14 @@ class CategoryCrudR2dbcRepository(private val db: R2dbc) : CategoryCrudRepositor
                 selectCategoryWithNoParent(it)
             }.collectList().map {
                 it.toImmutableSet()
-            }.awaitFirst()
+            }.awaitSingle()
 
     override suspend fun findAll(parentId: Long): ImmutableSet<Category> =
             db.withHandle {
                 selectCategoryForParent(it, parentId)
             }.collectList().map {
                 it.toImmutableSet()
-            }.awaitFirst()
+            }.awaitSingle()
 
     private fun insertIntoCategories(it: Handle, code: String, name: String): Flux<Long> =
             it.execute("INSERT INTO Categories (code, name) VALUES ($1, $2)", code, name).flatMap { _ ->

@@ -3,7 +3,7 @@ package mm.inventory.adapters.store.r2dbc
 import io.r2dbc.client.R2dbc
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.coroutines.reactive.awaitFirst
+import kotlinx.coroutines.reactive.awaitSingle
 import mm.inventory.domain.itemclasses.UnitOfMeasurement
 import mm.inventory.domain.itemclasses.UnitOfMeasurementRepository
 
@@ -20,6 +20,6 @@ class UnitOfMeasurementR2dbcRepository(private val r: R2dbc) : UnitOfMeasurement
                 }
             }.collectList().map {
                 it.toImmutableList()
-            }.awaitFirst()
+            }.awaitSingle()
 
 }
