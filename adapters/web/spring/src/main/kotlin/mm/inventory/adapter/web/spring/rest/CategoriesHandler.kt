@@ -41,6 +41,12 @@ class CategoriesHandler(val repository: CategoryCrudRepository) {
                 .bodyValueAndAwait(repository.create(newCategoryDto.code, newCategoryDto.name, req.pathVariable("categoryId").toLong()))
     }
 
+    suspend fun deleteCategory(req: ServerRequest): ServerResponse =
+            ServerResponse
+                    .ok()
+                    .contentType(MediaType.TEXT_PLAIN)
+                    .bodyValueAndAwait(repository.delete(req.pathVariable("categoryId").toLong()).toString())
+
     suspend fun path(req: ServerRequest): ServerResponse {
         val path = repository.findPathById(req.pathVariable("categoryId").toLong())
         return ServerResponse

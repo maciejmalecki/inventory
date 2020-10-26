@@ -16,5 +16,6 @@ class Routes {
         GET("/categories/{categoryId}", categoriesHandler::children)
         GET("/categories/{categoryId}/path", categoriesHandler::path)
         POST("/categories/{categoryId}", categoriesHandler::createChild)
+        DELETE("/categories/{categoryId}", categoriesHandler::deleteCategory)
     }
 }

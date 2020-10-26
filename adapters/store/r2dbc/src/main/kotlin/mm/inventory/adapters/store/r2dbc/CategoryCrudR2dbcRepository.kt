@@ -2,7 +2,6 @@ package mm.inventory.adapters.store.r2dbc
 
 import io.r2dbc.client.Handle
 import io.r2dbc.client.R2dbc
-import io.r2dbc.spi.Result
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.toImmutableList
@@ -10,7 +9,6 @@ import kotlinx.collections.immutable.toImmutableSet
 import kotlinx.coroutines.reactive.awaitSingle
 import mm.inventory.app.categories.Category
 import mm.inventory.app.categories.CategoryCrudRepository
-import org.reactivestreams.Publisher
 import reactor.core.publisher.Flux
 
 class CategoryCrudR2dbcRepository(private val db: R2dbc) : CategoryCrudRepository {
@@ -30,6 +28,11 @@ class CategoryCrudR2dbcRepository(private val db: R2dbc) : CategoryCrudRepositor
                             .thenMany(insertIntoCategoryTreePath(it, parentId, categoryId))
                             .thenMany(selectCategoryById(it, categoryId))
                 }
+            }.awaitSingle()
+
+    override suspend fun delete(id: Long): Int =
+            db.inTransaction {
+                deleteSubtree(it, id).thenMany(deleteFreeNodes(it))
             }.awaitSingle()
 
     override suspend fun findPathById(id: Long): ImmutableList<Category> =
@@ -69,6 +72,19 @@ class CategoryCrudR2dbcRepository(private val db: R2dbc) : CategoryCrudRepositor
                             |SELECT p.ancestor_id, c.descendant_id, p.depth + c.depth + 1 
                             |FROM Categories_Tree_Path p, Categories_Tree_Path c
                             |WHERE p.descendant_id=$1 AND c.ancestor_id=$2""".trimMargin(), parentId, leafId)
+
+    private fun deleteSubtree(it: Handle, id: Long): Flux<Int> =
+            it.execute("""DELETE FROM Categories_Tree_Path ctp
+                            |WHERE ctp.descendant_id IN
+                               |(SELECT ctp2.descendant_id FROM Categories_Tree_Path ctp2 
+                                   |WHERE ctp2.ancestor_id=$1)""".trimMargin(), id)
+
+    private fun deleteFreeNodes(it: Handle): Flux<Int> =
+            it.execute("""DELETE FROM Categories 
+                            |WHERE category_id NOT IN 
+                               |(SELECT ancestor_id FROM Categories_Tree_Path
+                                    |UNION
+                                |SELECT descendant_id FROM Categories_Tree_Path)""".trimMargin())
 
     private fun selectCategoryById(it: Handle, id: Long): Flux<Category> =
             it.select("SELECT category_id, code, name FROM Categories WHERE category_id=$1", id)
