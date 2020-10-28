@@ -12,6 +12,7 @@ class Routes {
     fun route(unitsHandler: UnitsHandler, categoriesHandler: CategoriesHandler) = coRouter {
         GET("/units", unitsHandler::allUnits)
         GET("/categories", categoriesHandler::roots)
+        GET("/categories/paths", categoriesHandler::paths)
         POST("/categories", categoriesHandler::createRoot)
         GET("/categories/{categoryId}", categoriesHandler::children)
         GET("/categories/{categoryId}/path", categoriesHandler::path)

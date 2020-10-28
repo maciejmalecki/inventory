@@ -9,6 +9,7 @@ import kotlinx.collections.immutable.toImmutableSet
 import kotlinx.coroutines.reactive.awaitSingle
 import mm.inventory.app.categories.Category
 import mm.inventory.app.categories.CategoryCrudRepository
+import mm.inventory.app.categories.CategoryPath
 import reactor.core.publisher.Flux
 
 class CategoryCrudR2dbcRepository(private val db: R2dbc) : CategoryCrudRepository {
@@ -54,6 +55,13 @@ class CategoryCrudR2dbcRepository(private val db: R2dbc) : CategoryCrudRepositor
                 selectCategoryForParent(it, parentId)
             }.collectList().map {
                 it.toImmutableSet()
+            }.awaitSingle()
+
+    override suspend fun findAllPathNames(): ImmutableList<CategoryPath> =
+            db.withHandle {
+                selectAllCategoryPaths(it)
+            }.collectList().map {
+                it.toImmutableList()
             }.awaitSingle()
 
     private fun insertIntoCategories(it: Handle, code: String, name: String): Flux<Long> =
@@ -106,4 +114,15 @@ class CategoryCrudR2dbcRepository(private val db: R2dbc) : CategoryCrudRepositor
             it.select("""SELECT category_id, code, name
                            |FROM Categories c JOIN Categories_Tree_Path t ON c.category_id=t.descendant_id
                            |WHERE t.ancestor_id = $1 AND t.depth = $2""".trimMargin(), parentId, 1).mapRow(::categoryMapper)
+
+    private fun selectAllCategoryPaths(it: Handle): Flux<CategoryPath> =
+            it.select("""select c.category_id as category_id, STRING_AGG(CAST(cc.code AS TEXT), '-' ORDER BY c2.depth DESC) as path
+                           |from Categories c
+                           |join categories_tree_path c1 on c1.descendant_id = c.category_id
+                           |join categories_tree_path c2 on c2.descendant_id = c1.descendant_id
+                           |join Categories cc on c2.ancestor_id = cc.category_id
+                           |group by c.category_id
+                           |order by path;""".trimMargin()).mapRow { row ->
+                CategoryPath(row.get("category_id") as Long, row.get("path") as String)
+            }
 }

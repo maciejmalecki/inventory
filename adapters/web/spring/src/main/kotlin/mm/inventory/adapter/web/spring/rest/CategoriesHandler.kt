@@ -56,5 +56,11 @@ class CategoriesHandler(val repository: CategoryCrudRepository) {
                     it.name
                 }.collect(Collectors.joining("/")))
     }
+
+    suspend fun paths(req: ServerRequest): ServerResponse =
+            ServerResponse
+                    .ok()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValueAndAwait(repository.findAllPathNames())
 }
 
