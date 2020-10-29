@@ -57,9 +57,9 @@ class CategoryCrudR2dbcRepository(private val db: R2dbc) : CategoryCrudRepositor
                 it.toImmutableSet()
             }.awaitSingle()
 
-    override suspend fun findAllPathNames(): ImmutableList<CategoryPath> =
+    override suspend fun findAllPathNames(separator: String): ImmutableList<CategoryPath> =
             db.withHandle {
-                selectAllCategoryPaths(it)
+                selectAllCategoryPaths(it, separator)
             }.collectList().map {
                 it.toImmutableList()
             }.awaitSingle()
@@ -115,14 +115,17 @@ class CategoryCrudR2dbcRepository(private val db: R2dbc) : CategoryCrudRepositor
                            |FROM Categories c JOIN Categories_Tree_Path t ON c.category_id=t.descendant_id
                            |WHERE t.ancestor_id = $1 AND t.depth = $2""".trimMargin(), parentId, 1).mapRow(::categoryMapper)
 
-    private fun selectAllCategoryPaths(it: Handle): Flux<CategoryPath> =
-            it.select("""select c.category_id as category_id, STRING_AGG(CAST(cc.code AS TEXT), '-' ORDER BY c2.depth DESC) as path
-                           |from Categories c
-                           |join categories_tree_path c1 on c1.descendant_id = c.category_id
-                           |join categories_tree_path c2 on c2.descendant_id = c1.descendant_id
-                           |join Categories cc on c2.ancestor_id = cc.category_id
-                           |group by c.category_id
-                           |order by path;""".trimMargin()).mapRow { row ->
+    private fun selectAllCategoryPaths(it: Handle, separator: String): Flux<CategoryPath> =
+            it.select("""WITH cat AS (
+                           |SELECT DISTINCT c.category_id AS category_id, cc.code AS code, c2.depth AS depth
+                           |FROM Categories c
+                           |JOIN categories_tree_path c1 ON c1.descendant_id = c.category_id
+                           |JOIN categories_tree_path c2 ON c2.descendant_id = c1.descendant_id
+                           |JOIN Categories cc ON c2.ancestor_id = cc.category_id)
+                        |SELECT category_id, STRING_AGG(CAST(code AS TEXT), $1 ORDER BY depth DESC) AS path
+                        |FROM cat
+                        |GROUP BY category_id
+                        |ORDER BY path""".trimMargin(), separator).mapRow { row ->
                 CategoryPath(row.get("category_id") as Long, row.get("path") as String)
             }
 }

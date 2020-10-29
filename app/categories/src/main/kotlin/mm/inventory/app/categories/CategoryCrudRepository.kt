@@ -10,5 +10,5 @@ interface CategoryCrudRepository {
     suspend fun findPathById(id: Long): ImmutableList<Category>
     suspend fun findAllRoot(): ImmutableSet<Category>
     suspend fun findAll(parentId: Long): ImmutableSet<Category>
-    suspend fun findAllPathNames(): ImmutableList<CategoryPath>
+    suspend fun findAllPathNames(separator: String = "-"): ImmutableList<CategoryPath>
 }

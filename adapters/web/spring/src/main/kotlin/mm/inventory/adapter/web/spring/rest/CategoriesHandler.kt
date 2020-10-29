@@ -61,6 +61,6 @@ class CategoriesHandler(val repository: CategoryCrudRepository) {
             ServerResponse
                     .ok()
                     .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValueAndAwait(repository.findAllPathNames())
+                    .bodyValueAndAwait(repository.findAllPathNames("/"))
 }
 
