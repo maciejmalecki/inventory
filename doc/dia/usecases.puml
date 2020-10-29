@@ -1,9 +1,14 @@
 @startuml
+left to right direction
 :Data Provisioner: as Provisioner
-(Import units) as (ImportUnits)
-(Import item classes) as (ImportItemClasses)
+package Import {
+    (Import units) as (ImportUnits)
+    (Import categories) as (ImportCategories)
+    (Import item classes) as (ImportItemClasses)
+}
 
 Provisioner -> (ImportUnits)
 Provisioner -> (ImportItemClasses)
+Provisioner -> (ImportCategories)
 
 @enduml

@@ -11,12 +11,10 @@ class UnitOfMeasurementR2dbcRepository(private val r: R2dbc) : UnitOfMeasurement
 
     override suspend fun findAll(): ImmutableList<UnitOfMeasurement> =
             r.withHandle {
-                it.select("select code, name from Units").mapResult {
-                    it.map { row, _ ->
+                it.select("select code, name from Units").mapRow { row, _ ->
                         UnitOfMeasurement(
                                 row.get("code") as String,
                                 row.get("name") as String)
-                    }
                 }
             }.collectList().map {
                 it.toImmutableList()

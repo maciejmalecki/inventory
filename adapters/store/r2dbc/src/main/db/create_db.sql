@@ -15,6 +15,6 @@ CREATE TABLE Categories_Tree_Path (
     descendant_id BIGINT NOT NULL,
     depth INT NOT NULL,
     PRIMARY KEY (ancestor_id, descendant_id),
-    FOREIGN KEY (ancestor_id) REFERENCES Categories(category_id) ON DELETE CASCADE,
-    FOREIGN KEY (descendant_id) REFERENCES Categories(category_id) ON DELETE CASCADE
+    FOREIGN KEY (ancestor_id) REFERENCES Categories(category_id),
+    FOREIGN KEY (descendant_id) REFERENCES Categories(category_id)
 );

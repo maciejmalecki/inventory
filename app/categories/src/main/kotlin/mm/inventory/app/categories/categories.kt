@@ -5,3 +5,8 @@ data class Category(
         val code: String,
         val name: String
 )
+
+data class CategoryPath(
+        val leafId: Long,
+        val path: String
+)
