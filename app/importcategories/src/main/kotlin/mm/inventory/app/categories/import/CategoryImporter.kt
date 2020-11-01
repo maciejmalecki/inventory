@@ -26,7 +26,7 @@ class CategoryImporter(private val categoryCrudRepository: CategoryCrudRepositor
         for (pos: Int in foundPos + 1 until category.size) {
             parentCategoryId = categoryCrudRepository.create(category[pos].code, category[pos].name, parentCategoryId).id
         }
-        // update cache
+        // update cache, TODO too few addons, add more!
         categories[category.joinToString(CATEGORY_SEPARATOR)] = parentCategoryId
     }
 
