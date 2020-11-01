@@ -1,6 +1,8 @@
-package mm.inventory.app.categories
+package mm.inventory.app.categories.import
 
 import kotlinx.collections.immutable.ImmutableList
+import mm.inventory.app.categories.CategoryCrudRepository
+import mm.inventory.app.categories.CategorySection
 
 val CATEGORY_SEPARATOR = "-"
 
