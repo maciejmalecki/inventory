@@ -1,7 +1,10 @@
 package mm.inventory.adapter.web.spring.rest
 
+import kotlinx.coroutines.reactive.awaitSingle
 import mm.inventory.adapter.web.spring.rest.dto.NewCategoryDto
 import mm.inventory.app.categories.CategoryCrudRepository
+import mm.inventory.app.categories.import.CategoryImporter
+import mm.inventory.app.categories.import.simpleParser
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.reactive.function.server.ServerRequest
@@ -11,7 +14,7 @@ import org.springframework.web.reactive.function.server.bodyValueAndAwait
 import java.util.stream.Collectors
 
 @RestController
-class CategoriesHandler(val repository: CategoryCrudRepository) {
+class CategoriesHandler(val repository: CategoryCrudRepository, val importer: CategoryImporter) {
 
     suspend fun roots(req: ServerRequest): ServerResponse =
             ServerResponse
@@ -62,5 +65,17 @@ class CategoriesHandler(val repository: CategoryCrudRepository) {
                     .ok()
                     .contentType(MediaType.APPLICATION_JSON)
                     .bodyValueAndAwait(repository.findAllPathNames("/"))
+
+    suspend fun importFromText(req: ServerRequest): ServerResponse {
+        val data = req.bodyToMono(String::class.java).awaitSingle()
+        val lines = data.lines()
+        lines.forEach {
+            importer.import(simpleParser(it))
+        }
+        return ServerResponse
+                .ok()
+                .contentType(MediaType.TEXT_PLAIN)
+                .bodyValueAndAwait("Imported ${lines.size} categories.")
+    }
 }
 

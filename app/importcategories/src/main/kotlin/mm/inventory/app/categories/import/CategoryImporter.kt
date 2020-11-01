@@ -34,7 +34,7 @@ class CategoryImporter(private val categoryCrudRepository: CategoryCrudRepositor
         if (pos == 0) {
             return PathFound(-1, 0)
         }
-        val categoryStr = category.slice(0..pos).joinToString(CATEGORY_SEPARATOR)
+        val categoryStr = category.slice(0 until pos).joinToString(CATEGORY_SEPARATOR)
         val categoryId = categories[categoryStr]
         if (categoryId != null) {
             return PathFound(categoryId, pos)

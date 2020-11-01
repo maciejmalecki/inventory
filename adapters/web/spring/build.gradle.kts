@@ -13,6 +13,7 @@ val kotlinxCoroutinesVersion: String by project
 dependencies {
     implementation(project(":domain:itemclasses"))
     implementation(project(":app:categories"))
+    implementation(project(":app:importcategories"))
     implementation(project(":adapters:store:r2dbc"))
 
     implementation("org.springframework.boot:spring-boot-starter-webflux")
