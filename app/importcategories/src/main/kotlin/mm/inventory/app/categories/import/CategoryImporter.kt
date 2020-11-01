@@ -13,7 +13,7 @@ class CategoryImporter(private val categoryCrudRepository: CategoryCrudRepositor
 
     private data class PathFound(val categoryId: Long, val length: Int)
 
-    private lateinit var categories: Map<String, Long>
+    private lateinit var categories: MutableMap<String, Long>
 
     suspend fun import(category: ImmutableList<CategorySection>) {
         if (!this::categories.isInitialized) {
@@ -26,6 +26,8 @@ class CategoryImporter(private val categoryCrudRepository: CategoryCrudRepositor
         for (pos: Int in foundPos + 1 until category.size) {
             parentCategoryId = categoryCrudRepository.create(category[pos].code, category[pos].name, parentCategoryId).id
         }
+        // update cache
+        categories[category.joinToString(CATEGORY_SEPARATOR)] = parentCategoryId
     }
 
     private tailrec fun findPath(categories: Map<String, Long>, category: ImmutableList<CategorySection>, pos: Int): PathFound {
