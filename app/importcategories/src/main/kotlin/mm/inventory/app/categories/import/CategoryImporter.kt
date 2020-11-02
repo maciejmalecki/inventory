@@ -20,21 +20,31 @@ class CategoryImporter(private val categoryCrudRepository: CategoryCrudRepositor
             categories = loadCategories()
         }
         var (parentCategoryId, foundPos) = findPath(categories, category, category.size)
+        println("parentCategoryId = $parentCategoryId, foundPos = $foundPos")
         if (foundPos == 0) {
-            parentCategoryId = categoryCrudRepository.create(category[foundPos].code, category[foundPos].name).id
+            parentCategoryId = categoryCrudRepository.create(category[0].code, category[0].name).id
+            val path = category[0].code
+            categories[path] = parentCategoryId
+            println("$path = $parentCategoryId")
         }
         for (pos: Int in foundPos + 1 until category.size) {
             parentCategoryId = categoryCrudRepository.create(category[pos].code, category[pos].name, parentCategoryId).id
+            val path = category.slice(0..pos).map { it.code }.joinToString(CATEGORY_SEPARATOR)
+            categories[path] = parentCategoryId
+            println("$path = $parentCategoryId")
         }
-        // update cache, TODO too few addons, add more!
-        categories[category.joinToString(CATEGORY_SEPARATOR)] = parentCategoryId
     }
 
     private tailrec fun findPath(categories: Map<String, Long>, category: ImmutableList<CategorySection>, pos: Int): PathFound {
         if (pos == 0) {
             return PathFound(-1, 0)
         }
-        val categoryStr = category.slice(0 until pos).joinToString(CATEGORY_SEPARATOR)
+        val categoryStr = category
+                .slice(0 until pos)
+                .map {
+                    it.code
+                }
+                .joinToString(CATEGORY_SEPARATOR)
         val categoryId = categories[categoryStr]
         if (categoryId != null) {
             return PathFound(categoryId, pos)
