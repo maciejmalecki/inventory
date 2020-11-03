@@ -26,8 +26,9 @@ class CategoryImporter(private val categoryCrudRepository: CategoryCrudRepositor
             val path = category[0].code
             categories[path] = parentCategoryId
             println("$path = $parentCategoryId")
+            foundPos++
         }
-        for (pos: Int in foundPos + 1 until category.size) {
+        for (pos: Int in foundPos until category.size) {
             parentCategoryId = categoryCrudRepository.create(category[pos].code, category[pos].name, parentCategoryId).id
             val path = category.slice(0..pos).map { it.code }.joinToString(CATEGORY_SEPARATOR)
             categories[path] = parentCategoryId
