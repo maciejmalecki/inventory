@@ -14,6 +14,7 @@ class Routes {
         GET("/categories", categoriesHandler::roots)
         GET("/categories/paths", categoriesHandler::paths)
         POST("/categories", categoriesHandler::createRoot)
+        POST("/categories/import", categoriesHandler::importFromText)
         GET("/categories/{categoryId}", categoriesHandler::children)
         GET("/categories/{categoryId}/path", categoriesHandler::path)
         POST("/categories/{categoryId}", categoriesHandler::createChild)

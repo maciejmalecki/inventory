@@ -16,7 +16,7 @@ class CategoryCrudR2dbcRepository(private val db: R2dbc) : CategoryCrudRepositor
 
     override suspend fun create(code: String, name: String): Category =
             db.inTransaction {
-                insertIntoCategories(it, code, name).flatMap { categoryId ->
+                insertCategory(it, code, name).flatMap { categoryId ->
                     insertRootIntoCategoryTreePath(it, categoryId)
                             .thenMany(selectCategoryById(it, categoryId))
                 }
@@ -24,7 +24,7 @@ class CategoryCrudR2dbcRepository(private val db: R2dbc) : CategoryCrudRepositor
 
     override suspend fun create(code: String, name: String, parentId: Long): Category =
             db.inTransaction {
-                insertIntoCategories(it, code, name).flatMap { categoryId ->
+                insertCategory(it, code, name).flatMap { categoryId ->
                     insertRootIntoCategoryTreePath(it, categoryId)
                             .thenMany(insertIntoCategoryTreePath(it, parentId, categoryId))
                             .thenMany(selectCategoryById(it, categoryId))
@@ -45,14 +45,14 @@ class CategoryCrudR2dbcRepository(private val db: R2dbc) : CategoryCrudRepositor
 
     override suspend fun findAllRoot(): ImmutableSet<Category> =
             db.withHandle {
-                selectCategoryWithNoParent(it)
+                selectCategoriesWithNoParent(it)
             }.collectList().map {
                 it.toImmutableSet()
             }.awaitSingle()
 
     override suspend fun findAll(parentId: Long): ImmutableSet<Category> =
             db.withHandle {
-                selectCategoryForParent(it, parentId)
+                selectCategoriesForParent(it, parentId)
             }.collectList().map {
                 it.toImmutableSet()
             }.awaitSingle()
@@ -64,7 +64,7 @@ class CategoryCrudR2dbcRepository(private val db: R2dbc) : CategoryCrudRepositor
                 it.toImmutableList()
             }.awaitSingle()
 
-    private fun insertIntoCategories(it: Handle, code: String, name: String): Flux<Long> =
+    private fun insertCategory(it: Handle, code: String, name: String): Flux<Long> =
             it.execute("INSERT INTO Categories (code, name) VALUES ($1, $2)", code, name).flatMap { _ ->
                 it.select("SELECT LASTVAL()").mapRow { row ->
                     row.get(0) as Long
@@ -104,13 +104,13 @@ class CategoryCrudR2dbcRepository(private val db: R2dbc) : CategoryCrudRepositor
                            |WHERE t.descendant_id = $1
                            |ORDER BY t.depth DESC""".trimMargin(), leafId).mapRow(::categoryMapper)
 
-    private fun selectCategoryWithNoParent(it: Handle): Flux<Category> =
+    private fun selectCategoriesWithNoParent(it: Handle): Flux<Category> =
             it.select("""SELECT category_id, code, name
                            |FROM Categories c JOIN Categories_Tree_Path t ON c.category_id=t.descendant_id
                            |WHERE t.depth = $1 AND t.ancestor_id NOT IN
                              |(SELECT descendant_id FROM Categories_Tree_Path WHERE depth=$2)""".trimMargin(), 0, 1).mapRow(::categoryMapper)
 
-    private fun selectCategoryForParent(it: Handle, parentId: Long): Flux<Category> =
+    private fun selectCategoriesForParent(it: Handle, parentId: Long): Flux<Category> =
             it.select("""SELECT category_id, code, name
                            |FROM Categories c JOIN Categories_Tree_Path t ON c.category_id=t.descendant_id
                            |WHERE t.ancestor_id = $1 AND t.depth = $2""".trimMargin(), parentId, 1).mapRow(::categoryMapper)
