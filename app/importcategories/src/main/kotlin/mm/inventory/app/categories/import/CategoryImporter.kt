@@ -18,9 +18,10 @@ class CategoryImporter(private val categoryCrudRepository: CategoryCrudRepositor
     suspend fun import(category: ImmutableList<CategorySection>) {
         if (!this::categories.isInitialized) {
             categories = loadCategories()
+            println("loaded categories ${categories.size}")
         }
         var (parentCategoryId, foundPos) = findPath(categories, category, category.size)
-        println("parentCategoryId = $parentCategoryId, foundPos = $foundPos")
+        println("found $parentCategoryId $foundPos")
         if (foundPos == 0) {
             parentCategoryId = categoryCrudRepository.create(category[0].code, category[0].name).id
             val path = category[0].code
@@ -57,10 +58,12 @@ class CategoryImporter(private val categoryCrudRepository: CategoryCrudRepositor
      * Lazy load of category tree. This is a workaround to use suspend function as the code is reactive. It is not
      * possible to call it from constructor (yet).
      */
-    private suspend fun loadCategories() =
-            categoryCrudRepository.findAllPathNames(CATEGORY_SEPARATOR)
-                    .fold(HashMap<String, Long>()) { acc, categoryPath ->
-                        acc[categoryPath.path] = categoryPath.leafId
-                        return acc
-                    }
+    private suspend fun loadCategories(): MutableMap<String, Long> {
+        val paths = categoryCrudRepository.findAllPathNames(CATEGORY_SEPARATOR)
+        val result = HashMap<String, Long>()
+        for (path in paths) {
+            result[path.path] = path.leafId
+        }
+        return result
+    }
 }
