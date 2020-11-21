@@ -22,7 +22,7 @@ data class ScalarType(
     override fun isValid(value: Double) = true
 }
 
-data class Attribute<T>(val name: String, val type: AttributeType<T>)
+data class Attribute<in T>(val name: String, val type: AttributeType<T>)
 
 data class DictionaryItem(val value: String)
 
