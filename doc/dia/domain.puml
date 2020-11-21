@@ -59,4 +59,11 @@ package "domain.items" #lightblue {
     Value "*" --* "1" Item: valuation
     Value "*" --> "1" Attribute: of
 }
+package "domain.inventory" {
+    class ItemStock {
+        amount: Double
+    }
+
+    ItemStock "0..1" --> "1" Item
+}
 @enduml
