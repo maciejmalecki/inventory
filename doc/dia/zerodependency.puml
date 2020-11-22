@@ -9,6 +9,8 @@
 
 package "Domain" #lightyellow {
     [ItemClasses] <... [Items]
+    [Inventory] ...> [Items]
+    [Production] ...> [Inventory]
 }
 
 package "Adapters" #lightblue {
