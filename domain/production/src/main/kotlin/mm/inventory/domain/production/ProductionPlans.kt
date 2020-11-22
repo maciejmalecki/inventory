@@ -10,8 +10,12 @@ data class ProductionPlanItem(
         val amount: BigDecimal
 )
 
+data class ProductionPlan(
+        val items: ImmutableSet<ProductionPlanItem>
+)
+
 class ProductionPlanReservation(
-        private val itemReservations: ImmutableSet<ProductionPlanItemReservation>
+        val itemReservations: ImmutableSet<ProductionPlanItemReservation>
 ) {
     val canBeRealized: Boolean
         get() = itemReservations.stream().allMatch {
@@ -22,8 +26,4 @@ class ProductionPlanReservation(
 data class ProductionPlanItemReservation(
         val productionPlanItem: ProductionPlanItem,
         val reservation: Reservation
-)
-
-data class ProductionPlan(
-        val items: ImmutableSet<ProductionPlanItem>
 )
