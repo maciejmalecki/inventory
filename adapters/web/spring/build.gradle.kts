@@ -9,6 +9,7 @@ val collectionsImmutableVersion: String by project
 val r2dbcPostgresqlVersion: String by project
 val r2dbcClientVersion: String by project
 val kotlinxCoroutinesVersion: String by project
+val postgresqlJdbcVersion: String by project
 
 dependencies {
     implementation(project(":domain:itemclasses"))
@@ -24,4 +25,5 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:$collectionsImmutableVersion")
     implementation("io.r2dbc:r2dbc-client:$r2dbcClientVersion")
     implementation("io.r2dbc:r2dbc-postgresql:$r2dbcPostgresqlVersion")
+    implementation("org.postgresql:postgresql:$postgresqlJdbcVersion")
 }
