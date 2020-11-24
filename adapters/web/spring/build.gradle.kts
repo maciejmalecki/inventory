@@ -10,12 +10,14 @@ val r2dbcPostgresqlVersion: String by project
 val r2dbcClientVersion: String by project
 val kotlinxCoroutinesVersion: String by project
 val postgresqlJdbcVersion: String by project
+val jdbiVersion: String by project
 
 dependencies {
     implementation(project(":domain:itemclasses"))
     implementation(project(":app:categories"))
     implementation(project(":app:importcategories"))
     implementation(project(":adapters:store:r2dbc"))
+    implementation(project(":adapters:store:jdbi"))
 
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
@@ -26,4 +28,13 @@ dependencies {
     implementation("io.r2dbc:r2dbc-client:$r2dbcClientVersion")
     implementation("io.r2dbc:r2dbc-postgresql:$r2dbcPostgresqlVersion")
     implementation("org.postgresql:postgresql:$postgresqlJdbcVersion")
+
+    implementation(platform("org.jdbi:jdbi3-bom:$jdbiVersion"))
+    implementation("org.jdbi:jdbi3-core")
+    implementation("org.jdbi:jdbi3-sqlobject")
+    implementation("org.jdbi:jdbi3-spring4")
+    implementation("org.jdbi:jdbi3-postgres")
+    implementation("org.jdbi:jdbi3-kotlin")
+    implementation("org.jdbi:jdbi3-kotlin-sqlobject")
+
 }
