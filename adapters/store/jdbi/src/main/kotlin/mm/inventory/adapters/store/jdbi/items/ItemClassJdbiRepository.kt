@@ -42,7 +42,7 @@ class ItemClassJdbiRepository(private val db: Jdbi) : ItemClassRepository {
                             when (attributeWithType.scalar) {
                                 true -> Attribute(attributeWithType.name,
                                         ScalarType(
-                                                UnitOfMeasurement(attributeWithType.unitCode, attributeWithType.unitName)))
+                                                UnitOfMeasurement(attributeWithType.unitCode!!, attributeWithType.unitName!!)))
                                 false -> Attribute(attributeWithType.name,
                                         DictionaryType(dictionaryValueRecMap.getOrDefault(attributeWithType.attributeType, emptySet())
                                                 .map { itemRec ->
