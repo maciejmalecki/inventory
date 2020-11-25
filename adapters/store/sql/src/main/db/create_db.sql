@@ -23,15 +23,19 @@ CREATE TABLE Attribute_Type_Values
 CREATE TABLE Item_Classes
 (
     name        VARCHAR(50) PRIMARY KEY,
-    description VARCHAR(200) NOT NULL
+    description VARCHAR(200) NOT NULL,
+    unit        VARCHAR(20)  NOT NULL,
+    FOREIGN KEY (unit) REFERENCES Units (code)
 );
 
 CREATE TABLE Attributes
 (
     name            VARCHAR(50)  NOT NULL,
     item_class_name VARCHAR(200) NOT NULL,
+    attribute_type  VARCHAR(50)  NOT NULL,
     PRIMARY KEY (name, item_class_name),
-    FOREIGN KEY (item_class_name) REFERENCES Item_Classes (name)
+    FOREIGN KEY (item_class_name) REFERENCES Item_Classes (name),
+    FOREIGN KEY (attribute_type) REFERENCES Attribute_Types (name)
 );
 
 CREATE TABLE Categories
