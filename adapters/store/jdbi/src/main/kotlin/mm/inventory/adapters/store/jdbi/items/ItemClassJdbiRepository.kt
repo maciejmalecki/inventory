@@ -31,6 +31,16 @@ class ItemClassJdbiRepository(private val db: Jdbi) : ItemClassRepository {
                         .mapTo<AttributeWithTypeRec>()
                         .list()
 
+                // load all relevant dictionary values
+                val dictionaryValueRecMap = handle.createQuery("""SELECT attribute_type_name, value
+                    |FROM Attribute_Type_Values 
+                    |WHERE attribute_type_name IN (
+                      |SELECT attribute_type FROM Attributes WHERE item_class_name=:itemClassName)
+                """.trimMargin())
+                        .bind("itemClassName", itemClassRec.name)
+                        .mapTo<AttributeTypeValueRec>()
+                        .list().groupBy { it.attributeTypeName }
+
                 // build up the aggregate out of fetched data
                 ItemClass(
                         itemClassRec.name,
@@ -42,7 +52,9 @@ class ItemClassJdbiRepository(private val db: Jdbi) : ItemClassRepository {
                                         ScalarType(
                                                 UnitOfMeasurement(attributeWithType.unitCode, attributeWithType.unitName)))
                                 false -> Attribute(attributeWithType.name,
-                                        DictionaryType(emptySet<DictionaryItem>().toImmutableSet()))
+                                        DictionaryType(dictionaryValueRecMap.getOrDefault(attributeWithType.attributeType, emptySet<AttributeTypeValueRec>()).map { itemRec ->
+                                            DictionaryItem(itemRec.value)
+                                        }.toImmutableSet()))
                             }
                         }.toImmutableSet())
             }

@@ -14,10 +14,10 @@ CREATE TABLE Attribute_Types
 
 CREATE TABLE Attribute_Type_Values
 (
-    attribute_name VARCHAR(50)  NOT NULL,
+    attribute_type_name VARCHAR(50)  NOT NULL,
     value          VARCHAR(200) NOT NULL,
-    PRIMARY KEY (attribute_name, value),
-    FOREIGN KEY (attribute_name) REFERENCES Attribute_Types (name)
+    PRIMARY KEY (attribute_type_name, value),
+    FOREIGN KEY (attribute_type_name) REFERENCES Attribute_Types (name)
 );
 
 CREATE TABLE Item_Classes
