@@ -38,21 +38,27 @@ class ItemClassJdbiRepository(private val db: Jdbi) : ItemClassRepository {
                         itemClassRec.name,
                         itemClassRec.description,
                         UnitOfMeasurement(unitRec.code, unitRec.name),
-                        attributeRecList.map { attributeWithType ->
-                            when (attributeWithType.scalar) {
-                                true -> Attribute(attributeWithType.name,
-                                        ScalarType(
-                                                UnitOfMeasurement(attributeWithType.unitCode!!, attributeWithType.unitName!!)))
-                                false -> Attribute(attributeWithType.name,
-                                        DictionaryType(dictionaryValueRecMap.getOrDefault(attributeWithType.attributeType, emptySet())
-                                                .map { itemRec ->
-                                                    DictionaryItem(itemRec.value)
-                                                }.toImmutableSet()))
-                            }
-                        }.toImmutableSet())
+                        attributeRecList.map(map(dictionaryValueRecMap)).toImmutableSet())
             }
 
     // TODO temporary implementation
     override suspend fun findByName(name: String, version: Int): ItemClassVersion =
             ItemClassVersion(findByName(name), version)
+
+    private fun map(dictionaryValueRecMap: Map<String, List<AttributeTypeValueRec>>): (attributeWithType: AttributeWithTypeRec) -> Attribute<*> = { attributeWithType ->
+        when (attributeWithType.scalar) {
+            true -> Attribute(attributeWithType.name,
+                    ScalarType(
+                            UnitOfMeasurement(
+                                    attributeWithType.unitCode!!,
+                                    attributeWithType.unitName!!
+                            )))
+            false -> Attribute(attributeWithType.name,
+                    DictionaryType(dictionaryValueRecMap.getOrDefault(attributeWithType.attributeType, emptySet())
+                            .map { itemRec ->
+                                DictionaryItem(itemRec.value)
+                            }.toImmutableSet()))
+        }
+    }
+
 }
