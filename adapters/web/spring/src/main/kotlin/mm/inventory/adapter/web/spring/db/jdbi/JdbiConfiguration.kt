@@ -20,8 +20,9 @@ class JdbiConfiguration {
     @Bean
     fun dataSourceTransactionManager() =
             DataSourceTransactionManager(dataSource())
+
     @Bean
-    fun jdbi() = Jdbi.create(dataSource())
+    fun jdbi(): Jdbi = Jdbi.create(dataSource())
             .installPlugin(SqlObjectPlugin())
             .installPlugin(PostgresPlugin())
             .installPlugin(KotlinPlugin())

@@ -23,7 +23,7 @@ class ItemClassJdbiRepository(private val db: Jdbi) : ItemClassRepository {
                 val itemClassRec = itemClassDao.findByName(name)
                         ?: throw RuntimeException("Item class for $name not found")
 
-                // load unit with subsequent SQL (could be also done with JOIN above)
+                // load unit with subsequent SQL (could be also done with SQL JOIN)
                 val unitRec = unitDao.findByCode(itemClassRec.unit)
                         ?: throw RuntimeException("Unit for ${itemClassRec.unit} not found")
 
