@@ -1,45 +1,37 @@
 package mm.inventory.adapters.store.jdbi.items
 
 import kotlinx.collections.immutable.toImmutableSet
-import mm.inventory.adapters.store.jdbi.units.UnitRec
-import mm.inventory.domain.itemclasses.*
+import mm.inventory.adapters.store.jdbi.units.UnitDao
+import mm.inventory.domain.itemclasses.Attribute
+import mm.inventory.domain.itemclasses.DictionaryItem
+import mm.inventory.domain.itemclasses.DictionaryType
+import mm.inventory.domain.itemclasses.ItemClass
+import mm.inventory.domain.itemclasses.ItemClassRepository
+import mm.inventory.domain.itemclasses.ItemClassVersion
+import mm.inventory.domain.itemclasses.ScalarType
+import mm.inventory.domain.itemclasses.UnitOfMeasurement
 import org.jdbi.v3.core.Jdbi
-import org.jdbi.v3.core.kotlin.mapTo
-import org.jdbi.v3.core.kotlin.withHandleUnchecked
 
 class ItemClassJdbiRepository(private val db: Jdbi) : ItemClassRepository {
     override suspend fun findByName(name: String): ItemClass =
-            db.withHandleUnchecked { handle ->
+            db.inTransaction<ItemClass, RuntimeException> { handle ->
+
+                val itemClassDao = handle.attach(ItemClassDao::class.java)
+                val unitDao = handle.attach(UnitDao::class.java)
+
                 // load bare item class
-                val itemClassRec = handle.createQuery("SELECT name, description, unit FROM Item_Classes WHERE name=:name")
-                        .bind("name", name)
-                        .mapTo<ItemClassRec>()
-                        .findOne().get()
+                val itemClassRec = itemClassDao.findByName(name)
+                        ?: throw RuntimeException("Item class for $name not found")
 
                 // load unit with subsequent SQL (could be also done with JOIN above)
-                val unitRec = handle.createQuery("SELECT code, name FROM Units WHERE code=:code")
-                        .bind("code", itemClassRec.unit)
-                        .mapTo<UnitRec>()
-                        .findOne().get()
+                val unitRec = unitDao.findByCode(itemClassRec.unit)
+                        ?: throw RuntimeException("Unit for ${itemClassRec.unit} not found")
 
                 // load all attributes for given item class
-                val attributeRecList = handle.createQuery("""SELECT a.name, a.attribute_type, at.scalar, u.code as unit_code, u.name as unit_name
-                    |FROM Attributes a JOIN Attribute_Types at ON a.attribute_type = at.name
-                    |JOIN Units u ON at.unit = u.code
-                    |WHERE item_class_name=:itemClassName""".trimMargin())
-                        .bind("itemClassName", itemClassRec.name)
-                        .mapTo<AttributeWithTypeRec>()
-                        .list()
+                val attributeRecList = itemClassDao.findAttributesWithTypesForItemClass(name)
 
                 // load all relevant dictionary values
-                val dictionaryValueRecMap = handle.createQuery("""SELECT attribute_type_name, value
-                    |FROM Attribute_Type_Values 
-                    |WHERE attribute_type_name IN (
-                      |SELECT attribute_type FROM Attributes WHERE item_class_name=:itemClassName)
-                """.trimMargin())
-                        .bind("itemClassName", itemClassRec.name)
-                        .mapTo<AttributeTypeValueRec>()
-                        .list().groupBy { it.attributeTypeName }
+                val dictionaryValueRecMap = itemClassDao.findAttributeValuesForItemClass(name).groupBy { it.attributeTypeName }
 
                 // build up the aggregate out of fetched data
                 ItemClass(
@@ -52,9 +44,10 @@ class ItemClassJdbiRepository(private val db: Jdbi) : ItemClassRepository {
                                         ScalarType(
                                                 UnitOfMeasurement(attributeWithType.unitCode, attributeWithType.unitName)))
                                 false -> Attribute(attributeWithType.name,
-                                        DictionaryType(dictionaryValueRecMap.getOrDefault(attributeWithType.attributeType, emptySet<AttributeTypeValueRec>()).map { itemRec ->
-                                            DictionaryItem(itemRec.value)
-                                        }.toImmutableSet()))
+                                        DictionaryType(dictionaryValueRecMap.getOrDefault(attributeWithType.attributeType, emptySet())
+                                                .map { itemRec ->
+                                                    DictionaryItem(itemRec.value)
+                                                }.toImmutableSet()))
                             }
                         }.toImmutableSet())
             }
