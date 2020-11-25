@@ -1,6 +1,7 @@
 package mm.inventory.adapter.web.spring.db
 
 import io.r2dbc.client.R2dbc
+import mm.inventory.adapters.store.jdbi.items.ItemClassJdbiRepository
 import mm.inventory.adapters.store.jdbi.units.UnitRepository
 import mm.inventory.adapters.store.r2dbc.CategoryCrudR2dbcRepository
 import org.jdbi.v3.core.Jdbi
@@ -15,4 +16,7 @@ class RepositoriesConfiguration(val r2dbc: R2dbc, val jdbi: Jdbi) {
 
     @Bean
     fun unitsRepository() = jdbi.onDemand(UnitRepository::class.java)
+
+    @Bean
+    fun itemClassRepository() = ItemClassJdbiRepository(jdbi)
 }
