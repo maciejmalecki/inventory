@@ -55,7 +55,7 @@ class ItemClassJdbiRepository(private val db: Jdbi) : ItemClassRepository {
                 Attribute(
                         attributeWithType.name,
                         DictionaryType(dictionaryValueRecMap.getOrDefault(attributeWithType.attributeType, emptySet())
-                                .map { itemRec -> DictionaryItem(itemRec.value) }.toImmutableSet()))
+                                .map { itemRec -> DictionaryItem(itemRec.code, itemRec.value) }.toImmutableSet()))
         }
     }
 

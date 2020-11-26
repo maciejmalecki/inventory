@@ -24,7 +24,7 @@ data class ScalarType(
 
 data class Attribute<in T>(val name: String, val type: AttributeType<T>)
 
-data class DictionaryItem(val value: String)
+data class DictionaryItem(val code: String, val value: String)
 
 /**
  * Dictionary type is an enumeration of string literals.
@@ -32,5 +32,7 @@ data class DictionaryItem(val value: String)
  */
 data class DictionaryType(val items: ImmutableSet<DictionaryItem>) : AttributeType<String> {
 
-    override fun isValid(value: String) = items.contains(DictionaryItem(value))
+    override fun isValid(value: String) = items.map {
+        it.value
+    }.contains(value)
 }

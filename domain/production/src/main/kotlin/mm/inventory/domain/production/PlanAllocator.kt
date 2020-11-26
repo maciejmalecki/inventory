@@ -14,7 +14,7 @@ class PlanAllocator(private val itemStockRepository: ItemStockRepository, privat
      */
     fun reserve(plan: ProductionPlan): ProductionPlanReservation {
         val reservation = ProductionPlanReservation(plan.items.map { item ->
-            ProductionPlanItemReservation(item, this.itemStockRepository.reserve(item.item.code, item.amount))
+            ProductionPlanItemReservation(item, this.itemStockRepository.reserve(item.item.name, item.amount))
         }.toImmutableSet())
         return this.productionPlanReservationRepository.store(reservation)
     }
