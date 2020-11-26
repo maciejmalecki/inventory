@@ -47,17 +47,15 @@ class ItemClassJdbiRepository(private val db: Jdbi) : ItemClassRepository {
 
     private fun map(dictionaryValueRecMap: Map<String, List<AttributeTypeValueRec>>): (attributeWithType: AttributeWithTypeRec) -> Attribute<*> = { attributeWithType ->
         when (attributeWithType.scalar) {
-            true -> Attribute(attributeWithType.name,
-                    ScalarType(
-                            UnitOfMeasurement(
-                                    attributeWithType.unitCode!!,
-                                    attributeWithType.unitName!!
-                            )))
-            false -> Attribute(attributeWithType.name,
-                    DictionaryType(dictionaryValueRecMap.getOrDefault(attributeWithType.attributeType, emptySet())
-                            .map { itemRec ->
-                                DictionaryItem(itemRec.value)
-                            }.toImmutableSet()))
+            true ->
+                Attribute(
+                        attributeWithType.name,
+                        ScalarType(UnitOfMeasurement(attributeWithType.unitCode!!, attributeWithType.unitName!!)))
+            false ->
+                Attribute(
+                        attributeWithType.name,
+                        DictionaryType(dictionaryValueRecMap.getOrDefault(attributeWithType.attributeType, emptySet())
+                                .map { itemRec -> DictionaryItem(itemRec.value) }.toImmutableSet()))
         }
     }
 
