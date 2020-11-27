@@ -1,0 +1,51 @@
+@startuml
+    together {
+        class ItemClass {
+            +name: String
+            +description: String
+        }
+        class ItemClassVersion {
+            +version: Int
+        }
+        class Attribute {
+            +name: String
+        }
+        abstract class AttributeType
+        class ScalarType
+        class DictionaryType
+        class DictionaryItem {
+            +value: String
+        }
+    }
+
+    ItemClass ---> UnitOfMeasurement: amountUnit
+    ItemClassVersion "1" ---> "1" ItemClass: itemClass
+    AttributeType <|-- ScalarType
+    AttributeType <|-- DictionaryType
+    ScalarType o-- "1" UnitOfMeasurement: unit
+    DictionaryType *-- "*" DictionaryItem: items
+    Attribute o-- "1" AttributeType: type
+    ItemClass o-- "*" Attribute: attributes
+
+    together {
+        class Item
+        abstract class Value
+        class ScalarValue {
+            value: Double
+        }
+        class DictionaryValue {
+            value: String
+        }
+    }
+
+    Value <|-- ScalarValue
+    Value <|-- DictionaryValue
+    Item "*" --> "1" ItemClassVersion
+    Value "*" --* "1" Item: valuation
+    Value "*" --> "1" Attribute: of
+
+    class UnitOfMeasurement {
+        +name: String
+        +code: String
+    }
+@enduml
