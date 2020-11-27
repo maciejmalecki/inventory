@@ -4,7 +4,7 @@ import kotlinx.collections.immutable.ImmutableList
 import mm.inventory.app.categories.CategoryCrudRepository
 import mm.inventory.app.categories.CategorySection
 
-val CATEGORY_SEPARATOR = "-"
+const val CATEGORY_SEPARATOR = "-"
 
 /**
  * Import category tree from external source.
@@ -18,22 +18,18 @@ class CategoryImporter(private val categoryCrudRepository: CategoryCrudRepositor
     suspend fun import(category: ImmutableList<CategorySection>) {
         if (!this::categories.isInitialized) {
             categories = loadCategories()
-            println("loaded categories ${categories.size}")
         }
         var (parentCategoryId, foundPos) = findPath(categories, category, category.size)
-        println("found $parentCategoryId $foundPos")
         if (foundPos == 0) {
             parentCategoryId = categoryCrudRepository.create(category[0].code, category[0].name).id
             val path = category[0].code
             categories[path] = parentCategoryId
-            println("$path = $parentCategoryId")
             foundPos++
         }
         for (pos: Int in foundPos until category.size) {
             parentCategoryId = categoryCrudRepository.create(category[pos].code, category[pos].name, parentCategoryId).id
             val path = category.slice(0..pos).map { it.code }.joinToString(CATEGORY_SEPARATOR)
             categories[path] = parentCategoryId
-            println("$path = $parentCategoryId")
         }
     }
 

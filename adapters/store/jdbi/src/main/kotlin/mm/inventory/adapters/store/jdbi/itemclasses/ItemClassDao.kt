@@ -1,4 +1,4 @@
-package mm.inventory.adapters.store.jdbi.items
+package mm.inventory.adapters.store.jdbi.itemclasses
 
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 

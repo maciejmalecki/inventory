@@ -1,4 +1,4 @@
-package mm.inventory.adapters.store.jdbi.items
+package mm.inventory.adapters.store.jdbi.itemclasses
 
 import kotlinx.collections.immutable.toImmutableSet
 import mm.inventory.adapters.store.jdbi.units.UnitDao

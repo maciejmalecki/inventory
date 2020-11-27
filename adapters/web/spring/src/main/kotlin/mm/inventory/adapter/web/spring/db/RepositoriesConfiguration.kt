@@ -1,7 +1,7 @@
 package mm.inventory.adapter.web.spring.db
 
 import io.r2dbc.client.R2dbc
-import mm.inventory.adapters.store.jdbi.items.ItemClassJdbiRepository
+import mm.inventory.adapters.store.jdbi.itemclasses.ItemClassJdbiRepository
 import mm.inventory.adapters.store.jdbi.units.UnitOfMeasurementJdbiRepository
 import mm.inventory.adapters.store.r2dbc.CategoryCrudR2dbcRepository
 import org.jdbi.v3.core.Jdbi
