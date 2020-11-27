@@ -31,10 +31,9 @@ CREATE TABLE Item_Classes
 
 CREATE TABLE Attributes
 (
-    name            VARCHAR(50) NOT NULL,
     item_class_name VARCHAR(50) NOT NULL,
     attribute_type  VARCHAR(50) NOT NULL,
-    PRIMARY KEY (name, item_class_name),
+    PRIMARY KEY (item_class_name, attribute_type),
     FOREIGN KEY (item_class_name) REFERENCES Item_Classes (name),
     FOREIGN KEY (attribute_type) REFERENCES Attribute_Types (name)
 );
@@ -56,25 +55,25 @@ CREATE TABLE Items
 CREATE TABLE Scalar_Values
 (
     item_name       VARCHAR(50) NOT NULL,
-    attribute_name  VARCHAR(50) NOT NULL,
+    attribute_type  VARCHAR(50) NOT NULL,
     item_class_name VARCHAR(50) NOT NULL,
     value           DECIMAL(10, 4),
     scale           DECIMAL(3)  NOT NULL,
-    PRIMARY KEY (item_name, attribute_name, item_class_name),
+    PRIMARY KEY (item_name, attribute_type, item_class_name),
     FOREIGN KEY (item_name) REFERENCES Items (name),
-    FOREIGN KEY (attribute_name, item_class_name) REFERENCES Attributes (name, item_class_name)
+    FOREIGN KEY (attribute_type, item_class_name) REFERENCES Attributes (attribute_type, item_class_name)
 );
 
 CREATE TABLE Dictionary_Values
 (
     item_name           VARCHAR(50) NOT NULL,
-    attribute_name      VARCHAR(50) NOT NULL,
+    attribute_type      VARCHAR(50) NOT NULL,
     item_class_name     VARCHAR(50) NOT NULL,
     attribute_type_name VARCHAR(50) NOT NULL,
     code                VARCHAR(50),
-    PRIMARY KEY (item_name, attribute_name, item_class_name),
+    PRIMARY KEY (item_name, attribute_type, item_class_name),
     FOREIGN KEY (item_name) REFERENCES Items (name),
-    FOREIGN KEY (attribute_name, item_class_name) REFERENCES Attributes (name, item_class_name),
+    FOREIGN KEY (attribute_type, item_class_name) REFERENCES Attributes (attribute_type, item_class_name),
     FOREIGN KEY (attribute_type_name, code) REFERENCES Attribute_Type_Values (attribute_type_name, code)
 );
 
