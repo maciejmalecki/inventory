@@ -1,4 +1,4 @@
-package mm.inventory.domain.itemclasses
+package mm.inventory.domain.categories
 
 import kotlinx.collections.immutable.ImmutableList
 
