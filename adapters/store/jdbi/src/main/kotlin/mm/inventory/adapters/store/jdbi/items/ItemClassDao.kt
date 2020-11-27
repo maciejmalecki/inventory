@@ -2,6 +2,13 @@ package mm.inventory.adapters.store.jdbi.items
 
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 
+/**
+ * Dao to access Item_Classes table and relatives.
+ * -------------------------------------------------------------------------------------------------------------------------------------------
+ * Note: This Dao class is just a declarative way of accessing data in Relational Database using JDBI. It shouldn't be mixed with repositories
+ * which are domain related artifacts, therefore different naming is used.
+ * -------------------------------------------------------------------------------------------------------------------------------------------
+ */
 interface ItemClassDao {
 
     @SqlQuery("SELECT name, description, unit FROM Item_Classes WHERE name=?")

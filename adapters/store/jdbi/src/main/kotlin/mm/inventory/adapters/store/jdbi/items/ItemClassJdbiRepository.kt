@@ -12,6 +12,9 @@ import mm.inventory.domain.itemclasses.ScalarType
 import mm.inventory.domain.itemclasses.UnitOfMeasurement
 import org.jdbi.v3.core.Jdbi
 
+/**
+ * JDBI based implementation of the ItemClassRepository from domain.
+ */
 class ItemClassJdbiRepository(private val db: Jdbi) : ItemClassRepository {
     override suspend fun findByName(name: String): ItemClass =
             db.inTransaction<ItemClass, RuntimeException> { handle ->
