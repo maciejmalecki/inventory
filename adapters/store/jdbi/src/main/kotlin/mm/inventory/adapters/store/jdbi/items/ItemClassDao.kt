@@ -13,3 +13,7 @@ interface ItemClassDao {
     @SqlQuery("SELECT attribute_type_name, code, value FROM Attribute_Type_Values WHERE attribute_type_name IN (SELECT attribute_type FROM Attributes WHERE item_class_name=?)")
     fun findAttributeValuesForItemClass(itemClassName: String): List<AttributeTypeValueRec>
 }
+
+data class ItemClassRec(val name: String, val description: String, val unit: String)
+data class AttributeWithTypeRec(val attributeType: String, val name: String, val scalar: Boolean, val unitCode: String?, val unitName: String?)
+data class AttributeTypeValueRec(val attributeTypeName: String, val code: String, val value: String)

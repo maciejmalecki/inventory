@@ -10,3 +10,5 @@ interface UnitDao {
     @SqlQuery("SELECT code, name FROM Units WHERE code=?")
     fun findByCode(Code: String): UnitRec?
 }
+
+data class UnitRec(val code: String, val name: String)
