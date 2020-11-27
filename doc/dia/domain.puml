@@ -1,5 +1,5 @@
 @startuml
-package "domain.itemclasses" #lightgrey {
+package "domain.mm.inventory.domain.itemclasses" #lightgrey {
     class Category {
        +name: String,
        +description: String

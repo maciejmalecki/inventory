@@ -6,7 +6,7 @@ val collectionsImmutableVersion: String by project
 val jdbiVersion: String by project
 
 dependencies {
-    implementation(project(":domain:itemclasses"))
+    implementation(project(":domain:items"))
     implementation(project(":domain:inventory"))
     implementation(project(":domain:production"))
 

@@ -13,7 +13,7 @@ val postgresqlJdbcVersion: String by project
 val jdbiVersion: String by project
 
 dependencies {
-    implementation(project(":domain:itemclasses"))
+    implementation(project(":domain:items"))
     implementation(project(":app:categories"))
     implementation(project(":app:importcategories"))
     implementation(project(":adapters:store:r2dbc"))
