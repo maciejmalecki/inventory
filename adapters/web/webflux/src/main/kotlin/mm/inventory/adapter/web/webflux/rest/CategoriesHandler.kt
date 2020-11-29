@@ -1,4 +1,4 @@
-package mm.inventory.adapter.web.spring.rest
+package mm.inventory.adapter.web.webflux.rest
 
 import kotlinx.coroutines.reactive.awaitSingle
 import mm.inventory.adapter.web.spring.rest.dto.NewCategoryDto
