@@ -9,8 +9,12 @@ import org.springframework.web.reactive.function.server.coRouter
 class Routes {
 
     @Bean
-    fun route(unitsHandler: UnitsHandler, categoriesHandler: CategoriesHandler) = coRouter {
+    fun route(unitsHandler: UnitsHandler, categoriesHandler: CategoriesHandler, itemClassesHandler: ItemClassesHandler) = coRouter {
+        // Units
         GET("/units", unitsHandler::allUnits)
+        // Item classes
+        GET("/itemClasses/{itemClassName}", itemClassesHandler::itemClass)
+        // Categories
         GET("/categories", categoriesHandler::roots)
         GET("/categories/paths", categoriesHandler::paths)
         POST("/categories", categoriesHandler::createRoot)
