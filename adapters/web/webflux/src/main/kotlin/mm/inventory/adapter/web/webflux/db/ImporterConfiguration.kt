@@ -1,4 +1,4 @@
-package mm.inventory.adapter.web.spring.db
+package mm.inventory.adapter.web.webflux.db
 
 import mm.inventory.app.categories.CategoryCrudRepository
 import mm.inventory.app.categories.import.CategoryImporter

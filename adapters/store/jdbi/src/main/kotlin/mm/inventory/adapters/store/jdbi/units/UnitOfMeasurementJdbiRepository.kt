@@ -8,7 +8,7 @@ import org.jdbi.v3.core.Jdbi
 
 class UnitOfMeasurementJdbiRepository(private val db: Jdbi) : UnitOfMeasurementRepository {
 
-    override suspend fun findAll(): ImmutableList<UnitOfMeasurement> =
+    override fun findAll(): ImmutableList<UnitOfMeasurement> =
             db.withHandle<ImmutableList<UnitOfMeasurement>, RuntimeException> { handle ->
                 handle.attach(UnitDao::class.java).findAll().map { rec ->
                     UnitOfMeasurement(rec.code, rec.name)

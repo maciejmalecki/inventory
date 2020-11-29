@@ -16,7 +16,7 @@ import org.jdbi.v3.core.Jdbi
  * JDBI based implementation of the ItemClassRepository from domain.
  */
 class ItemClassJdbiRepository(private val db: Jdbi) : ItemClassRepository {
-    override suspend fun findByName(name: String): ItemClass? =
+    override fun findByName(name: String): ItemClass? =
             db.inTransaction<ItemClass?, RuntimeException> { handle ->
 
                 val itemClassDao = handle.attach(ItemClassDao::class.java)
@@ -45,7 +45,7 @@ class ItemClassJdbiRepository(private val db: Jdbi) : ItemClassRepository {
             }
 
     // TODO temporary implementation
-    override suspend fun findByName(name: String, version: Int): ItemClassVersion? {
+    override fun findByName(name: String, version: Int): ItemClassVersion? {
         val itemClass = findByName(name) ?: return null
         return ItemClassVersion(itemClass, version)
     }

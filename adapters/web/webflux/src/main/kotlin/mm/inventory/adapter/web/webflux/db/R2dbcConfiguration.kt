@@ -1,4 +1,4 @@
-package mm.inventory.adapter.web.spring.db.r2dbc
+package mm.inventory.adapter.web.webflux.db
 
 import io.r2dbc.client.R2dbc
 import io.r2dbc.postgresql.PostgresqlConnectionConfiguration

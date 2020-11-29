@@ -1,19 +1,14 @@
-package mm.inventory.adapter.web.spring.rest
+package mm.inventory.adapter.web.webflux.rest
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.http.MediaType
 import org.springframework.web.reactive.function.server.coRouter
 
 @Configuration
 class Routes {
 
     @Bean
-    fun route(unitsHandler: UnitsHandler, categoriesHandler: CategoriesHandler, itemClassesHandler: ItemClassesHandler) = coRouter {
-        // Units
-        GET("/units", unitsHandler::allUnits)
-        // Item classes
-        GET("/itemClasses/{itemClassName}", itemClassesHandler::itemClass)
+    fun route(categoriesHandler: CategoriesHandler) = coRouter {
         // Categories
         GET("/categories", categoriesHandler::roots)
         GET("/categories/paths", categoriesHandler::paths)
