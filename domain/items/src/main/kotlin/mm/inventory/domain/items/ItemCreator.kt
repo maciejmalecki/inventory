@@ -22,7 +22,7 @@ class ItemCreator(private val itemClassRepository: ItemClassRepository, private 
         val values = itemClass.attributes.map { attribute ->
             val rawValue = inValues[attribute.name]
                     ?: throw RuntimeException("A value for `${attribute.name}` attribute is not provided.")
-            attribute.type.parse(rawValue)
+            attribute.parse(rawValue)
         }.toImmutableSet()
 
         val item = Item(name, itemClass, values)

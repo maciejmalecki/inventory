@@ -1,38 +1,40 @@
 package mm.inventory.domain.items
 
-import mm.inventory.domain.itemclasses.AttributeType
+import mm.inventory.domain.itemclasses.Attribute
 import mm.inventory.domain.itemclasses.DictionaryType
 import mm.inventory.domain.itemclasses.ScalarType
 import java.math.BigDecimal
 
 interface Value<out T> {
-    fun type(): AttributeType
+    fun attribute(): Attribute
     fun isValid(): Boolean
     fun value(): T
 }
 
-data class ScalarValue(val type: ScalarType, private val value: String) : Value<BigDecimal> {
+data class ScalarValue(val attribute: Attribute, private val value: String) : Value<BigDecimal> {
 
-    private val valid = type.isValid(value)
+    // TODO parse scale from textual representation
+    val scale = 1
+    private val valid = attribute.type.isValid(value)
     private val scalarValue = if (valid) {
         BigDecimal(value)
     } else {
         BigDecimal.ZERO
     }
 
-    override fun type() = type
-    override fun isValid() = type.isValid(value)
+    override fun attribute() = attribute
+    override fun isValid() = attribute.type.isValid(value)
     override fun value(): BigDecimal = scalarValue
 }
 
-data class DictionaryValue(val type: DictionaryType, private val value: String) : Value<String> {
-    override fun type() = type
-    override fun isValid() = type.isValid(value)
+data class DictionaryValue(val attribute: Attribute, private val value: String) : Value<String> {
+    override fun attribute() = attribute
+    override fun isValid() = attribute.type.isValid(value)
     override fun value() = value
 }
 
-fun AttributeType.parse(value: String): Value<*> =
-        when(this) {
+fun Attribute.parse(value: String): Value<*> =
+        when(this.type) {
             is ScalarType -> ScalarValue(this, value)
             is DictionaryType -> DictionaryValue(this, value)
             else -> throw RuntimeException("Unknown attribute type")
