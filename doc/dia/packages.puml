@@ -1,0 +1,29 @@
+@startuml
+package domain {
+    package items {
+    }
+    package inventory {
+    }
+        inventory ...> items
+    package production {
+    }
+        production ...> items
+        production ...> inventory
+}
+
+package adapters {
+    package store {
+    }
+        store ...> items
+        store ...> inventory
+        store ...> production
+    package web {
+    }
+        web ...> items
+        web ...> inventory
+        web ...> production
+        web ...> store
+}
+
+
+@enduml
