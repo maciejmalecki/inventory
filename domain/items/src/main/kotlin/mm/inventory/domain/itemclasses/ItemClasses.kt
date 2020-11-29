@@ -9,7 +9,7 @@ data class ItemClass(
         val name: String,
         val description: String,
         val amountUnit: UnitOfMeasurement,
-        val attributes: ImmutableSet<Attribute<*>>
+        val attributes: ImmutableSet<Attribute>
 )
 
 data class ItemClassVersion(

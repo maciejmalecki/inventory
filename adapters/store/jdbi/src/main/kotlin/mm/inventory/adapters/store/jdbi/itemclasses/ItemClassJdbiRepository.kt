@@ -16,15 +16,15 @@ import org.jdbi.v3.core.Jdbi
  * JDBI based implementation of the ItemClassRepository from domain.
  */
 class ItemClassJdbiRepository(private val db: Jdbi) : ItemClassRepository {
-    override suspend fun findByName(name: String): ItemClass =
-            db.inTransaction<ItemClass, RuntimeException> { handle ->
+    override suspend fun findByName(name: String): ItemClass? =
+            db.inTransaction<ItemClass?, RuntimeException> { handle ->
 
                 val itemClassDao = handle.attach(ItemClassDao::class.java)
                 val unitDao = handle.attach(UnitDao::class.java)
 
                 // load bare item class
                 val itemClassRec = itemClassDao.findByName(name)
-                        ?: throw RuntimeException("Item class for $name not found")
+                        ?: return@inTransaction null
 
                 // load unit with subsequent SQL (could be also done with SQL JOIN)
                 val unitRec = unitDao.findByCode(itemClassRec.unit)
@@ -45,10 +45,12 @@ class ItemClassJdbiRepository(private val db: Jdbi) : ItemClassRepository {
             }
 
     // TODO temporary implementation
-    override suspend fun findByName(name: String, version: Int): ItemClassVersion =
-            ItemClassVersion(findByName(name), version)
+    override suspend fun findByName(name: String, version: Int): ItemClassVersion? {
+        val itemClass = findByName(name) ?: return null
+        return ItemClassVersion(itemClass, version)
+    }
 
-    private fun map(dictionaryValueRecMap: Map<String, List<AttributeTypeValueRec>>): (attributeWithType: AttributeWithTypeRec) -> Attribute<*> = { attributeWithType ->
+    private fun map(dictionaryValueRecMap: Map<String, List<AttributeTypeValueRec>>): (attributeWithType: AttributeWithTypeRec) -> Attribute = { attributeWithType ->
         when (attributeWithType.scalar) {
             true ->
                 Attribute(

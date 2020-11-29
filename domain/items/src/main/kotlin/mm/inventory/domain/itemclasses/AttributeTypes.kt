@@ -1,9 +1,10 @@
 package mm.inventory.domain.itemclasses
 
 import kotlinx.collections.immutable.ImmutableSet
+import java.math.BigDecimal
 
-interface AttributeType<in T> {
-    fun isValid(value: T): Boolean
+interface AttributeType {
+    fun isValid(value: String): Boolean
 }
 
 /**
@@ -11,8 +12,16 @@ interface AttributeType<in T> {
  * @param unit unit of measurement for this type
  */
 data class ScalarType(
-        val unit: UnitOfMeasurement) : AttributeType<Double> {
-    override fun isValid(value: Double) = true
+        val unit: UnitOfMeasurement) : AttributeType {
+
+    override fun isValid(value: String): Boolean =
+            try {
+                BigDecimal(value)
+                true
+            } catch (e: NumberFormatException) {
+                false
+            }
+
 }
 
 data class DictionaryItem(val code: String, val value: String)
@@ -21,9 +30,10 @@ data class DictionaryItem(val code: String, val value: String)
  * Dictionary type is an enumeration of string literals.
  * @param items set of dictionary literals
  */
-data class DictionaryType(val items: ImmutableSet<DictionaryItem>) : AttributeType<String> {
+data class DictionaryType(val items: ImmutableSet<DictionaryItem>) : AttributeType {
 
     override fun isValid(value: String) = items.map {
-        it.value
+        it.code
     }.contains(value)
+
 }

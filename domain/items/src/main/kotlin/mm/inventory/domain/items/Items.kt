@@ -6,4 +6,4 @@ import mm.inventory.domain.itemclasses.ItemClass
 data class Item(
         val name: String,
         val itemClass: ItemClass,
-        val values: ImmutableSet<Value<Any>>)
+        val values: ImmutableSet<Value<*>>)
