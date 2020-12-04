@@ -15,7 +15,7 @@ class ItemCreator(private val itemClassRepository: ItemClassRepository, private 
      * @param itemClassName name of the ItemClass
      * @param inValues attribute values specified as a "attribute name" to "string representation of attribute's value"
      */
-    suspend fun create(name: String, itemClassName: String, inValues: ImmutableMap<String, String>): Item {
+    fun create(name: String, itemClassName: String, inValues: ImmutableMap<String, String>): Item {
         val itemClass = itemClassRepository.findByName(itemClassName)
                 ?: throw RuntimeException("Item class `$itemClassName` not found.")
 
