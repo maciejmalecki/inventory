@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RestController
 
-@RestController("/itemClasses")
+@RestController
 class ItemClassesController(private val itemClassRepository: ItemClassRepository) {
 
-    @GetMapping("/{itemClassName}")
+    @GetMapping("/itemClasses/{itemClassName}")
     fun itemClass(@PathVariable itemClassName: String): ResponseEntity<ItemClass> {
         val itemClass = itemClassRepository.findByName(itemClassName)
         return if (itemClass != null) {
