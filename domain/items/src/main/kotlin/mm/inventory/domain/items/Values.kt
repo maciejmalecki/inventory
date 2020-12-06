@@ -11,20 +11,10 @@ interface Value<out T> {
     fun value(): T
 }
 
-data class ScalarValue(val attribute: Attribute, private val value: String) : Value<BigDecimal> {
-
-    // TODO parse scale from textual representation
-    val scale = 1
-    private val valid = attribute.type.isValid(value)
-    private val scalarValue = if (valid) {
-        BigDecimal(value)
-    } else {
-        BigDecimal.ZERO
-    }
-
+data class ScalarValue(val attribute: Attribute, private val value: BigDecimal, val scale: Int) : Value<BigDecimal> {
     override fun attribute() = attribute
-    override fun isValid() = attribute.type.isValid(value)
-    override fun value(): BigDecimal = scalarValue
+    override fun isValid() = true
+    override fun value(): BigDecimal = value
 }
 
 data class DictionaryValue(val attribute: Attribute, private val value: String) : Value<String> {
@@ -34,8 +24,23 @@ data class DictionaryValue(val attribute: Attribute, private val value: String) 
 }
 
 fun Attribute.parse(value: String): Value<*> =
-        when(this.type) {
-            is ScalarType -> ScalarValue(this, value)
-            is DictionaryType -> DictionaryValue(this, value)
-            else -> throw RuntimeException("Unknown attribute type")
-        }
+    when (this.type) {
+        is ScalarType -> parseScalarValue(this, value)
+        is DictionaryType -> DictionaryValue(this, value)
+        else -> throw RuntimeException("Unknown Attribute Type: ${this.type.javaClass.name}.")
+    }
+
+fun parseScalarValue(attribute: Attribute, value: String): ScalarValue {
+    // TODO parse scale from textual representation
+    val scale = 1
+    val valid = attribute.type.isValid(value)
+    return ScalarValue(
+        attribute,
+        if (valid) {
+            BigDecimal(value)
+        } else {
+            BigDecimal.ZERO
+        },
+        scale
+    )
+}
