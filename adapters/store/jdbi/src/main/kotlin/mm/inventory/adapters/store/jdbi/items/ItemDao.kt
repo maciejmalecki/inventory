@@ -8,10 +8,10 @@ interface ItemDao {
     @SqlUpdate("INSERT INTO Items(name, item_class_name) VALUES (:item.name, :item.itemClassName)")
     fun insertItem(item: ItemRec)
 
-    @SqlUpdate("INSERT INTO Scalar_Values(item_name, attribute_type, item_class_name, value, scale) VALUES (:value.itemName, :value.attributeType, :value.itemClassName, :value:value, :value.scale)")
+    @SqlUpdate("INSERT INTO Scalar_Values(item_name, attribute_type, item_class_name, value, scale) VALUES (:value.itemName, :value.attributeType, :value.itemClassName, :value.value, :value.scale)")
     fun insertValue(value: ScalarValueRec)
 
-    @SqlUpdate("INSERT INTO Dictionary_Values(item_name, attribute_type, item_class_name, attribute_type_name, code) VALUES (:value:itemName, :value.attributeType, :value.itemClassName, :value.attributeTypeName, :value.code)")
+    @SqlUpdate("INSERT INTO Dictionary_Values(item_name, attribute_type, item_class_name, attribute_type_name, code) VALUES (:value.itemName, :value.attributeType, :value.itemClassName, :value.attributeTypeName, :value.code)")
     fun insertValue(value: DictionaryValueRec)
 }
 

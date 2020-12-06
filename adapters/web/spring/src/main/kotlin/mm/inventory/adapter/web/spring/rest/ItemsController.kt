@@ -10,7 +10,18 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import java.util.stream.Collectors
 
-@RestController()
+data class CreateItemRequest(
+    val name: String,
+    val itemClassName: String,
+    val inValues: List<AttributeValuation>
+)
+
+data class AttributeValuation(
+    val attribute: String,
+    val value: String
+)
+
+@RestController
 class ItemsController(private val db: Jdbi, private val itemCreator: ItemCreator) {
 
     @PostMapping("/items")
@@ -25,6 +36,3 @@ class ItemsController(private val db: Jdbi, private val itemCreator: ItemCreator
             )
         })
 }
-
-data class CreateItemRequest(val name: String, val itemClassName: String, val inValues: List<AttributeValuation>)
-data class AttributeValuation(val attribute: String, val value: String)
