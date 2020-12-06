@@ -10,7 +10,9 @@ data class ItemClass(
         val description: String,
         val amountUnit: UnitOfMeasurement,
         val attributes: ImmutableSet<Attribute>
-)
+) {
+        fun findAttribute(attributeTtpeName: String): Attribute? = attributes.firstOrNull { attribute -> attribute.name == attributeTtpeName }
+}
 
 data class ItemClassVersion(
         val itemClass: ItemClass,

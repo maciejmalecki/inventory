@@ -1,12 +1,18 @@
 package mm.inventory.adapter.web.spring.rest
 
 import kotlinx.collections.immutable.toImmutableMap
+import mm.inventory.adapters.store.jdbi.items.ItemCrudRepository
+import mm.inventory.adapters.store.jdbi.items.ItemHeader
 import mm.inventory.domain.items.Item
 import mm.inventory.domain.items.ItemCreator
+import mm.inventory.domain.items.ItemRepository
 import org.jdbi.v3.core.Jdbi
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.util.stream.Collectors
 
@@ -22,7 +28,16 @@ data class AttributeValuation(
 )
 
 @RestController
-class ItemsController(private val db: Jdbi, private val itemCreator: ItemCreator) {
+class ItemsController(
+    private val db: Jdbi,
+    private val itemCreator: ItemCreator,
+    private val itemCrudRepository: ItemCrudRepository,
+    private val itemRepository: ItemRepository
+) {
+
+    @GetMapping("/items")
+    fun items(): ResponseEntity<List<ItemHeader>> =
+        ResponseEntity.ok(itemCrudRepository.selectItems())
 
     @PostMapping("/items")
     fun createItem(@RequestBody requestData: CreateItemRequest): ResponseEntity<Item> =
@@ -35,4 +50,14 @@ class ItemsController(private val db: Jdbi, private val itemCreator: ItemCreator
                 ).toImmutableMap()
             )
         })
+
+    @GetMapping("/items/{itemName}")
+    fun item(@PathVariable itemName: String): ResponseEntity<Item> {
+        val item = itemRepository.load(itemName)
+        return if (item != null) {
+            ResponseEntity.ok(item)
+        } else {
+            ResponseEntity.notFound().build()
+        }
+    }
 }

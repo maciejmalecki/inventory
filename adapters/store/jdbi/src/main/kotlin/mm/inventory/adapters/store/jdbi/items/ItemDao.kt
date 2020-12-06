@@ -1,5 +1,6 @@
 package mm.inventory.adapters.store.jdbi.items
 
+import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate
 import java.math.BigDecimal
 
@@ -13,6 +14,18 @@ interface ItemDao {
 
     @SqlUpdate("INSERT INTO Dictionary_Values(item_name, attribute_type, item_class_name, attribute_type_name, code) VALUES (:value.itemName, :value.attributeType, :value.itemClassName, :value.attributeTypeName, :value.code)")
     fun insertValue(value: DictionaryValueRec)
+
+    @SqlQuery("SELECT name, item_class_name FROM Items ORDER BY name")
+    fun selectItems(): List<ItemRec>
+
+    @SqlQuery("SELECT name, item_class_name FROM Items WHERE name=?")
+    fun selectItem(name: String): ItemRec?
+
+    @SqlQuery("SELECT item_name, attribute_type, item_class_name, value, scale FROM Scalar_values WHERE item_name=?")
+    fun selectScalars(itemName: String): List<ScalarValueRec>
+
+    @SqlQuery("SELECT item_name, attribute_type, item_class_name, attribute_type_name, code FROM Dictionary_Values WHERE item_name=?")
+    fun selectDictionaryValues(itemName: String): List<DictionaryValueRec>
 }
 
 data class ItemRec(val name: String, val itemClassName: String)
