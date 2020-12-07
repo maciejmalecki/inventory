@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class UnitsController(val unitOfMeasurementRepository: UnitOfMeasurementRepository) {
+class UnitsController(private val unitOfMeasurementRepository: UnitOfMeasurementRepository) {
     @GetMapping("/units")
     fun allUnits(): List<UnitOfMeasurement> = unitOfMeasurementRepository.findAll().toList()
 }

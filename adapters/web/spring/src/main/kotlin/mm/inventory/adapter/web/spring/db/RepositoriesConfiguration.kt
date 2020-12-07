@@ -37,5 +37,5 @@ class RepositoriesConfiguration(private val jdbi: Jdbi) {
     fun itemClassFacade() = ItemClassFacade(itemClassRepository())
 
     @Bean
-    fun itemFacade() = ItemFacade(itemRepository(), itemCrudRepository())
+    fun itemFacade() = ItemFacade(itemRepository(), itemCrudRepository(), itemCreator())
 }

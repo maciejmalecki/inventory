@@ -25,10 +25,7 @@ data class AttributeValuation(
 )
 
 @RestController
-class ItemsController(
-    private val itemFacade: ItemFacade,
-    private val itemCreator: ItemCreator
-) {
+class ItemsController(private val itemFacade: ItemFacade) {
 
     @GetMapping("/items")
     fun items(): ResponseEntity<List<ItemHeader>> = ResponseEntity.ok(itemFacade.findAllItems())
@@ -36,7 +33,7 @@ class ItemsController(
     @PostMapping("/items")
     fun createItem(@RequestBody requestData: CreateItemRequest): ResponseEntity<Item> =
         ResponseEntity.ok().body(
-            itemCreator.create(
+            itemFacade.createItem(
                 requestData.name,
                 requestData.itemClassName,
                 requestData.inValues.stream().collect(
