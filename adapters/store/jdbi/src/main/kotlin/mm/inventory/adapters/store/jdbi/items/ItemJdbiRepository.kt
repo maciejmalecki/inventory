@@ -10,7 +10,7 @@ import org.jdbi.v3.core.Jdbi
 
 class ItemJdbiRepository(private val db: Jdbi, private val itemClassRepository: ItemClassRepository) : ItemRepository {
 
-    override fun load(name: String): Item? = db.withHandle<Item?, RuntimeException> { handle ->
+    override fun findByName(name: String): Item? = db.withHandle<Item?, RuntimeException> { handle ->
 
         val itemDao = handle.attach(ItemDao::class.java)
 
@@ -20,14 +20,12 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassRepository: 
             ?: throw RuntimeException("Item Class for name ${itemRec.itemClassName} not found.")
 
         val scalarValues = itemDao.selectScalars(name).map {
-            val attribute = itemClass.findAttribute(it.attributeType)
-                ?: throw RuntimeException("Attribute type ${it.attributeType} does not exist.")
+            val attribute = itemClass.getAttribute(it.attributeType)
             ScalarValue(attribute, it.value!!, it.scale)
         }.toSet()
 
         val dictionaryValues = itemDao.selectDictionaryValues(name).map {
-            val attribute = itemClass.findAttribute(it.attributeType)
-                ?: throw RuntimeException("Attribute type ${it.attributeType} does not exist.")
+            val attribute = itemClass.getAttribute(it.attributeType)
             val code = it.code!!
             if (attribute.type.isValid(code)) {
                 DictionaryValue(attribute, code)
