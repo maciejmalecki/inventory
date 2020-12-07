@@ -40,7 +40,7 @@ class ItemsController(
 
     @PostMapping("/items")
     fun createItem(@RequestBody requestData: CreateItemRequest): ResponseEntity<Item> =
-        ResponseEntity.ok().body(db.inTransaction<Item, RuntimeException> {
+        ResponseEntity.ok().body(
             itemCreator.create(
                 requestData.name,
                 requestData.itemClassName,
@@ -48,7 +48,7 @@ class ItemsController(
                     Collectors.toMap({ v -> v.attribute }, { v -> v.value })
                 ).toImmutableMap()
             )
-        })
+        )
 
     @GetMapping("/items/{itemName}")
     fun item(@PathVariable itemName: String): ResponseEntity<Item> {
