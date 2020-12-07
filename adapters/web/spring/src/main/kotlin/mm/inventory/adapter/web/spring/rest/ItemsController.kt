@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.util.stream.Collectors
 
@@ -41,7 +40,7 @@ class ItemsController(
 
     @PostMapping("/items")
     fun createItem(@RequestBody requestData: CreateItemRequest): ResponseEntity<Item> =
-        ResponseEntity.ok().body(db.inTransaction<Item, RuntimeException> {
+        ResponseEntity.ok().body(
             itemCreator.create(
                 requestData.name,
                 requestData.itemClassName,
@@ -49,11 +48,11 @@ class ItemsController(
                     Collectors.toMap({ v -> v.attribute }, { v -> v.value })
                 ).toImmutableMap()
             )
-        })
+        )
 
     @GetMapping("/items/{itemName}")
     fun item(@PathVariable itemName: String): ResponseEntity<Item> {
-        val item = itemRepository.load(itemName)
+        val item = itemRepository.findByName(itemName)
         return if (item != null) {
             ResponseEntity.ok(item)
         } else {

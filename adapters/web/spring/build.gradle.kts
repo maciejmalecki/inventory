@@ -10,6 +10,7 @@ val jdbiVersion: String by project
 val postgresqlJdbcVersion: String by project
 
 dependencies {
+    implementation(project(":domain:transactions"))
     implementation(project(":domain:items"))
     implementation(project(":adapters:store:jdbi"))
 

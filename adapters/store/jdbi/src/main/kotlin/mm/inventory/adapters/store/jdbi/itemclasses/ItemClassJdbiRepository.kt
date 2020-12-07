@@ -17,14 +17,14 @@ import org.jdbi.v3.core.Jdbi
  */
 class ItemClassJdbiRepository(private val db: Jdbi) : ItemClassRepository {
     override fun findByName(name: String): ItemClass? =
-            db.inTransaction<ItemClass?, RuntimeException> { handle ->
+            db.withHandle<ItemClass?, RuntimeException> { handle ->
 
                 val itemClassDao = handle.attach(ItemClassDao::class.java)
                 val unitDao = handle.attach(UnitDao::class.java)
 
                 // load bare item class
                 val itemClassRec = itemClassDao.findByName(name)
-                        ?: return@inTransaction null
+                        ?: return@withHandle null
 
                 // load unit with subsequent SQL (could be also done with SQL JOIN)
                 val unitRec = unitDao.findByCode(itemClassRec.unit)
