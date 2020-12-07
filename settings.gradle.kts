@@ -5,6 +5,7 @@ include(":domain:items")
 include(":domain:inventory")
 include(":domain:production")
 
+include(":app:itemsfacade")
 include(":app:categories")
 include(":app:importcategories")
 

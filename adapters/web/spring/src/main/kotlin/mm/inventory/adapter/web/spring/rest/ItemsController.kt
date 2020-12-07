@@ -1,12 +1,10 @@
 package mm.inventory.adapter.web.spring.rest
 
 import kotlinx.collections.immutable.toImmutableMap
-import mm.inventory.adapters.store.jdbi.items.ItemCrudRepository
-import mm.inventory.adapters.store.jdbi.items.ItemHeader
+import mm.inventory.app.itemsfacade.item.ItemFacade
+import mm.inventory.app.itemsfacade.item.ItemHeader
 import mm.inventory.domain.items.Item
 import mm.inventory.domain.items.ItemCreator
-import mm.inventory.domain.items.ItemRepository
-import org.jdbi.v3.core.Jdbi
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -28,15 +26,12 @@ data class AttributeValuation(
 
 @RestController
 class ItemsController(
-    private val db: Jdbi,
-    private val itemCreator: ItemCreator,
-    private val itemCrudRepository: ItemCrudRepository,
-    private val itemRepository: ItemRepository
+    private val itemFacade: ItemFacade,
+    private val itemCreator: ItemCreator
 ) {
 
     @GetMapping("/items")
-    fun items(): ResponseEntity<List<ItemHeader>> =
-        ResponseEntity.ok(itemCrudRepository.selectItems())
+    fun items(): ResponseEntity<List<ItemHeader>> = ResponseEntity.ok(itemFacade.findAllItems())
 
     @PostMapping("/items")
     fun createItem(@RequestBody requestData: CreateItemRequest): ResponseEntity<Item> =
@@ -52,7 +47,7 @@ class ItemsController(
 
     @GetMapping("/items/{itemName}")
     fun item(@PathVariable itemName: String): ResponseEntity<Item> {
-        val item = itemRepository.findByName(itemName)
+        val item = itemFacade.findByName(itemName)
         return if (item != null) {
             ResponseEntity.ok(item)
         } else {

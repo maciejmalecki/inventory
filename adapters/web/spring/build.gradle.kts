@@ -12,6 +12,7 @@ val postgresqlJdbcVersion: String by project
 dependencies {
     implementation(project(":domain:transactions"))
     implementation(project(":domain:items"))
+    implementation(project(":app:itemsfacade"))
     implementation(project(":adapters:store:jdbi"))
 
     implementation("org.springframework.boot:spring-boot-starter-web")

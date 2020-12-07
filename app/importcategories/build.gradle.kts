@@ -3,7 +3,6 @@ plugins {
 }
 
 val collectionsImmutableVersion: String by project
-val kotlinxCoroutinesVersion: String by project
 
 dependencies {
     implementation(project(":app:categories"))

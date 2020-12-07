@@ -1,10 +1,12 @@
 package mm.inventory.adapter.web.spring.db
 
 import mm.inventory.adapters.store.jdbi.itemclasses.ItemClassJdbiRepository
-import mm.inventory.adapters.store.jdbi.items.ItemCrudRepository
+import mm.inventory.adapters.store.jdbi.items.ItemCrudJdbiRepository
 import mm.inventory.adapters.store.jdbi.items.ItemJdbiRepository
 import mm.inventory.adapters.store.jdbi.transactions.BusinessJdbiTransaction
 import mm.inventory.adapters.store.jdbi.units.UnitOfMeasurementJdbiRepository
+import mm.inventory.app.itemsfacade.item.ItemFacade
+import mm.inventory.app.itemsfacade.itemclass.ItemClassFacade
 import mm.inventory.domain.items.ItemCreator
 import org.jdbi.v3.core.Jdbi
 import org.springframework.context.annotation.Bean
@@ -26,8 +28,14 @@ class RepositoriesConfiguration(private val jdbi: Jdbi) {
     fun itemCreator() = ItemCreator(businessTransaction(), itemClassRepository(), itemRepository())
 
     @Bean
-    fun itemCrudRepository() = ItemCrudRepository(jdbi)
+    fun itemCrudRepository() = ItemCrudJdbiRepository(jdbi)
 
     @Bean
     fun businessTransaction() = BusinessJdbiTransaction(jdbi)
+
+    @Bean
+    fun itemClassFacade() = ItemClassFacade(itemClassRepository())
+
+    @Bean
+    fun itemFacade() = ItemFacade(itemRepository(), itemCrudRepository())
 }
