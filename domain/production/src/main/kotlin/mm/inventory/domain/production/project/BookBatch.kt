@@ -4,13 +4,19 @@ import kotlinx.collections.immutable.toImmutableSet
 import mm.inventory.domain.inventory.ItemStockRepository
 import mm.inventory.domain.transactions.BusinessTransaction
 
+/**
+ * Books item stock for production batch.
+ */
 class BookBatch(
     private val tx: BusinessTransaction,
     private val productionBatchRepository: ProductionBatchRepository,
     private val itemStockRepository: ItemStockRepository
 ) {
 
-    fun book(projectCode: String, batchNo: Int): ProductionBatchBooking = tx.execReturn {
+    /**
+     * Performs booking.
+     */
+    fun execute(projectCode: String, batchNo: Int): ProductionBatchBooking = tx.execReturn {
         val productionBatch = productionBatchRepository.get(projectCode, batchNo)
         val productionRunId =
             "${productionBatch.projectCode}/${productionBatch.revision.revisionCode}#${productionBatch.batchNo}"
