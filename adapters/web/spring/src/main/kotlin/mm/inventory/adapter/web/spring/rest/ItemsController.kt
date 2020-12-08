@@ -4,7 +4,6 @@ import kotlinx.collections.immutable.toImmutableMap
 import mm.inventory.app.itemsfacade.item.ItemFacade
 import mm.inventory.app.itemsfacade.item.ItemHeader
 import mm.inventory.domain.items.Item
-import mm.inventory.domain.items.ItemCreator
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
