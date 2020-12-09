@@ -18,4 +18,5 @@ data class Booking(
     val bookingId: String,
     val productionRunId: String,
     val createdAt: LocalDateTime,
+    val itemCode: String,
     val amount: BigDecimal)

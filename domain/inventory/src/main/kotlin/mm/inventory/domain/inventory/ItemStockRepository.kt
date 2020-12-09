@@ -30,5 +30,5 @@ interface ItemStockRepository {
     /**
      * Deducts booking, that is, removes booking and consumes resources.
      */
-    fun deduct(booking: Booking)
+    fun deduct(booking: Booking): BigDecimal
 }

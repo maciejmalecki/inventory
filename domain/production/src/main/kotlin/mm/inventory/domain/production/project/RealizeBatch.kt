@@ -20,7 +20,10 @@ class RealizeBatch(
         }
 
         booking.bookings.forEach { bookingCapability ->
-            itemStockRepository.deduct(bookingCapability.booking)
+            val deductedAmount = itemStockRepository.deduct(bookingCapability.booking)
+            if (deductedAmount < bookingCapability.booking.amount) {
+                throw RealizationException("Booking not possible due to insufficient stock for ${bookingCapability.booking.itemCode} ($deductedAmount < ${bookingCapability.booking.amount}).")
+            }
         }
     }
 }
