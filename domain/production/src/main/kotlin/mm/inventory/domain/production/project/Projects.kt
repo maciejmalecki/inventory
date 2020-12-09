@@ -32,4 +32,6 @@ data class ProductionBatch(
 data class ProductionBatchBooking(
     val productionRunId: String,
     val bookings: ImmutableSet<BookingCapability>
-)
+) {
+    val bookable = bookings.all { it.bookable }
+}
