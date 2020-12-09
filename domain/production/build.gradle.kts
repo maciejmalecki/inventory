@@ -5,7 +5,7 @@ plugins {
 val collectionsImmutableVersion: String by project
 
 dependencies {
-    implementation(project(":domain:transactions"))
+    implementation(project(":domain:shared"))
     implementation(project(":domain:items"))
     implementation(project(":domain:inventory"))
 

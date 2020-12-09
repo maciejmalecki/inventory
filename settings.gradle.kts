@@ -1,6 +1,6 @@
 rootProject.name = "inventory"
 
-include(":domain:transactions")
+include(":domain:shared")
 include(":domain:items")
 include(":domain:inventory")
 include(":domain:production")

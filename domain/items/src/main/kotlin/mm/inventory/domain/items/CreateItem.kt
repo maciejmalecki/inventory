@@ -3,7 +3,7 @@ package mm.inventory.domain.items
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableSet
 import mm.inventory.domain.itemclasses.ItemClassRepository
-import mm.inventory.domain.transactions.BusinessTransaction
+import mm.inventory.domain.shared.transactions.BusinessTransaction
 
 /**
  * Implementation of "create item" use case.
@@ -20,8 +20,7 @@ class CreateItem(
      * @param inValues attribute values specified as a "attribute name" to "string representation of attribute's value"
      */
     fun execute(name: String, itemClassName: String, inValues: ImmutableMap<String, String>): Item = tx.inTransaction {
-        val itemClass = itemClassRepository.findByName(itemClassName)
-                ?: throw RuntimeException("Item class `$itemClassName` not found.")
+        val itemClass = itemClassRepository.get(itemClassName)
 
         val values = itemClass.attributes.map { attribute ->
             val rawValue = inValues[attribute.name]

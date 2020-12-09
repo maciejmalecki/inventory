@@ -2,7 +2,7 @@ package mm.inventory.domain.production.project
 
 import kotlinx.collections.immutable.toImmutableSet
 import mm.inventory.domain.inventory.ItemStockRepository
-import mm.inventory.domain.transactions.BusinessTransaction
+import mm.inventory.domain.shared.transactions.BusinessTransaction
 
 /**
  * Books item stock for production batch.

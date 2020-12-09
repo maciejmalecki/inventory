@@ -1,4 +1,4 @@
-package mm.inventory.domain.transactions
+package mm.inventory.domain.shared.transactions
 
 fun interface TransactionalHandler<T> {
     fun accept(): T

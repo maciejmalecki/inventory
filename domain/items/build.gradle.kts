@@ -5,7 +5,7 @@ plugins {
 val collectionsImmutableVersion: String by project
 
 dependencies {
-    implementation(project(":domain:transactions"))
+    implementation(project(":domain:shared"))
 
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")

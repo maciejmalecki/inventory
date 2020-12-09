@@ -1,8 +1,8 @@
 package mm.inventory.adapters.store.jdbi.transactions
 
-import mm.inventory.domain.transactions.BusinessTransaction
-import mm.inventory.domain.transactions.TransactionalConsumingHandler
-import mm.inventory.domain.transactions.TransactionalHandler
+import mm.inventory.domain.shared.transactions.BusinessTransaction
+import mm.inventory.domain.shared.transactions.TransactionalConsumingHandler
+import mm.inventory.domain.shared.transactions.TransactionalHandler
 import org.jdbi.v3.core.Jdbi
 
 class BusinessJdbiTransaction(private val db: Jdbi) : BusinessTransaction {
