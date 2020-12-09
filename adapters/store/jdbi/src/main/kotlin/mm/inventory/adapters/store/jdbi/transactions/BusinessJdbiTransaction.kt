@@ -7,9 +7,9 @@ import org.jdbi.v3.core.Jdbi
 
 class BusinessJdbiTransaction(private val db: Jdbi) : BusinessTransaction {
 
-    override fun <T> execReturn(handler: TransactionalHandler<T>): T =
+    override fun <T> inTransaction(handler: TransactionalHandler<T>): T =
         db.inTransaction<T, RuntimeException> { handler.accept() }
 
-    override fun exec(handler: TransactionalConsumingHandler) =
+    override fun useTransaction(handler: TransactionalConsumingHandler) =
         db.useTransaction<RuntimeException> { handler.accept() }
 }

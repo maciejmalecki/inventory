@@ -17,11 +17,11 @@ interface BusinessTransaction {
      * @param handler code to be executed
      * @param T returned payload data type
      */
-    fun <T> execReturn(handler: TransactionalHandler<T>): T
+    fun <T> inTransaction(handler: TransactionalHandler<T>): T
 
     /**
      * Executes business code within transaction boundaries.
      * @param handler code to be executed
      */
-    fun exec(handler: TransactionalConsumingHandler)
+    fun useTransaction(handler: TransactionalConsumingHandler)
 }

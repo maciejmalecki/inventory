@@ -15,8 +15,10 @@ class BookBatch(
 
     /**
      * Performs booking.
+     * @param projectCode code of the project
+     * @param batchNo batch serial number
      */
-    fun execute(projectCode: String, batchNo: Int): ProductionBatchBooking = tx.execReturn {
+    fun execute(projectCode: String, batchNo: Int): ProductionBatchBooking = tx.inTransaction {
         val productionBatch = productionBatchRepository.get(projectCode, batchNo)
         val productionRunId =
             "${productionBatch.projectCode}/${productionBatch.revision.revisionCode}#${productionBatch.batchNo}"

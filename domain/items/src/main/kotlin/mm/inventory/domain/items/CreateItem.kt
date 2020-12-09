@@ -19,7 +19,7 @@ class CreateItem(
      * @param itemClassName name of the ItemClass
      * @param inValues attribute values specified as a "attribute name" to "string representation of attribute's value"
      */
-    fun execute(name: String, itemClassName: String, inValues: ImmutableMap<String, String>): Item = tx.execReturn {
+    fun execute(name: String, itemClassName: String, inValues: ImmutableMap<String, String>): Item = tx.inTransaction {
         val itemClass = itemClassRepository.findByName(itemClassName)
                 ?: throw RuntimeException("Item class `$itemClassName` not found.")
 
@@ -27,10 +27,10 @@ class CreateItem(
             val rawValue = inValues[attribute.name]
                     ?: throw RuntimeException("A value for `${attribute.name}` attribute is not provided.")
             attribute.parse(rawValue)
-        }.toImmutableSet()
+        }
 
-        val item = Item(name, itemClass, values)
+        val item = Item(name, itemClass, values.toImmutableSet())
         itemRepository.store(item)
-        item
+        return@inTransaction item
     }
 }
