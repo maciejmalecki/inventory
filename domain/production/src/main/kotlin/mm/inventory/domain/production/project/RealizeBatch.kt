@@ -3,15 +3,21 @@ package mm.inventory.domain.production.project
 import mm.inventory.domain.inventory.ItemStockRepository
 import mm.inventory.domain.shared.transactions.BusinessTransaction
 
+/**
+ * Business exception stating, that the production batch realization was not possible.
+ */
 class RealizationException(msg: String) : RuntimeException(msg)
 
+/**
+ * Realize production batch, that must be booked beforehand.
+ */
 class RealizeBatch(
     private val tx: BusinessTransaction,
     private val productionBatchBookingRepository: ProductionBatchBookingRepository,
     private val itemStockRepository: ItemStockRepository
 ) {
 
-    fun execute(projectCode: String, revisionCode: String, batchId: Int) = tx.inTransaction {
+    fun execute(projectCode: String, revisionCode: String, batchId: Int) = tx.useTransaction {
         val booking = productionBatchBookingRepository.findByBatchId(projectCode, revisionCode, batchId)
             ?: throw RealizationException("No booking for project $projectCode rev. $revisionCode #$batchId found.")
 
@@ -19,6 +25,10 @@ class RealizeBatch(
             throw RealizationException("Not enough stock to realize booking $projectCode rev. $revisionCode #$batchId.")
         }
 
+        realizeBooking(booking)
+    }
+
+    private fun realizeBooking(booking: ProductionBatchBooking) {
         booking.bookings.forEach { bookingCapability ->
             val deductedAmount = itemStockRepository.deduct(bookingCapability.booking)
             if (deductedAmount < bookingCapability.booking.amount) {
