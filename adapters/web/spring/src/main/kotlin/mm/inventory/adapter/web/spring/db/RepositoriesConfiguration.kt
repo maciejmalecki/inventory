@@ -1,5 +1,6 @@
 package mm.inventory.adapter.web.spring.db
 
+import mm.inventory.adapter.web.spring.security.SecurityGuardImpl
 import mm.inventory.adapters.store.jdbi.itemclasses.ItemClassJdbiRepository
 import mm.inventory.adapters.store.jdbi.items.ItemCrudJdbiRepository
 import mm.inventory.adapters.store.jdbi.items.ItemJdbiRepository
@@ -25,13 +26,16 @@ class RepositoriesConfiguration(private val jdbi: Jdbi) {
     fun unitOfMeasurementRepository() = UnitOfMeasurementJdbiRepository(jdbi)
 
     @Bean
-    fun itemCreator() = CreateItem(businessTransaction(), itemClassRepository(), itemRepository())
+    fun itemCreator() = CreateItem(businessTransaction(), securityGuard(), itemClassRepository(), itemRepository())
 
     @Bean
     fun itemCrudRepository() = ItemCrudJdbiRepository(jdbi)
 
     @Bean
     fun businessTransaction() = BusinessJdbiTransaction(jdbi)
+
+    @Bean
+    fun securityGuard() = SecurityGuardImpl()
 
     @Bean
     fun itemClassFacade() = ItemClassFacade(itemClassRepository())
