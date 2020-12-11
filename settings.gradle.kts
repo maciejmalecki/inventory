@@ -15,10 +15,10 @@ include(":app:importcategories")
 // -- infrastructure circle
 
 // store implementations
-include(":adapters:store:sql")
-include(":adapters:store:r2dbc")
-include(":adapters:store:jdbi")
+include(":infra:store:sql")
+include(":infra:store:r2dbc")
+include(":infra:store:jdbi")
 
 // web app implementations
-include(":adapters:web:spring")
-include(":adapters:web:webflux")
+include(":infra:web:spring")
+include(":infra:web:webflux")
