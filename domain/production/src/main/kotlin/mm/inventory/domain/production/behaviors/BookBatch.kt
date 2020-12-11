@@ -1,4 +1,4 @@
-package mm.inventory.domain.production.uc
+package mm.inventory.domain.production.behaviors
 
 import kotlinx.collections.immutable.toImmutableSet
 import mm.inventory.domain.inventory.ItemStockMutator
@@ -13,7 +13,7 @@ import mm.inventory.domain.shared.transactions.BusinessTransaction
 /**
  * Books item stock for production batch.
  */
-class BookBatchUseCase(
+class BookBatch(
     private val tx: BusinessTransaction,
     private val sec: SecurityGuard,
     private val productionBatchRepository: ProductionBatchRepository,

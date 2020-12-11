@@ -1,4 +1,4 @@
-package mm.inventory.domain.items.uc
+package mm.inventory.domain.items.behaviors
 
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableSet
@@ -14,7 +14,7 @@ import mm.inventory.domain.shared.transactions.BusinessTransaction
 /**
  * Implementation of "create item" use case.
  */
-class CreateItemUseCase(
+class CreateItem(
     private val tx: BusinessTransaction,
     private val sec: SecurityGuard,
     private val itemClassSelector: ItemClassSelector,

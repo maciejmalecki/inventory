@@ -1,4 +1,4 @@
-package mm.inventory.domain.production.uc
+package mm.inventory.domain.production.behaviors
 
 import mm.inventory.domain.inventory.ItemStockMutator
 import mm.inventory.domain.production.PRODUCTION_ROLE
@@ -11,7 +11,7 @@ import mm.inventory.domain.shared.transactions.BusinessTransaction
 /**
  * Realize production batch, that must be booked beforehand.
  */
-class RealizeBatchUseCase(
+class RealizeBatch(
     private val tx: BusinessTransaction,
     private val sec: SecurityGuard,
     private val productionBatchBookingRepository: ProductionBatchBookingRepository,

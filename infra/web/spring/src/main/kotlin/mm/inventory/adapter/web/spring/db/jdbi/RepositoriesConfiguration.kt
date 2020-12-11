@@ -6,7 +6,7 @@ import mm.inventory.adapters.store.jdbi.items.ItemJdbiMutator
 import mm.inventory.adapters.store.jdbi.items.ItemJdbiSelector
 import mm.inventory.adapters.store.jdbi.transactions.BusinessJdbiTransaction
 import mm.inventory.adapters.store.jdbi.units.UnitOfMeasurementJdbiRepository
-import mm.inventory.domain.items.uc.CreateItemUseCase
+import mm.inventory.domain.items.behaviors.CreateItem
 import mm.inventory.domain.shared.security.SecurityGuard
 import org.jdbi.v3.core.Jdbi
 import org.springframework.context.annotation.Bean
@@ -30,7 +30,7 @@ class RepositoriesConfiguration(
     fun unitOfMeasurementRepository() = UnitOfMeasurementJdbiRepository(jdbi)
 
     @Bean
-    fun itemCreator() = CreateItemUseCase(businessTransaction(), securityGuard, itemClassRepository(), itemMutator())
+    fun itemCreator() = CreateItem(businessTransaction(), securityGuard, itemClassRepository(), itemMutator())
 
     @Bean
     fun itemCrudRepository() = ItemCrudJdbiRepository(jdbi)
