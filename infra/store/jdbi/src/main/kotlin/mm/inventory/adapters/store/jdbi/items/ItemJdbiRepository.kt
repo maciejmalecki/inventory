@@ -41,35 +41,4 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassRepository: 
         )
     }
 
-    override fun store(item: Item) = db.useTransaction<RuntimeException> { handle ->
-
-        val itemDao = handle.attach(ItemDao::class.java)
-
-        // insert item record
-        itemDao.insertItem(ItemRec(item.name, item.itemClass.name))
-        // insert values
-        item.values.forEach { value ->
-            when (value) {
-                is ScalarValue -> itemDao.insertValue(
-                    ScalarValueRec(
-                        itemName = item.name,
-                        attributeType = value.attribute().name,
-                        itemClassName = item.itemClass.name,
-                        value = value.value(),
-                        scale = value.scale
-                    )
-                )
-                is DictionaryValue -> itemDao.insertValue(
-                    DictionaryValueRec(
-                        itemName = item.name,
-                        attributeType = value.attribute().name,
-                        itemClassName = item.itemClass.name,
-                        attributeTypeName = value.attribute().name,
-                        code = value.value()
-                    )
-                )
-                else -> throw RuntimeException("Unknown value type: ${value.javaClass.name}.")
-            }
-        }
-    }
 }

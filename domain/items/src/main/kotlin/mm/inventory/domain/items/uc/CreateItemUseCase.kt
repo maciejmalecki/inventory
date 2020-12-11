@@ -6,7 +6,7 @@ import mm.inventory.domain.items.ItemClassRepository
 import mm.inventory.domain.items.ITEMS_ROLE
 import mm.inventory.domain.items.ITEMS_WRITER_ROLE
 import mm.inventory.domain.items.Item
-import mm.inventory.domain.items.ItemRepository
+import mm.inventory.domain.items.ItemMutator
 import mm.inventory.domain.items.parse
 import mm.inventory.domain.shared.security.SecurityGuard
 import mm.inventory.domain.shared.transactions.BusinessTransaction
@@ -18,7 +18,7 @@ class CreateItemUseCase(
     private val tx: BusinessTransaction,
     private val sec: SecurityGuard,
     private val itemClassRepository: ItemClassRepository,
-    private val itemRepository: ItemRepository
+    private val itemMutator: ItemMutator
 ) {
 
     /**
@@ -37,7 +37,7 @@ class CreateItemUseCase(
                     attribute.parse(rawValue)
                 }
                 val item = Item(name, itemClass, values.toImmutableSet())
-                itemRepository.store(item)
+                itemMutator.persist(item)
                 return@inTransaction item
             }
         }
