@@ -1,9 +1,9 @@
 package mm.inventory.adapter.web.spring.db.jdbi
 
-import mm.inventory.adapters.store.jdbi.itemclasses.ItemClassJdbiRepository
+import mm.inventory.adapters.store.jdbi.itemclasses.ItemClassJdbiSelector
 import mm.inventory.adapters.store.jdbi.items.ItemCrudJdbiRepository
 import mm.inventory.adapters.store.jdbi.items.ItemJdbiMutator
-import mm.inventory.adapters.store.jdbi.items.ItemJdbiRepository
+import mm.inventory.adapters.store.jdbi.items.ItemJdbiSelector
 import mm.inventory.adapters.store.jdbi.transactions.BusinessJdbiTransaction
 import mm.inventory.adapters.store.jdbi.units.UnitOfMeasurementJdbiRepository
 import mm.inventory.domain.items.uc.CreateItemUseCase
@@ -18,10 +18,10 @@ class RepositoriesConfiguration(
     private val securityGuard: SecurityGuard
 ) {
     @Bean
-    fun itemClassRepository() = ItemClassJdbiRepository(jdbi)
+    fun itemClassRepository() = ItemClassJdbiSelector(jdbi)
 
     @Bean
-    fun itemRepository() = ItemJdbiRepository(jdbi, itemClassRepository())
+    fun itemRepository() = ItemJdbiSelector(jdbi, itemClassRepository())
 
     @Bean
     fun itemMutator() = ItemJdbiMutator(jdbi)

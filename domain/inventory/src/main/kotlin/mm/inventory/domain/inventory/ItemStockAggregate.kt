@@ -20,3 +20,7 @@ data class Booking(
     val createdAt: LocalDateTime,
     val itemCode: String,
     val amount: BigDecimal)
+
+data class BookingCapability(val booking: Booking, val availableAmount: BigDecimal) {
+    val bookable = booking.amount <= availableAmount
+}

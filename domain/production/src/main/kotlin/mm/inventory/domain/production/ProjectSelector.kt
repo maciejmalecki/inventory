@@ -1,5 +1,5 @@
 package mm.inventory.domain.production
 
-interface ProjectRepository {
+interface ProjectSelector {
     fun findByCode(projectCode: String): Project?
 }

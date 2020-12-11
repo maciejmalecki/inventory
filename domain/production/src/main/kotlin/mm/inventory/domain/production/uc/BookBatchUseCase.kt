@@ -1,7 +1,7 @@
 package mm.inventory.domain.production.uc
 
 import kotlinx.collections.immutable.toImmutableSet
-import mm.inventory.domain.inventory.ItemStockRepository
+import mm.inventory.domain.inventory.ItemStockMutator
 import mm.inventory.domain.production.PRODUCTION_ROLE
 import mm.inventory.domain.production.PRODUCTION_WRITER_ROLE
 import mm.inventory.domain.production.ProductionBatchBooking
@@ -17,7 +17,7 @@ class BookBatchUseCase(
     private val tx: BusinessTransaction,
     private val sec: SecurityGuard,
     private val productionBatchRepository: ProductionBatchRepository,
-    private val itemStockRepository: ItemStockRepository
+    private val itemStockMutator: ItemStockMutator
 ) {
 
     /**
@@ -40,5 +40,5 @@ class BookBatchUseCase(
         }
 
     private fun book(productionRunId: String, usage: Usage, batchSize: Int) =
-        itemStockRepository.book(productionRunId, usage.itemCode, usage.amount * batchSize.toBigDecimal())
+        itemStockMutator.book(productionRunId, usage.itemCode, usage.amount * batchSize.toBigDecimal())
 }

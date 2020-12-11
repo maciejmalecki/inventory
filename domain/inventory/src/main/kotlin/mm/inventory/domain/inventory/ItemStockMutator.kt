@@ -2,16 +2,7 @@ package mm.inventory.domain.inventory
 
 import java.math.BigDecimal
 
-data class BookingCapability(val booking: Booking, val availableAmount: BigDecimal) {
-    val bookable = booking.amount <= availableAmount
-}
-
-interface ItemStockRepository {
-    /**
-     * Finds stock data for given item.
-     */
-    fun findByItem(itemCode: String): ItemStock
-
+interface ItemStockMutator {
     /**
      * Replenishes stock for given item.
      */

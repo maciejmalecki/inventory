@@ -1,5 +1,5 @@
 package mm.inventory.domain.items
 
-interface ItemRepository {
+interface ItemSelector {
     fun findByName(name: String): Item?
 }

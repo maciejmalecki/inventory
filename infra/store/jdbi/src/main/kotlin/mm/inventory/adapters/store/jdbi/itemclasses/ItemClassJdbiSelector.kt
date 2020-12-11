@@ -6,7 +6,7 @@ import mm.inventory.domain.items.Attribute
 import mm.inventory.domain.items.DictionaryItem
 import mm.inventory.domain.items.DictionaryType
 import mm.inventory.domain.items.ItemClass
-import mm.inventory.domain.items.ItemClassRepository
+import mm.inventory.domain.items.ItemClassSelector
 import mm.inventory.domain.items.ItemClassVersion
 import mm.inventory.domain.items.ScalarType
 import mm.inventory.domain.items.UnitOfMeasurement
@@ -15,7 +15,7 @@ import org.jdbi.v3.core.Jdbi
 /**
  * JDBI based implementation of the ItemClassRepository from domain.
  */
-class ItemClassJdbiRepository(private val db: Jdbi) : ItemClassRepository {
+class ItemClassJdbiSelector(private val db: Jdbi) : ItemClassSelector {
     override fun findByName(name: String): ItemClass? =
             db.withHandle<ItemClass?, RuntimeException> { handle ->
 

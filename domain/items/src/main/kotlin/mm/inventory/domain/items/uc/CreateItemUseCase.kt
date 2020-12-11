@@ -2,7 +2,7 @@ package mm.inventory.domain.items.uc
 
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableSet
-import mm.inventory.domain.items.ItemClassRepository
+import mm.inventory.domain.items.ItemClassSelector
 import mm.inventory.domain.items.ITEMS_ROLE
 import mm.inventory.domain.items.ITEMS_WRITER_ROLE
 import mm.inventory.domain.items.Item
@@ -17,7 +17,7 @@ import mm.inventory.domain.shared.transactions.BusinessTransaction
 class CreateItemUseCase(
     private val tx: BusinessTransaction,
     private val sec: SecurityGuard,
-    private val itemClassRepository: ItemClassRepository,
+    private val itemClassSelector: ItemClassSelector,
     private val itemMutator: ItemMutator
 ) {
 
@@ -30,7 +30,7 @@ class CreateItemUseCase(
     fun execute(name: String, itemClassName: String, inValues: ImmutableMap<String, String>): Item =
         sec.requireAllRoles(ITEMS_ROLE, ITEMS_WRITER_ROLE) {
             tx.inTransaction {
-                val itemClass = itemClassRepository.get(itemClassName)
+                val itemClass = itemClassSelector.get(itemClassName)
                 val values = itemClass.attributes.map { attribute ->
                     val rawValue = inValues[attribute.name]
                         ?: throw RuntimeException("A value for `${attribute.name}` attribute is not provided.")
