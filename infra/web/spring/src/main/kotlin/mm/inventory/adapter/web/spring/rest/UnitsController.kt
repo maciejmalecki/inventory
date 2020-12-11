@@ -1,7 +1,7 @@
 package mm.inventory.adapter.web.spring.rest
 
-import mm.inventory.domain.itemclasses.UnitOfMeasurement
-import mm.inventory.domain.itemclasses.UnitOfMeasurementRepository
+import mm.inventory.domain.items.UnitOfMeasurement
+import mm.inventory.domain.items.UnitOfMeasurementRepository
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
 

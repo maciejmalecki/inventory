@@ -2,14 +2,14 @@ package mm.inventory.adapters.store.jdbi.itemclasses
 
 import kotlinx.collections.immutable.toImmutableSet
 import mm.inventory.adapters.store.jdbi.units.UnitDao
-import mm.inventory.domain.itemclasses.Attribute
-import mm.inventory.domain.itemclasses.DictionaryItem
-import mm.inventory.domain.itemclasses.DictionaryType
-import mm.inventory.domain.itemclasses.ItemClass
-import mm.inventory.domain.itemclasses.ItemClassRepository
-import mm.inventory.domain.itemclasses.ItemClassVersion
-import mm.inventory.domain.itemclasses.ScalarType
-import mm.inventory.domain.itemclasses.UnitOfMeasurement
+import mm.inventory.domain.items.Attribute
+import mm.inventory.domain.items.DictionaryItem
+import mm.inventory.domain.items.DictionaryType
+import mm.inventory.domain.items.ItemClass
+import mm.inventory.domain.items.ItemClassRepository
+import mm.inventory.domain.items.ItemClassVersion
+import mm.inventory.domain.items.ScalarType
+import mm.inventory.domain.items.UnitOfMeasurement
 import org.jdbi.v3.core.Jdbi
 
 /**
@@ -55,12 +55,14 @@ class ItemClassJdbiRepository(private val db: Jdbi) : ItemClassRepository {
             true ->
                 Attribute(
                         attributeWithType.name,
-                        ScalarType(UnitOfMeasurement(attributeWithType.unitCode!!, attributeWithType.unitName!!)))
+                        ScalarType(UnitOfMeasurement(attributeWithType.unitCode!!, attributeWithType.unitName!!))
+                )
             false ->
                 Attribute(
                         attributeWithType.name,
                         DictionaryType(dictionaryValueRecMap.getOrDefault(attributeWithType.attributeType, emptySet())
-                                .map { itemRec -> DictionaryItem(itemRec.code, itemRec.value) }.toImmutableSet()))
+                                .map { itemRec -> DictionaryItem(itemRec.code, itemRec.value) }.toImmutableSet())
+                )
         }
     }
 

@@ -1,4 +1,4 @@
-package mm.inventory.domain.itemclasses
+package mm.inventory.domain.items
 
 import kotlinx.collections.immutable.ImmutableSet
 import java.math.BigDecimal

@@ -1,7 +1,7 @@
 package mm.inventory.adapters.store.jdbi.items
 
 import kotlinx.collections.immutable.toImmutableSet
-import mm.inventory.domain.itemclasses.ItemClassRepository
+import mm.inventory.domain.items.ItemClassRepository
 import mm.inventory.domain.items.DictionaryValue
 import mm.inventory.domain.items.Item
 import mm.inventory.domain.items.ItemRepository

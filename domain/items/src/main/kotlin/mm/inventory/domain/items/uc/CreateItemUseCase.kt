@@ -2,7 +2,7 @@ package mm.inventory.domain.items.uc
 
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableSet
-import mm.inventory.domain.itemclasses.ItemClassRepository
+import mm.inventory.domain.items.ItemClassRepository
 import mm.inventory.domain.items.ITEMS_ROLE
 import mm.inventory.domain.items.ITEMS_WRITER_ROLE
 import mm.inventory.domain.items.Item
