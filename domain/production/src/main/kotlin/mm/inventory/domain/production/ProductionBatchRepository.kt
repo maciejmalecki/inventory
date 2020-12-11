@@ -1,4 +1,4 @@
-package mm.inventory.domain.production.project
+package mm.inventory.domain.production
 
 import mm.inventory.domain.shared.NotFoundException
 

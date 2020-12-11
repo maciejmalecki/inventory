@@ -1,16 +1,19 @@
-package mm.inventory.domain.production.project
+package mm.inventory.domain.production.uc
 
 import kotlinx.collections.immutable.toImmutableSet
 import mm.inventory.domain.inventory.ItemStockRepository
 import mm.inventory.domain.production.PRODUCTION_ROLE
 import mm.inventory.domain.production.PRODUCTION_WRITER_ROLE
+import mm.inventory.domain.production.ProductionBatchBooking
+import mm.inventory.domain.production.ProductionBatchRepository
+import mm.inventory.domain.production.Usage
 import mm.inventory.domain.shared.security.SecurityGuard
 import mm.inventory.domain.shared.transactions.BusinessTransaction
 
 /**
  * Books item stock for production batch.
  */
-class BookBatch(
+class BookBatchUseCase(
     private val tx: BusinessTransaction,
     private val sec: SecurityGuard,
     private val productionBatchRepository: ProductionBatchRepository,

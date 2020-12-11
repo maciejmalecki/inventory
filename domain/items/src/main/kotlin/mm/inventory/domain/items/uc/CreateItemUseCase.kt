@@ -1,15 +1,20 @@
-package mm.inventory.domain.items
+package mm.inventory.domain.items.uc
 
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableSet
 import mm.inventory.domain.itemclasses.ItemClassRepository
+import mm.inventory.domain.items.ITEMS_ROLE
+import mm.inventory.domain.items.ITEMS_WRITER_ROLE
+import mm.inventory.domain.items.Item
+import mm.inventory.domain.items.ItemRepository
+import mm.inventory.domain.items.parse
 import mm.inventory.domain.shared.security.SecurityGuard
 import mm.inventory.domain.shared.transactions.BusinessTransaction
 
 /**
  * Implementation of "create item" use case.
  */
-class CreateItem(
+class CreateItemUseCase(
     private val tx: BusinessTransaction,
     private val sec: SecurityGuard,
     private val itemClassRepository: ItemClassRepository,

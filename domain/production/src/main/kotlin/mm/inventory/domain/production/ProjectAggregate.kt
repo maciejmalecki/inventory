@@ -1,7 +1,6 @@
-package mm.inventory.domain.production.project
+package mm.inventory.domain.production
 
 import kotlinx.collections.immutable.ImmutableSet
-import mm.inventory.domain.inventory.BookingCapability
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
@@ -21,17 +20,3 @@ data class Usage(
     val itemCode: String,
     val amount: BigDecimal
 )
-
-data class ProductionBatch(
-    val batchNo: Int,
-    val projectCode: String,
-    val revision: ProjectRevision,
-    val batchSize: Int
-)
-
-data class ProductionBatchBooking(
-    val productionRunId: String,
-    val bookings: ImmutableSet<BookingCapability>
-) {
-    val bookable = bookings.all { it.bookable }
-}

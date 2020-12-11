@@ -1,4 +1,4 @@
-package mm.inventory.domain.production.project
+package mm.inventory.domain.production
 
 interface ProjectRepository {
     fun findByCode(projectCode: String): Project?
