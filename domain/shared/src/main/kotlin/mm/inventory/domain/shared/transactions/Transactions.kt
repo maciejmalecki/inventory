@@ -4,10 +4,6 @@ fun interface TransactionalHandler<T> {
     fun accept(): T
 }
 
-fun interface TransactionalConsumingHandler {
-    fun accept()
-}
-
 /**
  * Allows to define transaction bracketing.
  */
@@ -18,10 +14,4 @@ interface BusinessTransaction {
      * @param T returned payload data type
      */
     fun <T> inTransaction(handler: TransactionalHandler<T>): T
-
-    /**
-     * Executes business code within transaction boundaries.
-     * @param handler code to be executed
-     */
-    fun useTransaction(handler: TransactionalConsumingHandler)
 }
