@@ -14,6 +14,8 @@ The project is organized in source modules, these fall into three major categori
 
 ![General concepts](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.github.com/maciejmalecki/inventory/develop/doc/dia/general.puml)
 
+The category to which given module belongs determines dependencies that are allowed for that module. The categories in fact form an onion-like structure, where domain modules are located in the centre and infrastructure modules belong to the most outer layer. Dependencies always point inwards.
+
 ## Domain
 ![Domain of items](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.github.com/maciejmalecki/inventory/develop/doc/dia/domain/items.puml)
 
