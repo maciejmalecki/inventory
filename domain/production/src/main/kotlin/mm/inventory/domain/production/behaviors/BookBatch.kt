@@ -5,7 +5,7 @@ import mm.inventory.domain.inventory.ItemStockMutator
 import mm.inventory.domain.production.PRODUCTION_ROLE
 import mm.inventory.domain.production.PRODUCTION_WRITER_ROLE
 import mm.inventory.domain.production.ProductionBatchBooking
-import mm.inventory.domain.production.ProductionBatchRepository
+import mm.inventory.domain.production.ProductionBatchSelector
 import mm.inventory.domain.production.Usage
 import mm.inventory.domain.shared.security.SecurityGuard
 import mm.inventory.domain.shared.transactions.BusinessTransaction
@@ -16,7 +16,7 @@ import mm.inventory.domain.shared.transactions.BusinessTransaction
 class BookBatch(
     private val tx: BusinessTransaction,
     private val sec: SecurityGuard,
-    private val productionBatchRepository: ProductionBatchRepository,
+    private val productionBatchSelector: ProductionBatchSelector,
     private val itemStockMutator: ItemStockMutator
 ) {
 
@@ -28,7 +28,7 @@ class BookBatch(
     fun execute(projectCode: String, batchNo: Int): ProductionBatchBooking =
         sec.requireAllRoles(PRODUCTION_ROLE, PRODUCTION_WRITER_ROLE) {
             tx.inTransaction {
-                val productionBatch = productionBatchRepository.get(projectCode, batchNo)
+                val productionBatch = productionBatchSelector.get(projectCode, batchNo)
                 val productionRunId =
                     "${productionBatch.projectCode}/${productionBatch.revision.revisionCode}#${productionBatch.batchNo}"
 

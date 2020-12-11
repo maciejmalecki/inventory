@@ -4,7 +4,7 @@ import mm.inventory.domain.inventory.ItemStockMutator
 import mm.inventory.domain.production.PRODUCTION_ROLE
 import mm.inventory.domain.production.PRODUCTION_WRITER_ROLE
 import mm.inventory.domain.production.ProductionBatchBooking
-import mm.inventory.domain.production.ProductionBatchBookingRepository
+import mm.inventory.domain.production.ProductionBatchBookingSelector
 import mm.inventory.domain.shared.security.SecurityGuard
 import mm.inventory.domain.shared.transactions.BusinessTransaction
 
@@ -14,14 +14,14 @@ import mm.inventory.domain.shared.transactions.BusinessTransaction
 class RealizeBatch(
     private val tx: BusinessTransaction,
     private val sec: SecurityGuard,
-    private val productionBatchBookingRepository: ProductionBatchBookingRepository,
+    private val productionBatchBookingSelector: ProductionBatchBookingSelector,
     private val itemStockMutator: ItemStockMutator
 ) {
 
     fun execute(projectCode: String, revisionCode: String, batchId: Int) =
         sec.requireAllRoles(PRODUCTION_ROLE, PRODUCTION_WRITER_ROLE) {
             tx.inTransaction {
-                val booking = productionBatchBookingRepository.findByBatchId(projectCode, revisionCode, batchId)
+                val booking = productionBatchBookingSelector.findByBatchId(projectCode, revisionCode, batchId)
                     ?: throw BatchRealizationException("No booking for project $projectCode rev. $revisionCode #$batchId found.")
                 if (!booking.bookable) {
                     throw BatchRealizationException("Not enough stock to realize booking $projectCode rev. $revisionCode #$batchId.")

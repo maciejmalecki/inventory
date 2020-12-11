@@ -2,7 +2,7 @@ package mm.inventory.domain.production
 
 import mm.inventory.domain.shared.NotFoundException
 
-interface ProductionBatchBookingRepository {
+interface ProductionBatchBookingSelector {
     fun findById(productionRunId: String): ProductionBatchBooking?
 
     fun get(productionRunId: String): ProductionBatchBooking = findById(productionRunId)

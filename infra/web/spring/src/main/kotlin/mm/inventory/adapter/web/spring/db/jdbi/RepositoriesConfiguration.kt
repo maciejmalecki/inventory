@@ -5,7 +5,7 @@ import mm.inventory.adapters.store.jdbi.items.ItemCrudJdbiRepository
 import mm.inventory.adapters.store.jdbi.items.ItemJdbiMutator
 import mm.inventory.adapters.store.jdbi.items.ItemJdbiSelector
 import mm.inventory.adapters.store.jdbi.transactions.BusinessJdbiTransaction
-import mm.inventory.adapters.store.jdbi.units.UnitOfMeasurementJdbiRepository
+import mm.inventory.adapters.store.jdbi.units.UnitOfMeasurementJdbiSelector
 import mm.inventory.domain.items.behaviors.CreateItem
 import mm.inventory.domain.shared.security.SecurityGuard
 import org.jdbi.v3.core.Jdbi
@@ -27,7 +27,7 @@ class RepositoriesConfiguration(
     fun itemMutator() = ItemJdbiMutator(jdbi)
 
     @Bean
-    fun unitOfMeasurementRepository() = UnitOfMeasurementJdbiRepository(jdbi)
+    fun unitOfMeasurementRepository() = UnitOfMeasurementJdbiSelector(jdbi)
 
     @Bean
     fun itemCreator() = CreateItem(businessTransaction(), securityGuard, itemClassRepository(), itemMutator())
