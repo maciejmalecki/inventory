@@ -26,7 +26,7 @@ class BookBatchUseCase(
      * @param batchNo batch serial number
      */
     fun execute(projectCode: String, batchNo: Int): ProductionBatchBooking =
-        sec.withAllRoles(PRODUCTION_ROLE, PRODUCTION_WRITER_ROLE) {
+        sec.requireAllRoles(PRODUCTION_ROLE, PRODUCTION_WRITER_ROLE) {
             tx.inTransaction {
                 val productionBatch = productionBatchRepository.get(projectCode, batchNo)
                 val productionRunId =

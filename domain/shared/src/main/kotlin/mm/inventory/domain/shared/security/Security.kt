@@ -21,12 +21,12 @@ interface SecurityGuard {
     /**
      * Ensures that current user has a given role while executing the handler.
      */
-    fun <T> withRole(role: Role, handler: SecureHandler<T>): T = withAllRoles(role, handler = handler)
+    fun <T> requireRole(role: Role, handler: SecureHandler<T>): T = requireAllRoles(role, handler = handler)
 
     /**
      * Ensures that current user has any of required roles while executing the handler.
      */
-    fun <T> withAnyRole(vararg roles: Role, handler: SecureHandler<T>): T =
+    fun <T> requireAnyRole(vararg roles: Role, handler: SecureHandler<T>): T =
         if (roles.any { role -> hasRole(role) }) {
             handler.accept()
         } else {
@@ -36,7 +36,7 @@ interface SecurityGuard {
     /**
      * Ensures that current user has all required roles while executing the handler.
      */
-    fun <T> withAllRoles(vararg roles: Role, handler: SecureHandler<T>): T =
+    fun <T> requireAllRoles(vararg roles: Role, handler: SecureHandler<T>): T =
         if (roles.all { role -> hasRole(role) }) {
             handler.accept()
         } else {

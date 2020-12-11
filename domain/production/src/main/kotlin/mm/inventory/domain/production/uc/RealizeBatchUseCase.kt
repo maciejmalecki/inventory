@@ -19,7 +19,7 @@ class RealizeBatchUseCase(
 ) {
 
     fun execute(projectCode: String, revisionCode: String, batchId: Int) =
-        sec.withAllRoles(PRODUCTION_ROLE, PRODUCTION_WRITER_ROLE) {
+        sec.requireAllRoles(PRODUCTION_ROLE, PRODUCTION_WRITER_ROLE) {
             tx.inTransaction {
                 val booking = productionBatchBookingRepository.findByBatchId(projectCode, revisionCode, batchId)
                     ?: throw BatchRealizationException("No booking for project $projectCode rev. $revisionCode #$batchId found.")

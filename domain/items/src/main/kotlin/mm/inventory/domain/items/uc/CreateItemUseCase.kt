@@ -28,7 +28,7 @@ class CreateItemUseCase(
      * @param inValues attribute values specified as a "attribute name" to "string representation of attribute's value"
      */
     fun execute(name: String, itemClassName: String, inValues: ImmutableMap<String, String>): Item =
-        sec.withAllRoles(ITEMS_ROLE, ITEMS_WRITER_ROLE) {
+        sec.requireAllRoles(ITEMS_ROLE, ITEMS_WRITER_ROLE) {
             tx.inTransaction {
                 val itemClass = itemClassRepository.get(itemClassName)
                 val values = itemClass.attributes.map { attribute ->
