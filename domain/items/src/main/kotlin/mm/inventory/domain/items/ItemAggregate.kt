@@ -1,9 +1,16 @@
 package mm.inventory.domain.items
 
+import kotlinx.collections.immutable.ImmutableSet
 import mm.inventory.domain.itemclasses.Attribute
 import mm.inventory.domain.itemclasses.DictionaryType
+import mm.inventory.domain.itemclasses.ItemClass
 import mm.inventory.domain.itemclasses.ScalarType
 import java.math.BigDecimal
+
+data class Item(
+        val name: String,
+        val itemClass: ItemClass,
+        val values: ImmutableSet<Value<*>>)
 
 interface Value<out T> {
     fun attribute(): Attribute
@@ -35,12 +42,12 @@ fun parseScalarValue(attribute: Attribute, value: String): ScalarValue {
     val scale = 1
     val valid = attribute.type.isValid(value)
     return ScalarValue(
-        attribute,
-        if (valid) {
-            BigDecimal(value)
-        } else {
-            BigDecimal.ZERO
-        },
-        scale
+            attribute,
+            if (valid) {
+                    BigDecimal(value)
+            } else {
+                    BigDecimal.ZERO
+            },
+            scale
     )
 }
