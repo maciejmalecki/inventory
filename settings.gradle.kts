@@ -1,15 +1,24 @@
 rootProject.name = "inventory"
 
-include(":domain:transactions")
+// -- domain circle
+include(":domain:shared")
 include(":domain:items")
 include(":domain:inventory")
 include(":domain:production")
 
+// -- application circle
+include(":app:itemsfacade")
+include(":app:productionfacade")
 include(":app:categories")
 include(":app:importcategories")
 
-include(":adapters:store:sql")
-include(":adapters:store:r2dbc")
-include(":adapters:store:jdbi")
-include(":adapters:web:spring")
-include(":adapters:web:webflux")
+// -- infrastructure circle
+
+// store implementations
+include(":infra:store:sql")
+include(":infra:store:r2dbc")
+include(":infra:store:jdbi")
+
+// web app implementations
+include(":infra:web:spring")
+include(":infra:web:webflux")
