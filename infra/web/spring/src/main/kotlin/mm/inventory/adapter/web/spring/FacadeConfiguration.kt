@@ -1,6 +1,5 @@
 package mm.inventory.adapter.web.spring
 
-import mm.inventory.app.itemsfacade.item.ItemCrudRepository
 import mm.inventory.app.itemsfacade.item.ItemQuery
 import mm.inventory.app.itemsfacade.item.ItemFacade
 import mm.inventory.app.itemsfacade.itemclass.ItemClassFacade
