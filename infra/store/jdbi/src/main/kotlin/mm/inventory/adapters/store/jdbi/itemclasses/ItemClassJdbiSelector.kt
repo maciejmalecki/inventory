@@ -23,7 +23,7 @@ class ItemClassJdbiSelector(private val db: Jdbi) : ItemClassSelector {
                 val unitDao = handle.attach(UnitDao::class.java)
 
                 // load bare item class
-                val itemClassRec = itemClassDao.findByName(name)
+                val itemClassRec = itemClassDao.selectItemClassByName(name)
                         ?: return@withHandle null
 
                 // load unit with subsequent SQL (could be also done with SQL JOIN)
@@ -31,10 +31,10 @@ class ItemClassJdbiSelector(private val db: Jdbi) : ItemClassSelector {
                         ?: throw RuntimeException("Unit for ${itemClassRec.unit} not found")
 
                 // load all attributes for given item class
-                val attributeRecList = itemClassDao.findAttributesWithTypesForItemClass(name)
+                val attributeRecList = itemClassDao.selectAttributesWithTypesForItemClass(name)
 
                 // load all relevant dictionary values
-                val dictionaryValueRecMap = itemClassDao.findAttributeValuesForItemClass(name).groupBy { it.attributeTypeName }
+                val dictionaryValueRecMap = itemClassDao.selectAttributeValuesForItemClass(name).groupBy { it.attributeTypeName }
 
                 // build up the aggregate out of fetched data
                 ItemClass(

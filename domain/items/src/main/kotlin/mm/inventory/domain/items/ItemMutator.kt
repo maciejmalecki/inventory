@@ -9,4 +9,8 @@ interface ItemMutator {
      * @param item to be persisted
      */
     fun persist(item: Item)
+
+    fun updateValue(item: Item, value: ScalarValue)
+
+    fun updateValue(item: Item, value: DictionaryValue)
 }

@@ -4,6 +4,7 @@ import kotlinx.collections.immutable.toImmutableMap
 import mm.inventory.app.itemsfacade.item.ItemFacade
 import mm.inventory.app.itemsfacade.item.ItemHeader
 import mm.inventory.domain.items.Item
+import mm.inventory.domain.shared.NotFoundException
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -50,4 +51,19 @@ class ItemsController(private val itemFacade: ItemFacade) {
             ResponseEntity.notFound().build()
         }
     }
+
+    @PostMapping("/items/{itemName}")
+    fun updateItem(
+        @PathVariable itemName: String,
+        @RequestBody body: List<AttributeValuation>
+    ): ResponseEntity<String> =
+        try {
+            itemFacade.updateItem(
+                itemName,
+                body.stream().collect(Collectors.toMap({ it.attribute }, { it.value })).toImmutableMap()
+            )
+            ResponseEntity.ok().build()
+        } catch (e: NotFoundException) {
+            ResponseEntity.notFound().build()
+        }
 }
