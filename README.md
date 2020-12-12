@@ -38,6 +38,22 @@ Mutators are exclusively used for data modifications. This way, for given aggreg
 ### Behaviors
 Behavior is a class that is usually bound with one or more entities (or aggregates) and has at least one dependency to a mutator. It can depend on multiple mutators as well as on selectors.
 
+## App
+The App (application) is place where we model application specific logic - that is, the logic that you don't discuss with business experts but are nonetheless necessary to implement the application. We will include most of the CRUD functionalities here that are not needed with respect to the domain but are necessary to give data provisioning capabilities. All bulk operations included imports falls into this category too. When using CQRS approach, most of the "Q" functionality falls here as well.
+
+### Queries
+Queries are read only repositories that extends functionality of selectors (from the domain). These are necessary to fulfill certain read capabilities of clients (i.e. REST interfaces). We don't expect all view capabilities can be served with aggregates - this is not practical and surely not very performant.
+
+### CRUD repositories
+These repositories are extending mutators (and selectors, queries) with modify capabilities necessary to provide data provisioning. We expect that not all CRUD functions are necessary in our domain.
+
+### Facades
+Component facades are declared in app and are forming facade over domain plus application specific functions such as CRUDs and queries. From the domain, facades are shielding repositories and behaviors.
+
+We expect a facade per business component.
+
+# OLD (to be cleaned up)
+
 ![Domain of items](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.github.com/maciejmalecki/inventory/develop/doc/dia/domain/items.puml)
 
 ## Dependency model
