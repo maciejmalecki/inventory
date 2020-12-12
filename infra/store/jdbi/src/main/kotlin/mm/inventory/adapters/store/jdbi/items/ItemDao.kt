@@ -10,10 +10,16 @@ interface ItemDao {
     fun insertItem(item: ItemRec)
 
     @SqlUpdate("INSERT INTO Scalar_Values(item_name, attribute_type, item_class_name, value, scale) VALUES (:value.itemName, :value.attributeType, :value.itemClassName, :value.value, :value.scale)")
-    fun insertValue(value: ScalarValueRec)
+    fun insertValue(value: ScalarValueRec): Int
+
+    @SqlUpdate("UPDATE Scalar_Values SET value=:value.value, scale=:value.scale WHERE item_name=:value.itemName AND attribute_type=:value.attributeType AND item_class_name=:value.itemClassName")
+    fun updateValue(value: ScalarValueRec): Int
 
     @SqlUpdate("INSERT INTO Dictionary_Values(item_name, attribute_type, item_class_name, attribute_type_name, code) VALUES (:value.itemName, :value.attributeType, :value.itemClassName, :value.attributeTypeName, :value.code)")
-    fun insertValue(value: DictionaryValueRec)
+    fun insertValue(value: DictionaryValueRec): Int
+
+    @SqlUpdate("UPDATE Dictionary_Values SET code=:value.code WHERE item_name=:value.itemName AND attribute_type=:value.attributeType AND item_class_name=:value.itemClassName")
+    fun updateValue(value: DictionaryValueRec): Int
 
     @SqlQuery("SELECT name, item_class_name FROM Items ORDER BY name")
     fun selectItems(): List<ItemRec>

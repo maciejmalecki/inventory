@@ -6,7 +6,7 @@ import mm.inventory.domain.items.ItemMutator
 import mm.inventory.domain.items.ScalarValue
 import org.jdbi.v3.core.Jdbi
 
-class ItemJdbiMutator(private val db: Jdbi): ItemMutator {
+class ItemJdbiMutator(private val db: Jdbi) : ItemMutator {
 
     override fun persist(item: Item) = db.useTransaction<RuntimeException> { handle ->
 
@@ -39,4 +39,38 @@ class ItemJdbiMutator(private val db: Jdbi): ItemMutator {
             }
         }
     }
+
+    override fun updateValue(item: Item, value: ScalarValue) =
+        db.useHandle<RuntimeException> { handle ->
+            val itemDao = handle.attach(ItemDao::class.java)
+            val cnt = itemDao.updateValue(
+                ScalarValueRec(
+                    itemName = item.name,
+                    attributeType = value.attribute.name,
+                    itemClassName = item.itemClass.name,
+                    value = value.value(),
+                    scale = value.scale
+                )
+            )
+            if (cnt != 1) {
+                throw RuntimeException("Wrong modification count: $cnt.")
+            }
+        }
+
+    override fun updateValue(item: Item, value: DictionaryValue) =
+        db.useHandle<RuntimeException> { handle ->
+            val itemDao = handle.attach(ItemDao::class.java)
+            val cnt = itemDao.updateValue(
+                DictionaryValueRec(
+                    itemName = item.name,
+                    attributeType = value.attribute.name,
+                    itemClassName = item.itemClass.name,
+                    attributeTypeName = value.attribute.name,
+                    code = value.value()
+                )
+            )
+            if (cnt != 1) {
+                throw RuntimeException("Wrong modification count: $cnt.")
+            }
+        }
 }

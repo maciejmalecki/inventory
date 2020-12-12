@@ -1,6 +1,8 @@
 package mm.inventory.domain.items
 
 import kotlinx.collections.immutable.ImmutableSet
+import kotlinx.collections.immutable.toImmutableMap
+import mm.inventory.domain.shared.NotFoundException
 import java.math.BigDecimal
 import java.util.stream.Collectors
 
@@ -13,19 +15,14 @@ data class ItemClass(
     val amountUnit: UnitOfMeasurement,
     val attributes: ImmutableSet<Attribute>
 ) {
-    private val attributesByName = attributes.stream().collect(Collectors.toMap({ it.name }, { it }))
-
-    /**
-     * Find attribute definition based on provided type name or null, if attribute with given name cannot be found.
-     */
-    fun findAttribute(attributeTypeName: String): Attribute? = attributesByName[attributeTypeName]
+    private val attributesByName = attributes.stream().collect(Collectors.toMap({ it.name }, { it })).toImmutableMap()
 
     /**
      * Gets attribute definition based on provided type name. Throws exception if attribute does not exist.
      */
     fun getAttribute(attributeTypeName: String): Attribute =
-        findAttribute(attributeTypeName)
-            ?: throw RuntimeException("Attribute with name '$attributeTypeName' not found.")
+        attributesByName[attributeTypeName]
+            ?: throw NotFoundException("Attribute with name '$attributeTypeName' not found.")
 }
 
 data class ItemClassVersion(
@@ -44,16 +41,16 @@ interface AttributeType {
  * @param unit unit of measurement for this type
  */
 data class ScalarType(
-        val unit: UnitOfMeasurement
+    val unit: UnitOfMeasurement
 ) : AttributeType {
 
     override fun isValid(value: String): Boolean =
-            try {
-                BigDecimal(value)
-                true
-            } catch (e: NumberFormatException) {
-                false
-            }
+        try {
+            BigDecimal(value)
+            true
+        } catch (e: NumberFormatException) {
+            false
+        }
 
 }
 
