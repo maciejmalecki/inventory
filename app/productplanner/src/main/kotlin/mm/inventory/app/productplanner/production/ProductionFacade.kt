@@ -1,4 +1,4 @@
-package mm.inventory.app.productionfacade
+package mm.inventory.app.productplanner.production
 
 import mm.inventory.domain.production.behaviors.BookBatch
 import mm.inventory.domain.production.ProductionBatchBookingSelector

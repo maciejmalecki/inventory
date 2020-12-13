@@ -1,4 +1,4 @@
-package mm.inventory.app.itemsfacade.item
+package mm.inventory.app.productplanner.item
 
 import kotlinx.collections.immutable.ImmutableMap
 import mm.inventory.domain.items.ItemSelector

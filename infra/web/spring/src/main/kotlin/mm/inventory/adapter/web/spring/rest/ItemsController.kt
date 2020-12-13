@@ -1,8 +1,8 @@
 package mm.inventory.adapter.web.spring.rest
 
 import kotlinx.collections.immutable.toImmutableMap
-import mm.inventory.app.itemsfacade.item.ItemFacade
-import mm.inventory.app.itemsfacade.item.ItemHeader
+import mm.inventory.app.productplanner.item.ItemFacade
+import mm.inventory.app.productplanner.item.ItemHeader
 import mm.inventory.domain.items.Item
 import mm.inventory.domain.shared.NotFoundException
 import org.springframework.http.ResponseEntity

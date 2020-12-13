@@ -1,4 +1,4 @@
-package mm.inventory.app.itemsfacade.itemclass
+package mm.inventory.app.productplanner.itemclass
 
 import kotlinx.collections.immutable.ImmutableList
 

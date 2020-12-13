@@ -1,7 +1,7 @@
 package mm.inventory.adapter.web.spring.rest
 
-import mm.inventory.app.itemsfacade.itemclass.ItemClassFacade
-import mm.inventory.app.itemsfacade.itemclass.ItemClassHeader
+import mm.inventory.app.productplanner.itemclass.ItemClassFacade
+import mm.inventory.app.productplanner.itemclass.ItemClassHeader
 import mm.inventory.domain.items.ItemClass
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping

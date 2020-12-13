@@ -11,7 +11,7 @@ dependencies {
     implementation(project(":domain:inventory"))
     implementation(project(":domain:production"))
 
-    implementation(project(":app:itemsfacade"))
+    implementation(project(":app:productplanner"))
 
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")

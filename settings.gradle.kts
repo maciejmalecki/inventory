@@ -7,8 +7,7 @@ include(":domain:inventory")
 include(":domain:production")
 
 // -- application circle
-include(":app:itemsfacade")
-include(":app:productionfacade")
+include(":app:productplanner")
 include(":app:categories")
 include(":app:importcategories")
 
