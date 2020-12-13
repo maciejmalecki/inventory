@@ -1,0 +1,19 @@
+<div class="product-planner-page">
+  <h1>Hello, this is item class <strong>{{ itemClass.name }}</strong>.</h1>
+  <a mat-raised-button routerLink="../..">&#8592; Back</a>
+  <div class="description">{{ itemClass.description }}</div>
+  <hr>
+  <h2>Attributes:</h2>
+  <div *ngFor="let attribute of itemClass.attributes" class="attribute">
+    <strong>Name:</strong> {{ attribute.name }}
+    <div *ngIf="isScalarType(attribute.type)">
+      <strong>Scalar:</strong> {{ attribute.type.unit.code }} ({{ attribute.type.unit.name }}).
+    </div>
+    <div *ngIf="isDictionaryType(attribute.type)">
+      <strong>Dictionary:</strong>
+      <span *ngFor="let item of attribute.type.items; let last = last">
+      {{item.code}} ({{item.value}})<span *ngIf="!last">,</span>
+    </span>
+    </div>
+  </div>
+</div>
