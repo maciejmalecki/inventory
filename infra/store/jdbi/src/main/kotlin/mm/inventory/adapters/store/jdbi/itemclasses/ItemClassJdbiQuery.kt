@@ -2,8 +2,8 @@ package mm.inventory.adapters.store.jdbi.itemclasses
 
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
-import mm.inventory.app.itemsfacade.itemclass.ItemClassHeader
-import mm.inventory.app.itemsfacade.itemclass.ItemClassQuery
+import mm.inventory.app.productplanner.itemclass.ItemClassHeader
+import mm.inventory.app.productplanner.itemclass.ItemClassQuery
 import org.jdbi.v3.core.Jdbi
 import java.lang.RuntimeException
 

@@ -1,9 +1,9 @@
 package mm.inventory.adapter.web.spring
 
-import mm.inventory.app.itemsfacade.item.ItemQuery
-import mm.inventory.app.itemsfacade.item.ItemFacade
-import mm.inventory.app.itemsfacade.itemclass.ItemClassFacade
-import mm.inventory.app.itemsfacade.itemclass.ItemClassQuery
+import mm.inventory.app.productplanner.item.ItemQuery
+import mm.inventory.app.productplanner.item.ItemFacade
+import mm.inventory.app.productplanner.itemclass.ItemClassFacade
+import mm.inventory.app.productplanner.itemclass.ItemClassQuery
 import mm.inventory.domain.items.ItemClassSelector
 import mm.inventory.domain.items.ItemSelector
 import mm.inventory.domain.items.behaviors.CreateItem

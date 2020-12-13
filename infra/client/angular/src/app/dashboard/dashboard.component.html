@@ -1,0 +1,10 @@
+<div class="product-planner-page">
+  <h1>Item classes</h1>
+  <div class="item-class-header" *ngFor="let itemClass of itemClasses$ | async">
+    <div class="panel">
+      {{ itemClass.name}} - <em>{{ itemClass.description }}</em>
+    </div>
+    <a mat-raised-button routerLink="itemClasses/{{itemClass.name}}">details</a>
+  </div>
+</div>
+
