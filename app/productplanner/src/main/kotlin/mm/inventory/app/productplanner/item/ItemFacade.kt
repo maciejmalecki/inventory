@@ -7,6 +7,9 @@ import mm.inventory.domain.items.ItemSelector
 import mm.inventory.domain.items.behaviors.CreateItem
 import mm.inventory.domain.items.behaviors.UpdateItem
 
+/**
+ * Facade for Item application component.
+ */
 class ItemFacade(
     private val itemSelector: ItemSelector,
     private val itemQuery: ItemQuery,

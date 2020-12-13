@@ -5,6 +5,9 @@ import mm.inventory.domain.production.ProductionBatchBookingSelector
 import mm.inventory.domain.production.ProductionBatchSelector
 import mm.inventory.domain.production.behaviors.RealizeBatch
 
+/**
+ * Facade for Production application component.
+ */
 class ProductionFacade(
     private val productionBatchSelector: ProductionBatchSelector,
     private val productionBatchBookingSelector: ProductionBatchBookingSelector,

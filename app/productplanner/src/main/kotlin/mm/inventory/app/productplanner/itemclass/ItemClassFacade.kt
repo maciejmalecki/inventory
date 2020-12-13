@@ -4,6 +4,9 @@ import kotlinx.collections.immutable.ImmutableList
 import mm.inventory.domain.items.ItemClass
 import mm.inventory.domain.items.ItemClassSelector
 
+/**
+ * Facade for ItemClass application component.
+ */
 class ItemClassFacade(
     private val itemClassSelector: ItemClassSelector,
     private val itemClassQuery: ItemClassQuery
