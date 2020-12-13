@@ -1,0 +1,7 @@
+<div>
+  <p>Hello!</p>
+  <p *ngFor="let itemClass of itemClasses$ | async">
+    {{ itemClass.name}} - <em>{{ itemClass.description }}</em>
+  </p>
+</div>
+
