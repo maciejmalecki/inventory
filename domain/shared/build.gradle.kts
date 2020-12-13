@@ -1,6 +1,16 @@
 plugins {
     kotlin("jvm")
+    id("com.diffplug.spotless") version "5.8.2"
 }
+
+// TODO: not working with Kotlin 1.4
+//configure<com.diffplug.gradle.spotless.SpotlessExtension> {
+//    kotlin {
+//        ktlint()
+//        ktfmt()
+//        prettier()
+//    }
+//}
 
 val collectionsImmutableVersion: String by project
 
