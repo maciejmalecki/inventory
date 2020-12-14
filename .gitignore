@@ -2,6 +2,7 @@
 **/build/
 **/out/
 **/node_modules/
+infra/client/angular/node/
 
 # Ignore Gradle GUI config
 gradle-app.setting
@@ -17,3 +18,4 @@ gradle-app.setting
 
 .idea
 *.iml
+

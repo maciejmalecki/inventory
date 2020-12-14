@@ -21,3 +21,4 @@ include(":infra:store:jdbi")
 // web app implementations
 include(":infra:web:spring")
 include(":infra:web:webflux")
+include(":infra:client:angular")
