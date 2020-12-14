@@ -1,7 +1,7 @@
-import {ActivatedRouteSnapshot, Resolve, RouterStateSnapshot} from "@angular/router";
-import {ItemClass, ItemClassService} from "../../shared/services/item-class.service";
-import {Observable} from "rxjs";
-import {Injectable} from "@angular/core";
+import {ActivatedRouteSnapshot, Resolve, RouterStateSnapshot} from '@angular/router';
+import {ItemClass, ItemClassService} from '../../shared/services/item-class.service';
+import {Observable} from 'rxjs';
+import {Injectable} from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +11,7 @@ export class ItemClassDetailsResolver implements Resolve<ItemClass> {
   }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<ItemClass> {
-    const name = route.params['name'];
+    const name = route.params.name;
     return this.itemClassService.getItemClass(name);
   }
 }

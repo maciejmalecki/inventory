@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
-import {AttributeType, isDictionaryType, isScalarType, ItemClass} from "../../shared/services/item-class.service";
+import {ActivatedRoute} from '@angular/router';
+import {isDictionaryType, isScalarType, ItemClass} from '../../shared/services/item-class.service';
 
 @Component({
   selector: 'app-item-class-details',
