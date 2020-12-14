@@ -11,7 +11,7 @@ export class ItemClassDetailsResolver implements Resolve<ItemClass> {
   }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<ItemClass> {
-    const name = route.params['name'];
+    const name = route.params.name;
     return this.itemClassService.getItemClass(name);
   }
 }
