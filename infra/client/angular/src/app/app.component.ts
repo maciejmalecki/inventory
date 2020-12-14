@@ -15,4 +15,8 @@ export class AppComponent {
   goHome(): void {
     this.router.navigate(['/']).catch(reason => console.log(reason));
   }
+
+  goItemClasses(): void {
+    this.router.navigate(['/itemClasses']).catch(reason => console.log(reason));
+  }
 }

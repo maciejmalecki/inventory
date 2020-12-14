@@ -1,9 +1,15 @@
 <header>
-  <h1 class="mat-display-3">Product planner</h1>
+  <h1 class="mat-display-1">Product planner</h1>
 </header>
 <div class="mat-toolbar app-toolbar">
   <button mat-fab color="primary" (click)="goHome()">
     <mat-icon>home</mat-icon>
+  </button>
+  <button mat-fab color="accent" (click)="goItemClasses()">
+    <mat-icon>books</mat-icon>
+  </button>
+  <button mat-fab color="accent">
+    <mat-icon>menu_book</mat-icon>
   </button>
 </div>
 <router-outlet></router-outlet>
