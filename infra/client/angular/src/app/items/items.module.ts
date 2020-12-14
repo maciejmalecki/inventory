@@ -3,9 +3,10 @@ import {CommonModule} from '@angular/common';
 import {ItemClassDetailsComponent} from './item-class-details/item-class-details.component';
 import {RouterModule} from '@angular/router';
 import {MatModule} from '../mat.module';
+import { ItemClassesComponent } from './item-classes/item-classes.component';
 
 @NgModule({
-  declarations: [ItemClassDetailsComponent],
+  declarations: [ItemClassDetailsComponent, ItemClassesComponent],
   imports: [
     CommonModule, RouterModule, MatModule
   ]

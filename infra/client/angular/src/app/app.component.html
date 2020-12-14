@@ -1,6 +1,11 @@
 <header>
   <h1 class="mat-display-3">Product planner</h1>
 </header>
+<div class="mat-toolbar app-toolbar">
+  <button mat-fab color="primary" (click)="goHome()">
+    <mat-icon>home</mat-icon>
+  </button>
+</div>
 <router-outlet></router-outlet>
 <footer>
   <p class="mat-caption">See <a href="https://github.com/maciejmalecki/inventory">https://github.com/maciejmalecki/inventory</a></p>

@@ -2,18 +2,28 @@
   <h1>Hello, this is item class <strong>{{ itemClass.name }}</strong>.</h1>
   <a mat-raised-button routerLink="../..">&#8592; Back</a>
   <div class="description">{{ itemClass.description }}</div>
-  <hr>
-  <h2>Attributes:</h2>
-  <div *ngFor="let attribute of itemClass.attributes" class="attribute">
-    <strong>Name:</strong> {{ attribute.name }}
-    <div *ngIf="isScalarType(attribute.type)">
-      <strong>Scalar:</strong> {{ attribute.type.unit.code }} ({{ attribute.type.unit.name }}).
-    </div>
-    <div *ngIf="isDictionaryType(attribute.type)">
-      <strong>Dictionary:</strong>
-      <span *ngFor="let item of attribute.type.items; let last = last">
-      {{item.code}} ({{item.value}})<span *ngIf="!last">,</span>
-    </span>
-    </div>
-  </div>
+  <mat-divider></mat-divider>
+  <mat-grid-list cols="4" rowHeight="170px">
+    <mat-grid-tile *ngFor="let attribute of itemClass.attributes">
+      <mat-card class="attribute-card">
+        <mat-card-header>
+          <mat-icon mat-card-avatar matPrefix *ngIf="isScalarType(attribute.type)">flash_on</mat-icon>
+          <mat-icon mat-card-avatar matPrefix *ngIf="isDictionaryType(attribute.type)">list_alt</mat-icon>
+          <mat-card-title>{{attribute.name}}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div *ngIf="isScalarType(attribute.type)">
+            {{ attribute.type.unit.code }} ({{ attribute.type.unit.name }})
+          </div>
+          <div *ngIf="isDictionaryType(attribute.type)">
+            <ul>
+              <li *ngFor="let item of attribute.type.items; let last = last">
+                {{item.value}} ({{item.code}})
+              </li>
+            </ul>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+  </mat-grid-list>
 </section>
