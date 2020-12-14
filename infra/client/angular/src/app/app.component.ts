@@ -12,7 +12,7 @@ export class AppComponent {
   constructor(private readonly router: Router) {
   }
 
-  goHome() {
+  goHome(): void {
     this.router.navigate(['/']).catch(reason => console.log(reason));
   }
 }
