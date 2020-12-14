@@ -6,11 +6,9 @@ html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 header {
-  font-size: large;
   text-align: center;
   padding: 10px;
   background-color: blueviolet;
-  color: azure;
 }
 
 footer {
@@ -21,13 +19,8 @@ footer {
   left: 0;
   right: 0;
   background-color: darkblue;
-  color: azure;
   a,a:visited {
     color: antiquewhite;
     text-decoration: none;
   }
-}
-
-.product-planner-page {
-  margin: 10px;
 }
