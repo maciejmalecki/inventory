@@ -58,6 +58,21 @@ Component facades are declared in app and are forming facade over domain plus ap
 
 We expect a facade per business component.
 
+## Infra
+Here we place concrete implementations built with very concrete technologies. Examples are:
+* Springboot application,
+* graphical web Angular based client,
+* JPA implementation of the repositories,
+* Spring-batch based processors.
+
+This is the only place where dependencies to technologies such as Spring, JPA, JDBC, Servlet-API and similar are allowed in 0dependency architecture.
+
+### Store
+t.b.d.
+
+### Web
+t.b.d.
+
 # OLD (to be cleaned up)
 
 ![Domain of items](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.github.com/maciejmalecki/inventory/develop/doc/dia/domain/items.puml)
