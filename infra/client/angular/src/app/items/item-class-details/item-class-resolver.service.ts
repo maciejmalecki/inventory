@@ -6,7 +6,7 @@ import {Injectable} from '@angular/core';
 @Injectable({
   providedIn: 'root'
 })
-export class ItemClassDetailsResolver implements Resolve<ItemClass> {
+export class ItemClassResolver implements Resolve<ItemClass> {
   constructor(private readonly itemClassService: ItemClassService) {
   }
 

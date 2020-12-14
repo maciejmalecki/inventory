@@ -4,11 +4,13 @@ import {ItemClassDetailsComponent} from './item-class-details/item-class-details
 import {RouterModule} from '@angular/router';
 import {MatModule} from '../mat.module';
 import { ItemClassesComponent } from './item-classes/item-classes.component';
+import { ItemClassEditComponent } from './item-class-edit/item-class-edit.component';
+import {ReactiveFormsModule} from '@angular/forms';
 
 @NgModule({
-  declarations: [ItemClassDetailsComponent, ItemClassesComponent],
+  declarations: [ItemClassDetailsComponent, ItemClassesComponent, ItemClassEditComponent],
   imports: [
-    CommonModule, RouterModule, MatModule
+    CommonModule, RouterModule, MatModule, ReactiveFormsModule
   ]
 })
 export class ItemsModule {
