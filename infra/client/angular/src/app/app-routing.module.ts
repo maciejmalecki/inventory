@@ -7,6 +7,7 @@ import {ItemClassesComponent} from './items/item-classes/item-classes.component'
 import {ItemClassEditComponent} from './items/item-class-edit/item-class-edit.component';
 import {ItemsComponent} from './items/items/items.component';
 import {ItemDetailsComponent} from './items/item-details/item-details.component';
+import {ItemResolver} from './items/item-details/item-resolver.service';
 
 const routes: Routes = [
   {
@@ -37,7 +38,10 @@ const routes: Routes = [
   },
   {
     path: 'items/:name',
-    component: ItemDetailsComponent
+    component: ItemDetailsComponent,
+    resolve: {
+      item: ItemResolver
+    }
   }
 ];
 
