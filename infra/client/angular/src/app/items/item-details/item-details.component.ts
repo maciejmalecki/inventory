@@ -21,7 +21,7 @@ export class ItemDetailsComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  getDictionaryValue(value: DictionaryValue) {
+  getDictionaryValue(value: DictionaryValue): string {
     return (value.attribute.type as DictionaryType).items.find(value1 => value1.code === value.value).value;
   }
 }
