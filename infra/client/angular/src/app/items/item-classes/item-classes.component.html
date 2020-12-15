@@ -1,10 +1,10 @@
 <section class="mat-typography">
   <h1 class="mat-display-2">Item classes</h1>
   <div>
-    <form>
+    <form [formGroup]="formGroup">
       <mat-form-field>
         <mat-label>Search</mat-label>
-        <input matInput placeholder="Item class" type="text">
+        <input matInput placeholder="Item class" type="text" formControlName="search">
         <mat-icon matSuffix>search</mat-icon>
       </mat-form-field>
     </form>
