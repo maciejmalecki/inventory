@@ -5,6 +5,8 @@ import {ItemClassDetailsComponent} from './items/item-class-details/item-class-d
 import {ItemClassResolver} from './items/item-class-details/item-class-resolver.service';
 import {ItemClassesComponent} from './items/item-classes/item-classes.component';
 import {ItemClassEditComponent} from './items/item-class-edit/item-class-edit.component';
+import {ItemsComponent} from './items/items/items.component';
+import {ItemDetailsComponent} from './items/item-details/item-details.component';
 
 const routes: Routes = [
   {
@@ -28,6 +30,14 @@ const routes: Routes = [
     resolve: {
       itemClass: ItemClassResolver
     }
+  },
+  {
+    path: 'items',
+    component: ItemsComponent
+  },
+  {
+    path: 'items/:name',
+    component: ItemDetailsComponent
   }
 ];
 

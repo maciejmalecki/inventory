@@ -19,4 +19,8 @@ export class AppComponent {
   goItemClasses(): void {
     this.router.navigate(['/itemClasses']).catch(reason => console.log(reason));
   }
+
+  goItems(): void {
+    this.router.navigate(['/items']).catch(reason => console.log(reason));
+  }
 }
