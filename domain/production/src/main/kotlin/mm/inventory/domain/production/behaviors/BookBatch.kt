@@ -1,7 +1,7 @@
 package mm.inventory.domain.production.behaviors
 
 import kotlinx.collections.immutable.toImmutableSet
-import mm.inventory.domain.inventory.ItemStockMutator
+import mm.inventory.domain.production.BookingRepository
 import mm.inventory.domain.production.PRODUCTION_ROLE
 import mm.inventory.domain.production.PRODUCTION_WRITER_ROLE
 import mm.inventory.domain.production.ProductionBatchBooking
@@ -17,7 +17,7 @@ class BookBatch(
     private val tx: BusinessTransaction,
     private val sec: SecurityGuard,
     private val productionBatchSelector: ProductionBatchSelector,
-    private val itemStockMutator: ItemStockMutator
+    private val bookingRepository: BookingRepository
 ) {
 
     /**
@@ -40,5 +40,5 @@ class BookBatch(
         }
 
     private fun book(productionRunId: String, usage: Usage, batchSize: Int) =
-        itemStockMutator.book(productionRunId, usage.itemCode, usage.amount * batchSize.toBigDecimal())
+        bookingRepository.bookLine(productionRunId, usage.itemCode, usage.amount * batchSize.toBigDecimal())
 }

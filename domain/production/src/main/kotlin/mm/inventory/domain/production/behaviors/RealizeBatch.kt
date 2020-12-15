@@ -1,6 +1,6 @@
 package mm.inventory.domain.production.behaviors
 
-import mm.inventory.domain.inventory.ItemStockMutator
+import mm.inventory.domain.production.BookingRepository
 import mm.inventory.domain.production.PRODUCTION_ROLE
 import mm.inventory.domain.production.PRODUCTION_WRITER_ROLE
 import mm.inventory.domain.production.ProductionBatchBooking
@@ -15,7 +15,7 @@ class RealizeBatch(
     private val tx: BusinessTransaction,
     private val sec: SecurityGuard,
     private val productionBatchBookingSelector: ProductionBatchBookingSelector,
-    private val itemStockMutator: ItemStockMutator
+    private val bookingRepository: BookingRepository
 ) {
 
     fun execute(projectCode: String, revisionCode: String, batchId: Int) =
@@ -32,9 +32,9 @@ class RealizeBatch(
 
     private fun realizeBooking(booking: ProductionBatchBooking) {
         booking.bookings.forEach { bookingCapability ->
-            val deductedAmount = itemStockMutator.deduct(bookingCapability.booking)
-            if (deductedAmount < bookingCapability.booking.amount) {
-                throw BatchRealizationException("Booking not possible due to insufficient stock for ${bookingCapability.booking.itemCode} ($deductedAmount < ${bookingCapability.booking.amount}).")
+            val deductedAmount = bookingRepository.deduct(bookingCapability)
+            if (deductedAmount < bookingCapability.amount) {
+                throw BatchRealizationException("Booking not possible due to insufficient stock for ${bookingCapability.itemCode} ($deductedAmount < ${bookingCapability.amount}).")
             }
         }
     }
