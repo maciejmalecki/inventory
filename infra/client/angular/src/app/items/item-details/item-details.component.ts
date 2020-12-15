@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {Item} from '../../shared/services/item.service';
-import {isDictionaryType, isScalarType} from '../../shared/services/item-class.service';
+import {DictionaryValue, isDictionaryValue, isScalarValue, Item, Value} from '../../shared/services/item.service';
+import {DictionaryType} from '../../shared/services/item-class.service';
 
 @Component({
   selector: 'app-item-details',
@@ -11,8 +11,8 @@ import {isDictionaryType, isScalarType} from '../../shared/services/item-class.s
 export class ItemDetailsComponent implements OnInit {
 
   item: Item;
-  isScalarType = isScalarType;
-  isDictionaryType = isDictionaryType;
+  isScalarValue = isScalarValue;
+  isDictionaryValue = isDictionaryValue;
 
   constructor(private readonly activatedRoute: ActivatedRoute) {
     this.item = activatedRoute.snapshot.data.item;
@@ -21,4 +21,7 @@ export class ItemDetailsComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  getDictionaryValue(value: DictionaryValue) {
+    return (value.attribute.type as DictionaryType).items.find(value1 => value1.code === value.value).value;
+  }
 }

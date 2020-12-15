@@ -22,7 +22,7 @@ class ItemJdbiMutator(private val db: Jdbi) : ItemMutator {
                         itemName = item.name,
                         attributeType = value.attribute().name,
                         itemClassName = item.itemClass.name,
-                        value = value.value(),
+                        value = value.getValue(),
                         scale = value.scale
                     )
                 )
@@ -32,7 +32,7 @@ class ItemJdbiMutator(private val db: Jdbi) : ItemMutator {
                         attributeType = value.attribute().name,
                         itemClassName = item.itemClass.name,
                         attributeTypeName = value.attribute().name,
-                        code = value.value()
+                        code = value.getValue()
                     )
                 )
                 else -> throw RuntimeException("Unknown value type: ${value.javaClass.name}.")
@@ -48,7 +48,7 @@ class ItemJdbiMutator(private val db: Jdbi) : ItemMutator {
                     itemName = item.name,
                     attributeType = value.attribute.name,
                     itemClassName = item.itemClass.name,
-                    value = value.value(),
+                    value = value.getValue(),
                     scale = value.scale
                 )
             )
@@ -66,7 +66,7 @@ class ItemJdbiMutator(private val db: Jdbi) : ItemMutator {
                     attributeType = value.attribute.name,
                     itemClassName = item.itemClass.name,
                     attributeTypeName = value.attribute.name,
-                    code = value.value()
+                    code = value.getValue()
                 )
             )
             if (cnt != 1) {

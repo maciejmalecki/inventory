@@ -1,27 +1,12 @@
 <section class="mat-typography">
   <h1>{{ item.name }}<a mat-icon-button routerLink="edit"><mat-icon>edit</mat-icon></a></h1>
   <mat-divider></mat-divider>
-  <mat-grid-list cols="4" rowHeight="170px">
-    <mat-grid-tile *ngFor="let attribute of item.itemClass.attributes">
-      <mat-card class="attribute-card">
-        <mat-card-header>
-          <mat-icon mat-card-avatar matPrefix *ngIf="isScalarType(attribute.type)">flash_on</mat-icon>
-          <mat-icon mat-card-avatar matPrefix *ngIf="isDictionaryType(attribute.type)">list_alt</mat-icon>
-          <mat-card-title>{{attribute.name}}</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <div *ngIf="isScalarType(attribute.type)">
-            {{ attribute.type.unit.code }} ({{ attribute.type.unit.name }})
-          </div>
-          <div *ngIf="isDictionaryType(attribute.type)">
-            <ul>
-              <li *ngFor="let item of attribute.type.items; let last = last">
-                {{item.value}} ({{item.code}})
-              </li>
-            </ul>
-          </div>
-        </mat-card-content>
-      </mat-card>
-    </mat-grid-tile>
-  </mat-grid-list>
+  <mat-list role="list">
+    <mat-list-item role="listitem" *ngFor="let value of item.values">
+      <div class="value-name">{{value.attribute.name}}</div>
+      <div class="value scalar" *ngIf="isScalarValue(value)">{{ value.value }}</div>&nbsp;
+      <div class="unit" *ngIf="isScalarValue(value)">{{ value.attribute.type.unit.code }}</div>
+      <div class="value" *ngIf="isDictionaryValue(value)">{{ getDictionaryValue(value) }}</div>
+    </mat-list-item>
+  </mat-list>
 </section>

@@ -1,0 +1,9 @@
+.value-name {
+  width: 200px;
+}
+.value {
+  width: 100px;
+  &.scalar {
+    text-align: right;
+  }
+}
