@@ -71,7 +71,10 @@ This is the only place where dependencies to technologies such as Spring, JPA, J
 t.b.d.
 
 ### Web
-t.b.d.
+Here we place web servers (usually exposing REST interface that may be used by clients or other systems). Currently our example provides two client applications: one with Springboot based REST server and one with Springboot based Webflux reactive server.
+
+### Client
+In this specialized area we place all clients to the application including graphical clients, web clients and CLI. In this example we have an Angular client implementation.
 
 # OLD (to be cleaned up)
 
