@@ -8,6 +8,7 @@ import {ItemClassEditComponent} from './items/item-class-edit/item-class-edit.co
 import {ItemsComponent} from './items/items/items.component';
 import {ItemDetailsComponent} from './items/item-details/item-details.component';
 import {ItemResolver} from './items/item-details/item-resolver.service';
+import {ItemEditComponent} from './items/item-edit/item-edit.component';
 
 const routes: Routes = [
   {
@@ -39,6 +40,13 @@ const routes: Routes = [
   {
     path: 'items/:name',
     component: ItemDetailsComponent,
+    resolve: {
+      item: ItemResolver
+    }
+  },
+  {
+    path: 'items/:name/edit',
+    component: ItemEditComponent,
     resolve: {
       item: ItemResolver
     }

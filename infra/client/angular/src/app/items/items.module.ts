@@ -8,6 +8,7 @@ import {ItemClassEditComponent} from './item-class-edit/item-class-edit.componen
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {ItemsComponent} from './items/items.component';
 import {ItemDetailsComponent} from './item-details/item-details.component';
+import { ItemEditComponent } from './item-edit/item-edit.component';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import {ItemDetailsComponent} from './item-details/item-details.component';
     ItemClassesComponent,
     ItemClassEditComponent,
     ItemsComponent,
-    ItemDetailsComponent],
+    ItemDetailsComponent,
+    ItemEditComponent],
   imports: [
     CommonModule,
     RouterModule,

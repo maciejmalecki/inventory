@@ -1,0 +1,21 @@
+<section class="mat-typography">
+  <h1>{{ item.name }}
+    <button mat-icon-button><mat-icon>save</mat-icon></button>
+    <button mat-icon-button routerLink=".."><mat-icon>cancel</mat-icon></button>
+  </h1>
+  <form [formGroup]="formGroup">
+    <div *ngFor="let value of item.values">
+      <mat-form-field *ngIf="isScalarValue(value)">
+        <mat-label>{{value.attribute.name}}</mat-label>
+        <input type="text" matInput [placeholder]="value.attribute.name" formControlName="{{value.attribute.name}}">
+        <span matSuffix>{{value.attribute.type.unit.code}}</span>
+      </mat-form-field>
+      <mat-form-field *ngIf="isDictionaryValue(value)">
+        <mat-label>{{value.attribute.name}}</mat-label>
+        <mat-select formControlName="{{value.attribute.name}}">
+          <mat-option *ngFor="let item of value.attribute.type.items" [value]="item.code">{{item.value}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </form>
+</section>
