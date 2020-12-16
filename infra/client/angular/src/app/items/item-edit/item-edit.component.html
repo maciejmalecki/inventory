@@ -1,6 +1,6 @@
 <section class="mat-typography">
   <h1>{{ item.name }}
-    <button mat-icon-button><mat-icon>save</mat-icon></button>
+    <button mat-icon-button (click)="save()"><mat-icon>save</mat-icon></button>
     <button mat-icon-button routerLink=".."><mat-icon>cancel</mat-icon></button>
   </h1>
   <form [formGroup]="formGroup">

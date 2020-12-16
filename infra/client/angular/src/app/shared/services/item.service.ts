@@ -1,4 +1,4 @@
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpResponse} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {Attribute, isDictionaryType, isScalarType, ItemClass} from './item-class.service';
@@ -27,9 +27,15 @@ export interface Item {
   values: Array<Value>;
 }
 
+export interface AttributeValuation {
+  attribute: string;
+  value: string;
+}
+
 export function isScalarValue(value: Value): value is ScalarValue {
   return isScalarType(value.attribute.type);
 }
+
 export function isDictionaryValue(value: Value): value is DictionaryValue {
   return isDictionaryType(value.attribute.type);
 }
@@ -49,5 +55,9 @@ export class ItemService {
 
   getItem(name: string): Observable<Item> {
     return this.httpClient.get<Item>(`${apiPrefix}/${name}`);
+  }
+
+  updateItem(name: string, attributeValuations: Array<AttributeValuation>): Observable<HttpResponse<string>> {
+    return this.httpClient.post<string>(`${apiPrefix}/${name}`, attributeValuations, {observe: 'response'});
   }
 }
