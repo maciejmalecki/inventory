@@ -1,7 +1,7 @@
 package mm.inventory.domain.production
 
 import kotlinx.collections.immutable.ImmutableSet
-import mm.inventory.domain.inventory.BookingCapability
+import java.math.BigDecimal
 
 data class ProductionBatch(
     val batchNo: Int,
@@ -10,9 +10,16 @@ data class ProductionBatch(
     val batchSize: Int
 )
 
+data class LineBooking(
+    val bookingId: String,
+    val itemCode: String,
+    val amount: BigDecimal,
+    val bookable: Boolean
+)
+
 data class ProductionBatchBooking(
     val productionRunId: String,
-    val bookings: ImmutableSet<BookingCapability>
+    val bookings: ImmutableSet<LineBooking>
 ) {
     val bookable = bookings.all { it.bookable }
 }

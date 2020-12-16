@@ -1,0 +1,12 @@
+<section class="mat-typography">
+  <h1>{{ item.name }}<a mat-icon-button routerLink="edit"><mat-icon>edit</mat-icon></a></h1>
+  <mat-divider></mat-divider>
+  <mat-list role="list">
+    <mat-list-item role="listitem" *ngFor="let value of item.values">
+      <div class="value-name">{{value.attribute.name}}</div>
+      <div class="value scalar" *ngIf="isScalarValue(value)">{{ value.value }}</div>&nbsp;
+      <div class="unit" *ngIf="isScalarValue(value)">{{ value.attribute.type.unit.code }}</div>
+      <div class="value" *ngIf="isDictionaryValue(value)">{{ getDictionaryValue(value) }}</div>
+    </mat-list-item>
+  </mat-list>
+</section>

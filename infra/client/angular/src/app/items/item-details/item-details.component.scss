@@ -1,0 +1,15 @@
+.value-name {
+  width: 200px;
+}
+.value {
+  width: 150px;
+  &.scalar {
+    text-align: right;
+  }
+}
+h1 {
+  a {
+    position: relative;
+    top: -5px;
+  }
+}

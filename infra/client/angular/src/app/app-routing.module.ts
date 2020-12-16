@@ -2,7 +2,13 @@ import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {DashboardComponent} from './dashboard/dashboard.component';
 import {ItemClassDetailsComponent} from './items/item-class-details/item-class-details.component';
-import {ItemClassDetailsResolver} from './items/item-class-details/ItemClassDetailsResolver';
+import {ItemClassResolver} from './items/item-class-details/item-class-resolver.service';
+import {ItemClassesComponent} from './items/item-classes/item-classes.component';
+import {ItemClassEditComponent} from './items/item-class-edit/item-class-edit.component';
+import {ItemsComponent} from './items/items/items.component';
+import {ItemDetailsComponent} from './items/item-details/item-details.component';
+import {ItemResolver} from './items/item-details/item-resolver.service';
+import {ItemEditComponent} from './items/item-edit/item-edit.component';
 
 const routes: Routes = [
   {
@@ -11,15 +17,39 @@ const routes: Routes = [
   },
   {
     path: 'itemClasses',
-    children: [
-      {
-        path: ':name',
-        component: ItemClassDetailsComponent,
-        resolve: {
-          itemClass: ItemClassDetailsResolver
-        }
-      }
-    ]
+    component: ItemClassesComponent
+  },
+  {
+    path: 'itemClasses/:name',
+    component: ItemClassDetailsComponent,
+    resolve: {
+      itemClass: ItemClassResolver
+    }
+  },
+  {
+    path: 'itemClasses/:name/edit',
+    component: ItemClassEditComponent,
+    resolve: {
+      itemClass: ItemClassResolver
+    }
+  },
+  {
+    path: 'items',
+    component: ItemsComponent
+  },
+  {
+    path: 'items/:name',
+    component: ItemDetailsComponent,
+    resolve: {
+      item: ItemResolver
+    }
+  },
+  {
+    path: 'items/:name/edit',
+    component: ItemEditComponent,
+    resolve: {
+      item: ItemResolver
+    }
   }
 ];
 

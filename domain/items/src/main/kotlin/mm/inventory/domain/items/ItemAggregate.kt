@@ -11,19 +11,19 @@ data class Item(
 interface Value<out T> {
     fun attribute(): Attribute
     fun isValid(): Boolean
-    fun value(): T
+    fun getValue(): T
 }
 
 data class ScalarValue(val attribute: Attribute, private val value: BigDecimal, val scale: Int) : Value<BigDecimal> {
     override fun attribute() = attribute
     override fun isValid() = true
-    override fun value(): BigDecimal = value
+    override fun getValue(): BigDecimal = value
 }
 
 data class DictionaryValue(val attribute: Attribute, private val value: String) : Value<String> {
     override fun attribute() = attribute
     override fun isValid() = attribute.type.isValid(value)
-    override fun value() = value
+    override fun getValue() = value
 }
 
 fun Attribute.parse(value: String): Value<*> =

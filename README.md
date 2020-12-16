@@ -20,10 +20,10 @@ The category to which given module belongs determines dependencies that are allo
 The domain area is where we model business logic, the most critical enterprise business rules and data structures. In general, this is a digital model of real business that is usually well establish since years or decades. We do not expect these rules to change rapidly, but rather evolve slowly. It is then worth of investing, to get the cleanest and more correct implementation. In ideal world, this layer should survive he most intense technological revolutions.
 
 ### Subdomains
-t.b.d.
+If domain is big enough that it consist on several subdomains, these can be represented by separate modules on domain level. Use build tool (i.e. Gradle) dependency model to restrict dependencies between subdomains.
 
 ### Business components
-t.b.d.
+Within a subdomain, the primary packaging scheme should follow business component split. Usually there is one component per one aggregate but this is not a hard restriction.
 
 ### Entities and aggregates
 Entities are classes of persistent objects. Aggregates are complex objects treated as a whole. Because of CQRS approach, I model entities and aggregates as immutable objects. Their state is obtained via selectors, but modifications are performed only via mutators. Because in this approach entities and aggregates are immutable, they cannot have any state mutating methods. That is, the only methods of such aggregates are querying methods. Instead of state mutating methods we use external objects, so-called Behaviors.
@@ -41,6 +41,12 @@ Behavior is a class that is usually bound with one or more entities (or aggregat
 ## App
 The App (application) is place where we model application specific logic - that is, the logic that you don't discuss with business experts but are nonetheless necessary to implement the application. We will include most of the CRUD functionalities here that are not needed with respect to the domain but are necessary to give data provisioning capabilities. All bulk operations included imports falls into this category too. When using CQRS approach, most of the "Q" functionality falls here as well.
 
+### Applications
+Under `app` directory we collect modules for applications. We follow scheme one application - one module. Name the module after the application, i.e. `productplanner`.
+
+### Application components
+Primary package composition inside application module should always be an application component. Application component split may follow the business domain component split (but does not need to), plus can introduce several additional components that are purely application specific.
+
 ### Queries
 Queries are read only repositories that extends functionality of selectors (from the domain). These are necessary to fulfill certain read capabilities of clients (i.e. REST interfaces). We don't expect all view capabilities can be served with aggregates - this is not practical and surely not very performant.
 
@@ -51,6 +57,21 @@ These repositories are extending mutators (and selectors, queries) with modify c
 Component facades are declared in app and are forming facade over domain plus application specific functions such as CRUDs and queries. From the domain, facades are shielding repositories and behaviors.
 
 We expect a facade per business component.
+
+## Infra
+Here we place concrete implementations built with very concrete technologies. Examples are:
+* Springboot application,
+* graphical web Angular based client,
+* JPA implementation of the repositories,
+* Spring-batch based processors.
+
+This is the only place where dependencies to technologies such as Spring, JPA, JDBC, Servlet-API and similar are allowed in 0dependency architecture.
+
+### Store
+t.b.d.
+
+### Web
+t.b.d.
 
 # OLD (to be cleaned up)
 

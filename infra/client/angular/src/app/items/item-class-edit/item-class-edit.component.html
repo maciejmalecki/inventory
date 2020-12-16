@@ -1,0 +1,13 @@
+<section class="mat-typography">
+  <form [formGroup]="formGroup">
+    <h1>
+      {{ itemClass.name }}
+      <button mat-icon-button><mat-icon>save</mat-icon></button>
+      <button mat-icon-button routerLink=".."><mat-icon>cancel</mat-icon></button>
+    </h1>
+    <mat-form-field>
+      <mat-label>Description</mat-label>
+      <textarea matInput rows="4" placeholder="Description" formControlName="description"></textarea>
+    </mat-form-field>
+  </form>
+</section>
