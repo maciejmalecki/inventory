@@ -26,12 +26,12 @@ export class CreateItemResolver implements Resolve<Item> {
           attribute,
           value: 0,
           scale: 1
-        }
+        };
       } else if (isDictionaryType(attribute.type)) {
         return {
           attribute,
           value: ''
-        }
+        };
       }
     }
     function createBlankItem(itemClass: ItemClass): Item {
@@ -39,7 +39,7 @@ export class CreateItemResolver implements Resolve<Item> {
         name: '',
         itemClass,
         values: itemClass.attributes.map(value => createValue(value))
-      }
+      };
     }
     return this.itemClassService.getItemClass(route.params.name).pipe(
       map(value => createBlankItem(value)));
