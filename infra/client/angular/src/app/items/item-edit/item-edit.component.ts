@@ -16,6 +16,7 @@ import {FormControl, FormGroup} from '@angular/forms';
 })
 export class ItemEditComponent implements OnInit {
 
+  createMode: boolean;
   item: Item;
   isScalarValue = isScalarValue;
   isDictionaryValue = isDictionaryValue;
@@ -27,12 +28,18 @@ export class ItemEditComponent implements OnInit {
     private readonly itemService: ItemService
   ) {
     this.item = activatedRoute.snapshot.data.item;
+    this.createMode = activatedRoute.snapshot.data.createMode;
   }
 
   ngOnInit(): void {
     this.formGroup = new FormGroup(
-      Object.assign({}, ...this.item.values.map(value => ({
-        [value.attribute.name]: new FormControl(value.value)
+      Object.assign({
+        itemName: new FormControl({
+          value: this.item.name,
+          disabled: !this.createMode
+        })
+      }, ...this.item.values.map(value => ({
+        [value.attribute.name]: new FormControl(value.value, [])
       })))
     );
   }
@@ -40,11 +47,19 @@ export class ItemEditComponent implements OnInit {
   save(): void {
     const controls = this.formGroup.controls;
     const changes: Array<AttributeValuation> = [];
-    if (this.formGroup.dirty) {
+    if (this.formGroup.invalid) {
+      console.warn('An attempt to save invalid data.');
+      return;
+    }
+    if (this.createMode || this.formGroup.dirty) {
+      const nameFC = this.formGroup.get('itemName');
+      if (this.createMode) {
+        this.item.name = nameFC.value;
+      }
       for (const prop in controls) {
         if (Object.prototype.hasOwnProperty.call(controls, prop)) {
           const formControl = this.formGroup.get(prop);
-          if (formControl.dirty) {
+          if (this.createMode || formControl.dirty) {
             changes.push({
               attribute: prop,
               value: formControl.value
@@ -53,7 +68,13 @@ export class ItemEditComponent implements OnInit {
         }
       }
     }
-    if (changes.length > 0) {
+    if (this.createMode) {
+      this.itemService.createItem(this.item.name, this.item.itemClass.name, changes).subscribe(response => {
+        console.log(response);
+        this.router.navigate(['items', this.item.name]).catch(reason => console.warn(reason));
+      });
+    }
+    else if (changes.length > 0) {
       this.itemService.updateItem(this.item.name, changes).subscribe(response => {
         if (response.ok) {
           this.router.navigate(['items', this.item.name]).catch(reason => console.warn(reason));
