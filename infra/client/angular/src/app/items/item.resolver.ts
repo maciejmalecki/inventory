@@ -1,4 +1,4 @@
-import {Item, ItemService} from '../../shared/services/item.service';
+import {Item, ItemService} from '../shared/services/item.service';
 import {ActivatedRouteSnapshot, Resolve, RouterStateSnapshot} from '@angular/router';
 import {Observable} from 'rxjs';
 import {Injectable} from '@angular/core';

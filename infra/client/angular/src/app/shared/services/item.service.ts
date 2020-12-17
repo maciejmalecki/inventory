@@ -60,4 +60,8 @@ export class ItemService {
   updateItem(name: string, attributeValuations: Array<AttributeValuation>): Observable<HttpResponse<string>> {
     return this.httpClient.post<string>(`${apiPrefix}/${name}`, attributeValuations, {observe: 'response'});
   }
+
+  createItem(name: string, itemClassName: string, attributeValuations: Array<AttributeValuation>): Observable<Item> {
+    return this.httpClient.post<Item>(`${apiPrefix}`, {name, itemClassName, inValues: attributeValuations});
+  }
 }

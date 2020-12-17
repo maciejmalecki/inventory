@@ -7,8 +7,9 @@ import {ItemClassesComponent} from './items/item-classes/item-classes.component'
 import {ItemClassEditComponent} from './items/item-class-edit/item-class-edit.component';
 import {ItemsComponent} from './items/items/items.component';
 import {ItemDetailsComponent} from './items/item-details/item-details.component';
-import {ItemResolver} from './items/item-details/item-resolver.service';
+import {ItemResolver} from './items/item.resolver';
 import {ItemEditComponent} from './items/item-edit/item-edit.component';
+import {CreateItemResolver} from './items/create-item.resolver';
 
 const routes: Routes = [
   {
@@ -24,6 +25,16 @@ const routes: Routes = [
     component: ItemClassDetailsComponent,
     resolve: {
       itemClass: ItemClassResolver
+    }
+  },
+  {
+    path: 'itemClasses/:name/newItem',
+    component: ItemEditComponent,
+    data: {
+      createMode: true
+    },
+    resolve: {
+      item: CreateItemResolver,
     }
   },
   {
@@ -47,6 +58,9 @@ const routes: Routes = [
   {
     path: 'items/:name/edit',
     component: ItemEditComponent,
+    data: {
+      createMode: false
+    },
     resolve: {
       item: ItemResolver
     }

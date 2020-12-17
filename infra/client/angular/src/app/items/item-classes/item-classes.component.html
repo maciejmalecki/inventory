@@ -29,7 +29,7 @@
         </mat-card-content>
         <mat-card-actions>
           <a mat-button routerLink="{{itemClass.name}}">{{ 'Show' | uppercase }}</a>
-          <button mat-button>{{ 'Add new' | uppercase }}</button>
+          <a mat-button routerLink="{{itemClass.name}}/newItem">{{ 'Add new' | uppercase }}</a>
         </mat-card-actions>
       </mat-card>
     </mat-grid-tile>
