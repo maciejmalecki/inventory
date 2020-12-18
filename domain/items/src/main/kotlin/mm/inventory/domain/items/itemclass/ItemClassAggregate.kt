@@ -3,6 +3,7 @@ package mm.inventory.domain.items.itemclass
 import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.toImmutableMap
 import mm.inventory.domain.shared.NotFoundException
+import mm.inventory.domain.shared.types.ItemClassId
 import java.math.BigDecimal
 import java.util.stream.Collectors
 
@@ -10,6 +11,7 @@ import java.util.stream.Collectors
  * Class of items - a template allowing creation of items.
  */
 data class ItemClass(
+    val id: ItemClassId,
     val name: String,
     val description: String,
     val amountUnit: UnitOfMeasurement,

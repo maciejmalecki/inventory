@@ -10,6 +10,7 @@ import mm.inventory.domain.items.item.ItemMutator
 import mm.inventory.domain.items.item.parse
 import mm.inventory.domain.shared.security.SecurityGuard
 import mm.inventory.domain.shared.transactions.BusinessTransaction
+import mm.inventory.domain.shared.types.emptyItemId
 
 /**
  * Implementation of "create item" use case.
@@ -36,7 +37,7 @@ class CreateItem(
                         ?: throw RuntimeException("A value for `${attribute.name}` attribute is not provided.")
                     attribute.parse(rawValue)
                 }
-                val item = Item(name, itemClass, values.toImmutableSet())
+                val item = Item(emptyItemId, name, itemClass, values.toImmutableSet())
                 itemMutator.persist(item)
                 return@inTransaction item
             }

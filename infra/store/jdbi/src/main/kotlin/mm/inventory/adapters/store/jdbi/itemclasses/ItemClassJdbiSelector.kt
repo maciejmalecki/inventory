@@ -38,6 +38,7 @@ class ItemClassJdbiSelector(private val db: Jdbi) : ItemClassSelector {
 
                 // build up the aggregate out of fetched data
                 ItemClass(
+                        JdbiItemClassId(itemClassRec.name),
                         itemClassRec.name,
                         itemClassRec.description,
                         UnitOfMeasurement(unitRec.code, unitRec.name),

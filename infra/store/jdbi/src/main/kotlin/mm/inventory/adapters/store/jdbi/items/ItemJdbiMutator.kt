@@ -4,11 +4,15 @@ import mm.inventory.domain.items.item.DictionaryValue
 import mm.inventory.domain.items.item.Item
 import mm.inventory.domain.items.item.ItemMutator
 import mm.inventory.domain.items.item.ScalarValue
+import mm.inventory.domain.shared.types.emptyItemId
 import org.jdbi.v3.core.Jdbi
 
 class ItemJdbiMutator(private val db: Jdbi) : ItemMutator {
 
     override fun persist(item: Item) = db.useTransaction<RuntimeException> { handle ->
+        if (!item.id.empty) {
+            throw IllegalArgumentException("The item ${item.id} cannot be persisted, because of nonempty id.")
+        }
 
         val itemDao = handle.attach(ItemDao::class.java)
 

@@ -5,9 +5,11 @@ import mm.inventory.domain.items.itemclass.Attribute
 import mm.inventory.domain.items.itemclass.DictionaryType
 import mm.inventory.domain.items.itemclass.ItemClass
 import mm.inventory.domain.items.itemclass.ScalarType
+import mm.inventory.domain.shared.types.ItemId
 import java.math.BigDecimal
 
 data class Item(
+    val id: ItemId,
     val name: String,
     val itemClass: ItemClass,
     val values: ImmutableSet<Value<*>>)
