@@ -4,8 +4,8 @@ import mm.inventory.app.productplanner.item.ItemQuery
 import mm.inventory.app.productplanner.item.ItemFacade
 import mm.inventory.app.productplanner.itemclass.ItemClassFacade
 import mm.inventory.app.productplanner.itemclass.ItemClassQuery
-import mm.inventory.domain.items.ItemClassSelector
-import mm.inventory.domain.items.ItemSelector
+import mm.inventory.domain.items.itemclass.ItemClassSelector
+import mm.inventory.domain.items.item.ItemSelector
 import mm.inventory.domain.items.behaviors.CreateItem
 import mm.inventory.domain.items.behaviors.UpdateItem
 import org.springframework.context.annotation.Bean

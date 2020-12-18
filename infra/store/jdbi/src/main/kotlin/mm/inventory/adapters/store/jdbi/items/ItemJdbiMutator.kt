@@ -1,9 +1,9 @@
 package mm.inventory.adapters.store.jdbi.items
 
-import mm.inventory.domain.items.DictionaryValue
-import mm.inventory.domain.items.Item
-import mm.inventory.domain.items.ItemMutator
-import mm.inventory.domain.items.ScalarValue
+import mm.inventory.domain.items.item.DictionaryValue
+import mm.inventory.domain.items.item.Item
+import mm.inventory.domain.items.item.ItemMutator
+import mm.inventory.domain.items.item.ScalarValue
 import org.jdbi.v3.core.Jdbi
 
 class ItemJdbiMutator(private val db: Jdbi) : ItemMutator {

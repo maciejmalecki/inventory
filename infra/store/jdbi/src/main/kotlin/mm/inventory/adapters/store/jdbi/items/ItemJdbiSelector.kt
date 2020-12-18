@@ -1,11 +1,11 @@
 package mm.inventory.adapters.store.jdbi.items
 
 import kotlinx.collections.immutable.toImmutableSet
-import mm.inventory.domain.items.ItemClassSelector
-import mm.inventory.domain.items.DictionaryValue
-import mm.inventory.domain.items.Item
-import mm.inventory.domain.items.ItemSelector
-import mm.inventory.domain.items.ScalarValue
+import mm.inventory.domain.items.itemclass.ItemClassSelector
+import mm.inventory.domain.items.item.DictionaryValue
+import mm.inventory.domain.items.item.Item
+import mm.inventory.domain.items.item.ItemSelector
+import mm.inventory.domain.items.item.ScalarValue
 import org.jdbi.v3.core.Jdbi
 
 class ItemJdbiSelector(private val db: Jdbi, private val itemClassSelector: ItemClassSelector) : ItemSelector {

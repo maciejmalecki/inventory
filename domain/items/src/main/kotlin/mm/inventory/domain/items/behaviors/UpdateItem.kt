@@ -1,15 +1,15 @@
 package mm.inventory.domain.items.behaviors
 
 import kotlinx.collections.immutable.ImmutableMap
-import mm.inventory.domain.items.DictionaryValue
+import mm.inventory.domain.items.item.DictionaryValue
 import mm.inventory.domain.items.ITEMS_ROLE
 import mm.inventory.domain.items.ITEMS_WRITER_ROLE
-import mm.inventory.domain.items.Item
-import mm.inventory.domain.items.ItemMutator
-import mm.inventory.domain.items.ItemSelector
-import mm.inventory.domain.items.ScalarValue
-import mm.inventory.domain.items.Value
-import mm.inventory.domain.items.parse
+import mm.inventory.domain.items.item.Item
+import mm.inventory.domain.items.item.ItemMutator
+import mm.inventory.domain.items.item.ItemSelector
+import mm.inventory.domain.items.item.ScalarValue
+import mm.inventory.domain.items.item.Value
+import mm.inventory.domain.items.item.parse
 import mm.inventory.domain.shared.security.SecurityGuard
 import mm.inventory.domain.shared.transactions.BusinessTransaction
 

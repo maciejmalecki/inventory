@@ -2,7 +2,7 @@ package mm.inventory.adapter.web.spring.rest
 
 import mm.inventory.app.productplanner.itemclass.ItemClassFacade
 import mm.inventory.app.productplanner.itemclass.ItemClassHeader
-import mm.inventory.domain.items.ItemClass
+import mm.inventory.domain.items.itemclass.ItemClass
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable

@@ -1,6 +1,10 @@
-package mm.inventory.domain.items
+package mm.inventory.domain.items.item
 
 import kotlinx.collections.immutable.ImmutableSet
+import mm.inventory.domain.items.itemclass.Attribute
+import mm.inventory.domain.items.itemclass.DictionaryType
+import mm.inventory.domain.items.itemclass.ItemClass
+import mm.inventory.domain.items.itemclass.ScalarType
 import java.math.BigDecimal
 
 data class Item(

@@ -2,14 +2,14 @@ package mm.inventory.adapters.store.jdbi.itemclasses
 
 import kotlinx.collections.immutable.toImmutableSet
 import mm.inventory.adapters.store.jdbi.units.UnitDao
-import mm.inventory.domain.items.Attribute
-import mm.inventory.domain.items.DictionaryItem
-import mm.inventory.domain.items.DictionaryType
-import mm.inventory.domain.items.ItemClass
-import mm.inventory.domain.items.ItemClassSelector
-import mm.inventory.domain.items.ItemClassVersion
-import mm.inventory.domain.items.ScalarType
-import mm.inventory.domain.items.UnitOfMeasurement
+import mm.inventory.domain.items.itemclass.Attribute
+import mm.inventory.domain.items.itemclass.DictionaryItem
+import mm.inventory.domain.items.itemclass.DictionaryType
+import mm.inventory.domain.items.itemclass.ItemClass
+import mm.inventory.domain.items.itemclass.ItemClassSelector
+import mm.inventory.domain.items.itemclass.ItemClassVersion
+import mm.inventory.domain.items.itemclass.ScalarType
+import mm.inventory.domain.items.itemclass.UnitOfMeasurement
 import org.jdbi.v3.core.Jdbi
 
 /**

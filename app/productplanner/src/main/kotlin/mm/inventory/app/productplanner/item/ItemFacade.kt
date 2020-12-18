@@ -2,8 +2,8 @@ package mm.inventory.app.productplanner.item
 
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
-import mm.inventory.domain.items.Item
-import mm.inventory.domain.items.ItemSelector
+import mm.inventory.domain.items.item.Item
+import mm.inventory.domain.items.item.ItemSelector
 import mm.inventory.domain.items.behaviors.CreateItem
 import mm.inventory.domain.items.behaviors.UpdateItem
 

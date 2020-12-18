@@ -1,4 +1,4 @@
-package mm.inventory.domain.items
+package mm.inventory.domain.items.itemclass
 
 import mm.inventory.domain.shared.NotFoundException
 
