@@ -35,9 +35,10 @@ export class CreateItemResolver implements Resolve<Item> {
       }
     }
     function createBlankItem(itemClass: ItemClass): Item {
+      console.log(itemClass.id);
       return {
         name: '',
-        itemClass,
+        itemClassId: itemClass.id,
         values: itemClass.attributes.map(value => createValue(value))
       };
     }

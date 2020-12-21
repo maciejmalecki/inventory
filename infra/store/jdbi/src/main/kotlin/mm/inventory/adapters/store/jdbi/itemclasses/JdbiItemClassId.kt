@@ -4,7 +4,7 @@ import mm.inventory.domain.shared.types.ItemClassId
 
 fun createItemClassId(id: String): ItemClassId = JdbiItemClassId(id)
 
-internal class JdbiItemClassId(internal val id: String) : ItemClassId {
+internal data class JdbiItemClassId(val id: String) : ItemClassId {
     override fun `==`(other: ItemClassId): Boolean {
         val jdbiId = other.toJdbiId() ?: return false
         return jdbiId.id == id
@@ -19,7 +19,7 @@ internal fun ItemClassId.toJdbiId(): JdbiItemClassId? =
         else -> null
     }
 
-internal fun ItemClassId.asJdbiId(): ItemClassId =
+internal fun ItemClassId.asJdbiId(): JdbiItemClassId =
     this.toJdbiId() ?: throw IllegalArgumentException("Unknown implementaiton: ${this.javaClass.name}.")
 
 

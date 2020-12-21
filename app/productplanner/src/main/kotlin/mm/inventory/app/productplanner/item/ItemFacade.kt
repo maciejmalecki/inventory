@@ -6,6 +6,7 @@ import mm.inventory.domain.items.item.Item
 import mm.inventory.domain.items.item.ItemSelector
 import mm.inventory.domain.items.behaviors.CreateItem
 import mm.inventory.domain.items.behaviors.UpdateItem
+import mm.inventory.domain.shared.types.ItemClassId
 import mm.inventory.domain.shared.types.ItemId
 
 /**
@@ -20,8 +21,8 @@ class ItemFacade(
     fun findAllItems(): ImmutableList<ItemHeader> = itemQuery.findAll()
     fun findById(id: ItemId): Item? = itemSelector.findById(id)
 
-    fun createItem(name: String, itemClassName: String, inValues: ImmutableMap<String, String>): Item =
-        createItem.execute(name, itemClassName, inValues)
+    fun createItem(name: String, itemClassId: ItemClassId, inValues: ImmutableMap<String, String>): Item =
+        createItem.execute(name, itemClassId, inValues)
 
     fun updateItem(id: ItemId, inValues: ImmutableMap<String, String>) =
         updateItem.execute(id, inValues)

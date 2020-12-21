@@ -1,6 +1,7 @@
 package mm.inventory.adapter.web.spring.rest
 
 import kotlinx.collections.immutable.toImmutableMap
+import mm.inventory.adapters.store.jdbi.itemclasses.createItemClassId
 import mm.inventory.adapters.store.jdbi.items.createItemId
 import mm.inventory.app.productplanner.item.ItemFacade
 import mm.inventory.app.productplanner.item.ItemHeader
@@ -36,7 +37,7 @@ class ItemsController(private val itemFacade: ItemFacade) {
         ResponseEntity.ok().body(
             itemFacade.createItem(
                 requestData.name,
-                requestData.itemClassName,
+                createItemClassId(requestData.itemClassName),
                 requestData.inValues.stream().collect(
                     Collectors.toMap({ v -> v.attribute }, { v -> v.value })
                 ).toImmutableMap()

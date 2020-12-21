@@ -10,6 +10,7 @@ import mm.inventory.domain.items.item.ItemMutator
 import mm.inventory.domain.items.item.parse
 import mm.inventory.domain.shared.security.SecurityGuard
 import mm.inventory.domain.shared.transactions.BusinessTransaction
+import mm.inventory.domain.shared.types.ItemClassId
 import mm.inventory.domain.shared.types.emptyItemId
 
 /**
@@ -25,19 +26,19 @@ class CreateItem(
     /**
      * Creates new Item's instance based on provided description.
      * @param name name of the item
-     * @param itemClassName name of the ItemClass
+     * @param itemClassId id of the ItemClass
      * @param inValues attribute values specified as a "attribute name" to "string representation of attribute's value"
      */
-    fun execute(name: String, itemClassName: String, inValues: ImmutableMap<String, String>): Item =
+    fun execute(name: String, itemClassId: ItemClassId, inValues: ImmutableMap<String, String>): Item =
         sec.requireAllRoles(ITEMS_ROLE, ITEMS_WRITER_ROLE) {
             tx.inTransaction {
-                val itemClass = itemClassSelector.get(itemClassName)
+                val itemClass = itemClassSelector.get(itemClassId)
                 val values = itemClass.attributes.map { attribute ->
                     val rawValue = inValues[attribute.name]
                         ?: throw RuntimeException("A value for `${attribute.name}` attribute is not provided.")
                     attribute.parse(rawValue)
                 }
-                val item = Item(emptyItemId, name, itemClass, values.toImmutableSet())
+                val item = Item(emptyItemId, name, itemClassId, values.toImmutableSet())
                 itemMutator.persist(item)
                 return@inTransaction item
             }

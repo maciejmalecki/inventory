@@ -10,6 +10,7 @@ import mm.inventory.domain.items.item.ItemSelector
 import mm.inventory.domain.items.item.ScalarValue
 import mm.inventory.domain.items.item.Value
 import mm.inventory.domain.items.item.parse
+import mm.inventory.domain.items.itemclass.ItemClassSelector
 import mm.inventory.domain.shared.security.SecurityGuard
 import mm.inventory.domain.shared.transactions.BusinessTransaction
 import mm.inventory.domain.shared.types.ItemId
@@ -18,14 +19,15 @@ class UpdateItem(
     private val tx: BusinessTransaction,
     private val sec: SecurityGuard,
     private val itemSelector: ItemSelector,
-    private val itemMutator: ItemMutator
+    private val itemMutator: ItemMutator,
+    private val itemClassSelector: ItemClassSelector
 ) {
 
     fun execute(id: ItemId, inValues: ImmutableMap<String, String>) =
         sec.requireAllRoles(ITEMS_ROLE, ITEMS_WRITER_ROLE) {
             tx.inTransaction {
                 val item = itemSelector.get(id)
-                val itemClass = item.itemClass
+                val itemClass = itemClassSelector.get(item.itemClassId)
                 inValues.entries.forEach { (attributeName, value) ->
                     val attribute = itemClass.getAttribute(attributeName)
                     val attributeValue = attribute.parse(value)

@@ -1,6 +1,7 @@
 package mm.inventory.adapters.store.jdbi.items
 
 import kotlinx.collections.immutable.toImmutableSet
+import mm.inventory.adapters.store.jdbi.itemclasses.createItemClassId
 import mm.inventory.domain.items.itemclass.ItemClassSelector
 import mm.inventory.domain.items.item.DictionaryValue
 import mm.inventory.domain.items.item.Item
@@ -17,7 +18,7 @@ class ItemJdbiSelector(private val db: Jdbi, private val itemClassSelector: Item
 
         val itemRec = itemDao.selectItem(id.asJdbiId().id)
             ?: return@withHandle null
-        val itemClass = itemClassSelector.findByName(itemRec.itemClassName)
+        val itemClass = itemClassSelector.findById(createItemClassId(itemRec.itemClassName))
             ?: throw RuntimeException("Item Class for name ${itemRec.itemClassName} not found.")
 
         val scalarValues = itemDao.selectScalars(id.asJdbiId().id).map {
@@ -38,7 +39,7 @@ class ItemJdbiSelector(private val db: Jdbi, private val itemClassSelector: Item
         Item(
             id = JdbiItemId(itemRec.name),
             name = itemRec.name,
-            itemClass = itemClass,
+            itemClassId = itemClass.id,
             values = (scalarValues union dictionaryValues).toImmutableSet()
         )
     }

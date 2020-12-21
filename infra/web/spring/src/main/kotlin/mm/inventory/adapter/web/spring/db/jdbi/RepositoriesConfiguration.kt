@@ -38,7 +38,7 @@ class RepositoriesConfiguration(
     fun itemCreator() = CreateItem(businessTransaction(), securityGuard, itemClassSelector(), itemMutator())
 
     @Bean
-    fun itemUpdater() = UpdateItem(businessTransaction(), securityGuard, itemSelector(), itemMutator())
+    fun itemUpdater() = UpdateItem(businessTransaction(), securityGuard, itemSelector(), itemMutator(), itemClassSelector())
 
     @Bean
     fun itemCrudQuery() = ItemJdbiQuery(jdbi)
