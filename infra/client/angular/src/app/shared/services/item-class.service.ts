@@ -7,7 +7,12 @@ export interface ItemClassHeader {
   description: string;
 }
 
+export interface ItemClassId {
+  id: string;
+}
+
 export interface ItemClass {
+  id: ItemClassId;
   name: string;
   description: string;
   amountUnit: UnitOfMeasurement;

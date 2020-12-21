@@ -1,9 +1,11 @@
 package mm.inventory.adapter.web.spring.rest
 
 import kotlinx.collections.immutable.toImmutableMap
+import mm.inventory.adapters.store.jdbi.itemclasses.createItemClassId
+import mm.inventory.adapters.store.jdbi.items.createItemId
 import mm.inventory.app.productplanner.item.ItemFacade
 import mm.inventory.app.productplanner.item.ItemHeader
-import mm.inventory.domain.items.Item
+import mm.inventory.domain.items.item.Item
 import mm.inventory.domain.shared.NotFoundException
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -35,16 +37,16 @@ class ItemsController(private val itemFacade: ItemFacade) {
         ResponseEntity.ok().body(
             itemFacade.createItem(
                 requestData.name,
-                requestData.itemClassName,
+                createItemClassId(requestData.itemClassName),
                 requestData.inValues.stream().collect(
                     Collectors.toMap({ v -> v.attribute }, { v -> v.value })
                 ).toImmutableMap()
             )
         )
 
-    @GetMapping("/items/{itemName}")
-    fun item(@PathVariable itemName: String): ResponseEntity<Item> {
-        val item = itemFacade.findByName(itemName)
+    @GetMapping("/items/{id}")
+    fun item(@PathVariable id: String): ResponseEntity<Item> {
+        val item = itemFacade.findById(createItemId(id))
         return if (item != null) {
             ResponseEntity.ok(item)
         } else {
@@ -52,14 +54,14 @@ class ItemsController(private val itemFacade: ItemFacade) {
         }
     }
 
-    @PostMapping("/items/{itemName}")
+    @PostMapping("/items/{id}")
     fun updateItem(
-        @PathVariable itemName: String,
+        @PathVariable id: String,
         @RequestBody body: List<AttributeValuation>
     ): ResponseEntity<String> =
         try {
             itemFacade.updateItem(
-                itemName,
+                createItemId(id),
                 body.stream().collect(Collectors.toMap({ it.attribute }, { it.value })).toImmutableMap()
             )
             ResponseEntity.ok().build()

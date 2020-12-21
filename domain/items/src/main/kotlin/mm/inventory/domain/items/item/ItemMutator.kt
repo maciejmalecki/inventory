@@ -1,4 +1,4 @@
-package mm.inventory.domain.items
+package mm.inventory.domain.items.item
 
 /**
  * Mutating functions of Item Aggregate.

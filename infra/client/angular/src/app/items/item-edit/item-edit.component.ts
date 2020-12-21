@@ -69,7 +69,7 @@ export class ItemEditComponent implements OnInit {
       }
     }
     if (this.createMode) {
-      this.itemService.createItem(this.item.name, this.item.itemClass.name, changes).subscribe(response => {
+      this.itemService.createItem(this.item.name, this.item.itemClassId.id, changes).subscribe(response => {
         console.log(response);
         this.router.navigate(['items', this.item.name]).catch(reason => console.warn(reason));
       });

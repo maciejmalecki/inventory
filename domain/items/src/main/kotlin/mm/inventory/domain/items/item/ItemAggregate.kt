@@ -1,11 +1,17 @@
-package mm.inventory.domain.items
+package mm.inventory.domain.items.item
 
 import kotlinx.collections.immutable.ImmutableSet
+import mm.inventory.domain.items.itemclass.Attribute
+import mm.inventory.domain.items.itemclass.DictionaryType
+import mm.inventory.domain.items.itemclass.ScalarType
+import mm.inventory.domain.shared.types.ItemClassId
+import mm.inventory.domain.shared.types.ItemId
 import java.math.BigDecimal
 
 data class Item(
+    val id: ItemId,
     val name: String,
-    val itemClass: ItemClass,
+    val itemClassId: ItemClassId,
     val values: ImmutableSet<Value<*>>)
 
 interface Value<out T> {

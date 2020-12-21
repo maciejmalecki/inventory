@@ -5,6 +5,7 @@ plugins {
 val collectionsImmutableVersion: String by project
 
 dependencies {
+    implementation(project(":domain:shared"))
     implementation(project(":domain:items"))
     implementation(project(":domain:production"))
     implementation("org.jetbrains.kotlin:kotlin-reflect")

@@ -2,8 +2,8 @@ package mm.inventory.adapters.store.jdbi.units
 
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
-import mm.inventory.domain.items.UnitOfMeasurement
-import mm.inventory.domain.items.UnitOfMeasurementSelector
+import mm.inventory.domain.items.itemclass.UnitOfMeasurement
+import mm.inventory.domain.items.itemclass.UnitOfMeasurementSelector
 import org.jdbi.v3.core.Jdbi
 
 class UnitOfMeasurementJdbiSelector(private val db: Jdbi) : UnitOfMeasurementSelector {

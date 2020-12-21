@@ -1,19 +1,23 @@
 package mm.inventory.adapters.store.jdbi.items
 
-import mm.inventory.domain.items.DictionaryValue
-import mm.inventory.domain.items.Item
-import mm.inventory.domain.items.ItemMutator
-import mm.inventory.domain.items.ScalarValue
+import mm.inventory.adapters.store.jdbi.itemclasses.asJdbiId
+import mm.inventory.domain.items.item.DictionaryValue
+import mm.inventory.domain.items.item.Item
+import mm.inventory.domain.items.item.ItemMutator
+import mm.inventory.domain.items.item.ScalarValue
 import org.jdbi.v3.core.Jdbi
 
 class ItemJdbiMutator(private val db: Jdbi) : ItemMutator {
 
     override fun persist(item: Item) = db.useTransaction<RuntimeException> { handle ->
+        if (!item.id.empty) {
+            throw IllegalArgumentException("The item ${item.id} cannot be persisted, because of nonempty id.")
+        }
 
         val itemDao = handle.attach(ItemDao::class.java)
 
         // insert item record
-        itemDao.insertItem(ItemRec(item.name, item.itemClass.name))
+        itemDao.insertItem(ItemRec(item.name, item.itemClassId.asJdbiId().id))
         // insert values
         item.values.forEach { value ->
             when (value) {
@@ -21,7 +25,7 @@ class ItemJdbiMutator(private val db: Jdbi) : ItemMutator {
                     ScalarValueRec(
                         itemName = item.name,
                         attributeType = value.attribute().name,
-                        itemClassName = item.itemClass.name,
+                        itemClassName = item.itemClassId.asJdbiId().id,
                         value = value.getValue(),
                         scale = value.scale
                     )
@@ -30,7 +34,7 @@ class ItemJdbiMutator(private val db: Jdbi) : ItemMutator {
                     DictionaryValueRec(
                         itemName = item.name,
                         attributeType = value.attribute().name,
-                        itemClassName = item.itemClass.name,
+                        itemClassName = item.itemClassId.asJdbiId().id,
                         attributeTypeName = value.attribute().name,
                         code = value.getValue()
                     )
@@ -47,7 +51,7 @@ class ItemJdbiMutator(private val db: Jdbi) : ItemMutator {
                 ScalarValueRec(
                     itemName = item.name,
                     attributeType = value.attribute.name,
-                    itemClassName = item.itemClass.name,
+                    itemClassName = item.itemClassId.asJdbiId().id,
                     value = value.getValue(),
                     scale = value.scale
                 )
@@ -64,7 +68,7 @@ class ItemJdbiMutator(private val db: Jdbi) : ItemMutator {
                 DictionaryValueRec(
                     itemName = item.name,
                     attributeType = value.attribute.name,
-                    itemClassName = item.itemClass.name,
+                    itemClassName = item.itemClassId.asJdbiId().id,
                     attributeTypeName = value.attribute.name,
                     code = value.getValue()
                 )

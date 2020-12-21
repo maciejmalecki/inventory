@@ -2,28 +2,29 @@ package mm.inventory.adapters.store.jdbi.itemclasses
 
 import kotlinx.collections.immutable.toImmutableSet
 import mm.inventory.adapters.store.jdbi.units.UnitDao
-import mm.inventory.domain.items.Attribute
-import mm.inventory.domain.items.DictionaryItem
-import mm.inventory.domain.items.DictionaryType
-import mm.inventory.domain.items.ItemClass
-import mm.inventory.domain.items.ItemClassSelector
-import mm.inventory.domain.items.ItemClassVersion
-import mm.inventory.domain.items.ScalarType
-import mm.inventory.domain.items.UnitOfMeasurement
+import mm.inventory.domain.items.itemclass.Attribute
+import mm.inventory.domain.items.itemclass.DictionaryItem
+import mm.inventory.domain.items.itemclass.DictionaryType
+import mm.inventory.domain.items.itemclass.ItemClass
+import mm.inventory.domain.items.itemclass.ItemClassSelector
+import mm.inventory.domain.items.itemclass.ItemClassVersion
+import mm.inventory.domain.items.itemclass.ScalarType
+import mm.inventory.domain.items.itemclass.UnitOfMeasurement
+import mm.inventory.domain.shared.types.ItemClassId
 import org.jdbi.v3.core.Jdbi
 
 /**
  * JDBI based implementation of the ItemClassRepository from domain.
  */
 class ItemClassJdbiSelector(private val db: Jdbi) : ItemClassSelector {
-    override fun findByName(name: String): ItemClass? =
+    override fun findById(id: ItemClassId): ItemClass? =
             db.withHandle<ItemClass?, RuntimeException> { handle ->
 
                 val itemClassDao = handle.attach(ItemClassDao::class.java)
                 val unitDao = handle.attach(UnitDao::class.java)
 
                 // load bare item class
-                val itemClassRec = itemClassDao.selectItemClassByName(name)
+                val itemClassRec = itemClassDao.selectItemClassByName(id.asJdbiId().id)
                         ?: return@withHandle null
 
                 // load unit with subsequent SQL (could be also done with SQL JOIN)
@@ -31,13 +32,14 @@ class ItemClassJdbiSelector(private val db: Jdbi) : ItemClassSelector {
                         ?: throw RuntimeException("Unit for ${itemClassRec.unit} not found")
 
                 // load all attributes for given item class
-                val attributeRecList = itemClassDao.selectAttributesWithTypesForItemClass(name)
+                val attributeRecList = itemClassDao.selectAttributesWithTypesForItemClass(id.asJdbiId().id)
 
                 // load all relevant dictionary values
-                val dictionaryValueRecMap = itemClassDao.selectAttributeValuesForItemClass(name).groupBy { it.attributeTypeName }
+                val dictionaryValueRecMap = itemClassDao.selectAttributeValuesForItemClass(id.asJdbiId().id).groupBy { it.attributeTypeName }
 
                 // build up the aggregate out of fetched data
                 ItemClass(
+                        JdbiItemClassId(itemClassRec.name),
                         itemClassRec.name,
                         itemClassRec.description,
                         UnitOfMeasurement(unitRec.code, unitRec.name),
@@ -45,8 +47,8 @@ class ItemClassJdbiSelector(private val db: Jdbi) : ItemClassSelector {
             }
 
     // TODO temporary implementation
-    override fun findByName(name: String, version: Int): ItemClassVersion? {
-        val itemClass = findByName(name) ?: return null
+    override fun findById(id: ItemClassId, version: Int): ItemClassVersion? {
+        val itemClass = findById(id) ?: return null
         return ItemClassVersion(itemClass, version)
     }
 
