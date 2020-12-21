@@ -64,7 +64,17 @@ const routes: Routes = [
     resolve: {
       item: ItemResolver
     }
-  }
+  },
+  {
+    path: 'items/:name/duplicate',
+    component: ItemEditComponent,
+    data: {
+      createMode: true
+    },
+    resolve: {
+      item: ItemResolver
+    }
+  },
 ];
 
 @NgModule({
