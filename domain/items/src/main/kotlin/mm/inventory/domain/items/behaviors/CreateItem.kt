@@ -5,6 +5,7 @@ import mm.inventory.domain.items.item.Item
 import mm.inventory.domain.items.item.ItemMutator
 import mm.inventory.domain.items.item.parse
 import mm.inventory.domain.items.itemclass.ItemClassSelector
+import mm.inventory.domain.shared.InvalidDataException
 import mm.inventory.domain.shared.transactions.BusinessTransaction
 import mm.inventory.domain.shared.types.ItemClassId
 import mm.inventory.domain.shared.types.emptyItemId
@@ -29,7 +30,7 @@ class CreateItem(
             val itemClass = itemClassSelector.get(itemClassId)
             val values = itemClass.attributes.map { attribute ->
                 val rawValue = inValues[attribute.name]
-                    ?: throw RuntimeException("A value for `${attribute.name}` attribute is not provided.")
+                    ?: throw InvalidDataException("A value for `${attribute.name}` attribute is not provided.")
                 attribute.parse(rawValue)
             }
             val item = Item(emptyItemId, name, itemClassId, values.toImmutableSet())

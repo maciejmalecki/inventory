@@ -5,6 +5,7 @@ import mm.inventory.adapters.store.jdbi.items.createItemId
 import mm.inventory.app.productplanner.item.ItemFacade
 import mm.inventory.app.productplanner.item.ItemHeader
 import mm.inventory.domain.items.item.Item
+import mm.inventory.domain.shared.InvalidDataException
 import mm.inventory.domain.shared.NotFoundException
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -66,7 +67,7 @@ class ItemsController(private val itemFacade: ItemFacade) {
             ResponseEntity.ok(item)
         } catch (e: NotFoundException) {
             ResponseEntity.notFound().build()
-        } catch (e: IllegalArgumentException) {
+        } catch (e: InvalidDataException) {
             ResponseEntity.badRequest().body(e.message)
         }
 }

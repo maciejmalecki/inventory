@@ -10,6 +10,8 @@ import mm.inventory.domain.items.item.ItemMutator
 import mm.inventory.domain.items.item.ItemSelector
 import mm.inventory.domain.items.item.ScalarValue
 import mm.inventory.domain.items.item.Value
+import mm.inventory.domain.items.item.parse
+import mm.inventory.domain.shared.InvalidDataException
 import mm.inventory.domain.shared.types.ItemId
 import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.Jdbi
@@ -22,8 +24,7 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassSelector: It
 
         val itemRec = itemDao.selectItem(id.asJdbiId().id)
             ?: return@withHandle null
-        val itemClass = itemClassSelector.findById(createItemClassId(itemRec.itemClassName))
-            ?: throw RuntimeException("Item Class for name ${itemRec.itemClassName} not found.")
+        val itemClass = itemClassSelector.get(createItemClassId(itemRec.itemClassName))
 
         val scalarValues = itemDao.selectScalars(id.asJdbiId().id).map {
             val attribute = itemClass.getAttribute(it.attributeType)
@@ -33,11 +34,7 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassSelector: It
         val dictionaryValues = itemDao.selectDictionaryValues(id.asJdbiId().id).map {
             val attribute = itemClass.getAttribute(it.attributeType)
             val code = it.code!!
-            if (attribute.type.isValid(code)) {
-                DictionaryValue(attribute, code)
-            } else {
-                throw RuntimeException("Unknown dictionary code: $code for dictionary: ${attribute.name}.")
-            }
+            attribute.parse(code)
         }.toSet()
 
         Item(

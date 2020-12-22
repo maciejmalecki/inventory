@@ -4,6 +4,7 @@ import kotlinx.collections.immutable.ImmutableSet
 import mm.inventory.domain.items.itemclass.Attribute
 import mm.inventory.domain.items.itemclass.DictionaryType
 import mm.inventory.domain.items.itemclass.ScalarType
+import mm.inventory.domain.shared.InvalidDataException
 import mm.inventory.domain.shared.types.ItemClassId
 import mm.inventory.domain.shared.types.ItemId
 import java.math.BigDecimal
@@ -37,20 +38,20 @@ data class DictionaryValue(val attribute: Attribute, private val value: String) 
  * Parses given string representation into the Value according to given Attribute.
  * @param value textual representation
  * @return parsed value
- * @throws IllegalArgumentException if attribute type is not supported or if format of data is incorrect.
+ * @throws InvalidDataException if attribute type is not supported or if format of data is incorrect.
  */
 fun Attribute.parse(value: String): Value<*> =
     when (type) {
         is ScalarType -> parseScalarValue(value)
         is DictionaryType -> parseDictionaryValue(value)
-        else -> throw IllegalArgumentException("Unknown Attribute Type: ${this.type.javaClass.name}.")
+        else -> throw InvalidDataException("Unknown Attribute Type: ${this.type.javaClass.name}.")
     }
 
 private fun Attribute.parseDictionaryValue(value: String): DictionaryValue =
     if (type.isValid(value)) {
         DictionaryValue(this, value)
     } else {
-        throw IllegalArgumentException("Illegal value $value for dictionary type $name.")
+        throw InvalidDataException("Illegal value $value for dictionary type $name.")
     }
 
 private fun Attribute.parseScalarValue(value: String): ScalarValue {
