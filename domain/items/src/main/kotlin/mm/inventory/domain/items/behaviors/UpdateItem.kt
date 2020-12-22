@@ -1,12 +1,8 @@
 package mm.inventory.domain.items.behaviors
 
-import kotlinx.collections.immutable.ImmutableMap
-import mm.inventory.domain.items.item.DictionaryValue
 import mm.inventory.domain.items.item.Item
 import mm.inventory.domain.items.item.ItemMutator
 import mm.inventory.domain.items.item.ItemSelector
-import mm.inventory.domain.items.item.ScalarValue
-import mm.inventory.domain.items.item.Value
 import mm.inventory.domain.items.item.parse
 import mm.inventory.domain.items.itemclass.ItemClassSelector
 import mm.inventory.domain.shared.transactions.BusinessTransaction
@@ -19,22 +15,14 @@ class UpdateItem(
     private val itemClassSelector: ItemClassSelector
 ) {
 
-    fun execute(id: ItemId, inValues: ImmutableMap<String, String>) =
+    fun execute(id: ItemId, inValues: Map<String, String>): Item =
         tx.inTransaction {
             val item = itemSelector.get(id)
             val itemClass = itemClassSelector.get(item.itemClassId)
-            inValues.entries.forEach { (attributeName, value) ->
-                val attribute = itemClass.getAttribute(attributeName)
-                val attributeValue = attribute.parse(value)
-                updateValue(item, attributeValue)
-            }
-        }
+            val values = inValues.entries.map {
+                itemClass.getAttribute(it.key).parse(it.value)
+            }.toSet()
 
-    private fun updateValue(item: Item, attributeValue: Value<*>) {
-        when (attributeValue) {
-            is ScalarValue -> itemMutator.updateValue(item, attributeValue)
-            is DictionaryValue -> itemMutator.updateValue(item, attributeValue)
-            else -> throw RuntimeException("Unknown value type: ${attributeValue.javaClass.name}.")
+            return@inTransaction itemMutator.updateValues(item, values)
         }
-    }
 }

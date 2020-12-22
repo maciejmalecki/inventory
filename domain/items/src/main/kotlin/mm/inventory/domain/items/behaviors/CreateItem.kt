@@ -1,6 +1,5 @@
 package mm.inventory.domain.items.behaviors
 
-import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableSet
 import mm.inventory.domain.items.item.Item
 import mm.inventory.domain.items.item.ItemMutator
@@ -25,7 +24,7 @@ class CreateItem(
      * @param itemClassId id of the ItemClass
      * @param inValues attribute values specified as a "attribute name" to "string representation of attribute's value"
      */
-    fun execute(name: String, itemClassId: ItemClassId, inValues: ImmutableMap<String, String>): Item =
+    fun execute(name: String, itemClassId: ItemClassId, inValues: Map<String, String>): Item =
         tx.inTransaction {
             val itemClass = itemClassSelector.get(itemClassId)
             val values = itemClass.attributes.map { attribute ->

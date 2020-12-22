@@ -27,7 +27,7 @@ class RepositoriesConfiguration(
     fun itemSelector() = ItemJdbiSelector(jdbi, itemClassSelector())
 
     @Bean
-    fun itemMutator() = ItemJdbiMutator(jdbi)
+    fun itemMutator() = ItemJdbiMutator(jdbi, itemSelector())
 
     @Bean
     fun unitOfMeasurementSelector() = UnitOfMeasurementJdbiSelector(jdbi)

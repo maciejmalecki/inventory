@@ -5,12 +5,15 @@ package mm.inventory.domain.items.item
  */
 interface ItemMutator {
     /**
-     * Persists newly create Item Aggregate.
+     * Command: persist newly created Item Aggregate.
      * @param item to be persisted
      */
-    fun persist(item: Item)
+    fun persist(item: Item): Item
 
-    fun updateValue(item: Item, value: ScalarValue)
-
-    fun updateValue(item: Item, value: DictionaryValue)
+    /**
+     * Command: update some of the attributes' values for Item Aggregate.
+     * @param item aggregate to be updated
+     * @param values values of the attributes to be modified
+     */
+    fun updateValues(item: Item, values: Set<Value<*>>): Item
 }
