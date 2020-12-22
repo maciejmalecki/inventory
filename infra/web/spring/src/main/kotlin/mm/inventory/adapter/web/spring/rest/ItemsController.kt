@@ -1,11 +1,11 @@
 package mm.inventory.adapter.web.spring.rest
 
-import kotlinx.collections.immutable.toImmutableMap
 import mm.inventory.adapters.store.jdbi.itemclasses.createItemClassId
 import mm.inventory.adapters.store.jdbi.items.createItemId
 import mm.inventory.app.productplanner.item.ItemFacade
 import mm.inventory.app.productplanner.item.ItemHeader
 import mm.inventory.domain.items.item.Item
+import mm.inventory.domain.shared.InvalidDataException
 import mm.inventory.domain.shared.NotFoundException
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -40,7 +40,7 @@ class ItemsController(private val itemFacade: ItemFacade) {
                 createItemClassId(requestData.itemClassName),
                 requestData.inValues.stream().collect(
                     Collectors.toMap({ v -> v.attribute }, { v -> v.value })
-                ).toImmutableMap()
+                )
             )
         )
 
@@ -58,14 +58,16 @@ class ItemsController(private val itemFacade: ItemFacade) {
     fun updateItem(
         @PathVariable id: String,
         @RequestBody body: List<AttributeValuation>
-    ): ResponseEntity<String> =
+    ): ResponseEntity<Any> =
         try {
-            itemFacade.updateItem(
+            val item = itemFacade.updateItem(
                 createItemId(id),
-                body.stream().collect(Collectors.toMap({ it.attribute }, { it.value })).toImmutableMap()
+                body.stream().collect(Collectors.toMap({ it.attribute }, { it.value }))
             )
-            ResponseEntity.ok().build()
+            ResponseEntity.ok(item)
         } catch (e: NotFoundException) {
             ResponseEntity.notFound().build()
+        } catch (e: InvalidDataException) {
+            ResponseEntity.badRequest().body(e.message)
         }
 }

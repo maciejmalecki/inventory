@@ -4,6 +4,7 @@ import kotlinx.collections.immutable.ImmutableSet
 import mm.inventory.domain.items.itemclass.Attribute
 import mm.inventory.domain.items.itemclass.DictionaryType
 import mm.inventory.domain.items.itemclass.ScalarType
+import mm.inventory.domain.shared.InvalidDataException
 import mm.inventory.domain.shared.types.ItemClassId
 import mm.inventory.domain.shared.types.ItemId
 import java.math.BigDecimal
@@ -12,7 +13,8 @@ data class Item(
     val id: ItemId,
     val name: String,
     val itemClassId: ItemClassId,
-    val values: ImmutableSet<Value<*>>)
+    val values: ImmutableSet<Value<*>>
+)
 
 interface Value<out T> {
     fun attribute(): Attribute
@@ -32,24 +34,37 @@ data class DictionaryValue(val attribute: Attribute, private val value: String) 
     override fun getValue() = value
 }
 
+/**
+ * Parses given string representation into the Value according to given Attribute.
+ * @param value textual representation
+ * @return parsed value
+ * @throws InvalidDataException if attribute type is not supported or if format of data is incorrect.
+ */
 fun Attribute.parse(value: String): Value<*> =
-    when (this.type) {
-        is ScalarType -> parseScalarValue(this, value)
-        is DictionaryType -> DictionaryValue(this, value)
-        else -> throw RuntimeException("Unknown Attribute Type: ${this.type.javaClass.name}.")
+    when (type) {
+        is ScalarType -> parseScalarValue(value)
+        is DictionaryType -> parseDictionaryValue(value)
+        else -> throw InvalidDataException("Unknown Attribute Type: ${this.type.javaClass.name}.")
     }
 
-fun parseScalarValue(attribute: Attribute, value: String): ScalarValue {
+private fun Attribute.parseDictionaryValue(value: String): DictionaryValue =
+    if (type.isValid(value)) {
+        DictionaryValue(this, value)
+    } else {
+        throw InvalidDataException("Illegal value $value for dictionary type $name.")
+    }
+
+private fun Attribute.parseScalarValue(value: String): ScalarValue {
     // TODO parse scale from textual representation
     val scale = 1
-    val valid = attribute.type.isValid(value)
+    val valid = type.isValid(value)
     return ScalarValue(
-            attribute,
-            if (valid) {
-                    BigDecimal(value)
-            } else {
-                    BigDecimal.ZERO
-            },
-            scale
+        this,
+        if (valid) {
+            BigDecimal(value)
+        } else {
+            BigDecimal.ZERO
+        },
+        scale
     )
 }
