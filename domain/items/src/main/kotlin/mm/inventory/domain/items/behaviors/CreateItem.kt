@@ -33,7 +33,6 @@ class CreateItem(
                 attribute.parse(rawValue)
             }
             val item = Item(emptyItemId, name, itemClassId, values.toImmutableSet())
-            itemMutator.persist(item)
-            return@inTransaction item
+            return@inTransaction itemMutator.persist(item)
         }
 }
