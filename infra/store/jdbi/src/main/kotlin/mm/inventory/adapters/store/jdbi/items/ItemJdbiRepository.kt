@@ -9,9 +9,9 @@ import mm.inventory.domain.items.item.ItemMutator
 import mm.inventory.domain.items.item.ItemSelector
 import mm.inventory.domain.items.item.ScalarValue
 import mm.inventory.domain.items.item.UpdateValuesCommand
-import mm.inventory.domain.items.item.Value
 import mm.inventory.domain.items.item.parse
 import mm.inventory.domain.items.itemclass.ItemClassSelector
+import mm.inventory.domain.shared.changetracking.Mutations
 import mm.inventory.domain.shared.types.ItemId
 import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.Jdbi
@@ -84,24 +84,34 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassSelector: It
     }
 
     override fun save(item: Item): Item = item.handleAll { command ->
-        println("Handle ${command.javaClass.name}.")
         when (command) {
-            is UpdateValuesCommand -> updateValues(command.base, command.values)
+            is UpdateValuesCommand -> updateValues(command)
             else -> throw IllegalArgumentException("Unknown command: ${command.javaClass.name}.")
         }
     }
 
-    private fun updateValues(item: Item, values: Set<Value<*>>): Item =
+    override fun delete(item: Item) = db.useTransaction<RuntimeException> { handle ->
+        if (item.id.empty) {
+            throw IllegalArgumentException("The item ${item.id} cannot be deleted, because of empty id.")
+        }
+        val dao = handle.attach(ItemDao::class.java)
+        val id = item.id.asJdbiId().id
+        dao.deleteDictionaryValues(id)
+        dao.deleteScalars(id)
+        dao.deleteItem(id)
+    }
+
+    private fun updateValues(command: UpdateValuesCommand): Item =
         db.inTransaction<Item, RuntimeException> { handle ->
-            values.forEach { value ->
+            command.values.forEach { value ->
                 when (value) {
-                    is ScalarValue -> updateValue(handle, item, value)
-                    is DictionaryValue -> updateValue(handle, item, value)
+                    is ScalarValue -> updateValue(handle, command.base, value)
+                    is DictionaryValue -> updateValue(handle, command.base, value)
                     else -> throw IllegalArgumentException("Unsupported value type: ${value.javaClass.name}.")
                 }
             }
-            // TODO: this can be optimized just to fetch values via ItemDao
-            return@inTransaction get(item.id)
+            // TODO needs to be updated when optimistic locking counter will be in the game
+            return@inTransaction command.mutate().copy(mutations = Mutations())
         }
 
     private fun updateValue(handle: Handle, item: Item, value: ScalarValue) {

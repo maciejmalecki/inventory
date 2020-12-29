@@ -15,4 +15,10 @@ interface ItemMutator {
      * @param item to be saved
      */
     fun save(item: Item): Item
+
+    /**
+     * Command: delete aggregate.
+     * @param item to be deleted
+     */
+    fun delete(item: Item)
 }

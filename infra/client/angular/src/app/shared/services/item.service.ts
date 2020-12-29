@@ -64,4 +64,8 @@ export class ItemService {
   createItem(name: string, itemClassName: string, attributeValuations: Array<AttributeValuation>): Observable<Item> {
     return this.httpClient.post<Item>(`${apiPrefix}`, {name, itemClassName, inValues: attributeValuations});
   }
+
+  deleteItem(name: string): Observable<HttpResponse<any>> {
+    return this.httpClient.delete(`${apiPrefix}/${name}`, { observe: 'response'})
+  }
 }
