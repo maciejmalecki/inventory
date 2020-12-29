@@ -13,7 +13,15 @@ import java.math.BigDecimal
 import java.util.stream.Collectors
 import io.vavr.collection.Map as VavrMap
 
-
+/**
+ * Item aggregate.
+ *
+ * @param id of the aggregate
+ * @param name of the aggregate
+ * @param itemClassId link to the ItemClass aggregate
+ * @param values of the aggregate
+ * @param mutations list of aggregate mutations
+ */
 data class Item(
     val id: ItemId,
     val name: String,
@@ -24,8 +32,7 @@ data class Item(
     /**
      * Values indexed by name for sake of convenience.
      */
-    internal val valuesByName: VavrMap<String, Value<*>> =
-        toMap(values)
+    internal val valuesByName: VavrMap<String, Value<*>> = toMap(values)
 
     /**
      * Execute handler over list of mutations.
@@ -39,8 +46,7 @@ data class Item(
      * therefore it is internal. Use UpdateItem domain service to update values.
      * @param inValues set of modified values
      */
-    internal fun updateValues(inValues: ImmutableSet<Value<*>>): Item =
-        UpdateValuesCommand(this, inValues).mutate()
+    internal fun updateValues(inValues: ImmutableSet<Value<*>>): Item = UpdateValuesCommand(this, inValues).mutate()
 }
 
 interface Value<out T> {
@@ -58,9 +64,6 @@ data class DictionaryValue(override val attribute: Attribute, override val data:
     override val valid = attribute.type.isValid(data)
 }
 
-private fun toMap(inValues: Set<Value<*>>): VavrMap<String, Value<*>> =
-    inValues.stream().collect(Collectors.toMap({ it.attribute.name }, { it })).toVavrMap()
-
 data class UpdateValuesCommand(
     override val base: Item,
     val values: ImmutableSet<Value<*>>
@@ -71,3 +74,6 @@ data class UpdateValuesCommand(
         mutations = base.mutations.append(this)
     )
 }
+
+private fun toMap(values: Set<Value<*>>): VavrMap<String, Value<*>> =
+    values.stream().collect(Collectors.toMap({ it.attribute.name }, { it })).toVavrMap()
