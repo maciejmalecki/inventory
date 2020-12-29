@@ -1,10 +1,12 @@
 package mm.inventory.domain.items.item
 
-import io.vavr.collection.List
 import io.vavr.kotlin.toVavrMap
 import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.toImmutableSet
 import mm.inventory.domain.items.itemclass.Attribute
+import mm.inventory.domain.shared.changetracking.MutatingCommand
+import mm.inventory.domain.shared.changetracking.MutatingCommandHandler
+import mm.inventory.domain.shared.changetracking.Mutations
 import mm.inventory.domain.shared.types.ItemClassId
 import mm.inventory.domain.shared.types.ItemId
 import java.math.BigDecimal
@@ -17,9 +19,11 @@ data class Item(
     val name: String,
     val itemClassId: ItemClassId,
     val values: ImmutableSet<Value<*>>,
-    private val mutations: List<ItemCommand> = List.empty()
+    internal val mutations: Mutations<Item> = Mutations()
 ) {
-    private val valuesByName: VavrMap<String, Value<*>> =
+
+
+    val valuesByName: VavrMap<String, Value<*>> =
         toMap(values)
 
     /**
@@ -27,30 +31,16 @@ data class Item(
      * @param handler command handler used to execute commands
      * @return item aggregate as returned by last handler
      */
-    fun runMutations(handler: ItemCommandHandler): Item = runMutations(handler, mutations)
+    fun handleAll(handler: MutatingCommandHandler<Item>): Item = mutations.handleAll(this, handler)
 
     /**
      * This method is unsafe to be used independently because it needs additional information from ItemClass aggregate,
      * therefore it is internal. Use UpdateItem domain service to update values.
      * @param inValues set of modified values
      */
-    internal fun updateValues(inValues: ImmutableSet<Value<*>>): Item = copy(
-        values = toMap(inValues).merge(valuesByName).values().toImmutableSet(),
-        mutations = mutations.push(UpdateValuesCommand(this, inValues))
-    )
-
-
-    private tailrec fun runMutations(handler: ItemCommandHandler, tailMutations: List<ItemCommand>): Item =
-        if (tailMutations.size() == 0) {
-            this
-        } else {
-            handler.invoke(tailMutations.first())
-            runMutations(handler, tailMutations.subSequence(1))
-        }
+    internal fun updateValues(inValues: ImmutableSet<Value<*>>): Item =
+        UpdateValuesCommand(this, inValues).mutate()
 }
-
-private fun toMap(inValues: Set<Value<*>>): VavrMap<String, Value<*>> =
-    inValues.stream().collect(Collectors.toMap({ it.attribute.name }, { it })).toVavrMap()
 
 interface Value<out T> {
     val attribute: Attribute
@@ -65,4 +55,18 @@ data class ScalarValue(override val attribute: Attribute, override val value: Bi
 
 data class DictionaryValue(override val attribute: Attribute, override val value: String) : Value<String> {
     override val valid = attribute.type.isValid(value)
+}
+
+private fun toMap(inValues: Set<Value<*>>): VavrMap<String, Value<*>> =
+    inValues.stream().collect(Collectors.toMap({ it.attribute.name }, { it })).toVavrMap()
+
+data class UpdateValuesCommand(
+    override val base: Item,
+    val values: ImmutableSet<Value<*>>
+) : MutatingCommand<Item> {
+
+    override fun mutate(): Item = base.copy(
+        values = toMap(values).merge(base.valuesByName).values().toImmutableSet(),
+        mutations = base.mutations.append(this)
+    )
 }

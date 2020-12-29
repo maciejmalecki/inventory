@@ -83,7 +83,7 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassSelector: It
         return@inTransaction item.copy(id = itemId)
     }
 
-    override fun save(item: Item): Item = item.runMutations { command ->
+    override fun save(item: Item): Item = item.handleAll { command ->
         when (command) {
             is UpdateValuesCommand -> updateValues(command.base, command.values)
             else -> throw IllegalArgumentException("Unknown command: ${command.javaClass.name}.")
