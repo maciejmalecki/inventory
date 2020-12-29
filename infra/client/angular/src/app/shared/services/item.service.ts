@@ -66,6 +66,6 @@ export class ItemService {
   }
 
   deleteItem(name: string): Observable<HttpResponse<any>> {
-    return this.httpClient.delete(`${apiPrefix}/${name}`, { observe: 'response'})
+    return this.httpClient.delete(`${apiPrefix}/${name}`, { observe: 'response'});
   }
 }

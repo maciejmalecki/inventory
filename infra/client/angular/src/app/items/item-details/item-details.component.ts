@@ -29,7 +29,7 @@ export class ItemDetailsComponent implements OnInit {
     return (value.attribute.type as DictionaryType).items.find(value1 => value1.code === value.value).value;
   }
 
-  delete() {
+  delete(): void {
     this.itemService.deleteItem(this.item.name).subscribe(value => {
       if (value.ok) {
         this.router.navigate(['items']).catch(reason => console.log(reason));
