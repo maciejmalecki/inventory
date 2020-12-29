@@ -11,9 +11,14 @@ interface ItemMutator {
     fun persist(item: Item): Item
 
     /**
-     * Command: update some of the attributes' values for Item Aggregate.
-     * @param item aggregate to be updated
-     * @param values values of the attributes to be modified
+     * Command: saves aggregate to the store.
+     * @param item to be saved
      */
-    fun updateValues(item: Item, values: Set<Value<*>>): Item
+    fun save(item: Item): Item
+
+    /**
+     * Command: delete aggregate.
+     * @param item to be deleted
+     */
+    fun delete(item: Item)
 }

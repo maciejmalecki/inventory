@@ -3,20 +3,21 @@ package mm.inventory.adapters.store.jdbi.items
 import kotlinx.collections.immutable.toImmutableSet
 import mm.inventory.adapters.store.jdbi.itemclasses.asJdbiId
 import mm.inventory.adapters.store.jdbi.itemclasses.createItemClassId
-import mm.inventory.domain.items.itemclass.ItemClassSelector
 import mm.inventory.domain.items.item.DictionaryValue
 import mm.inventory.domain.items.item.Item
 import mm.inventory.domain.items.item.ItemMutator
 import mm.inventory.domain.items.item.ItemSelector
 import mm.inventory.domain.items.item.ScalarValue
-import mm.inventory.domain.items.item.Value
+import mm.inventory.domain.items.item.UpdateValuesCommand
 import mm.inventory.domain.items.item.parse
-import mm.inventory.domain.shared.InvalidDataException
+import mm.inventory.domain.items.itemclass.ItemClassSelector
+import mm.inventory.domain.shared.changetracking.Mutations
 import mm.inventory.domain.shared.types.ItemId
 import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.Jdbi
 
-class ItemJdbiRepository(private val db: Jdbi, private val itemClassSelector: ItemClassSelector) : ItemSelector, ItemMutator {
+class ItemJdbiRepository(private val db: Jdbi, private val itemClassSelector: ItemClassSelector) : ItemSelector,
+    ItemMutator {
 
     override fun findById(id: ItemId): Item? = db.withHandle<Item?, RuntimeException> { handle ->
 
@@ -53,7 +54,7 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassSelector: It
         val itemDao = handle.attach(ItemDao::class.java)
 
         // insert item record
-        val itemId = createItemId(item.name);
+        val itemId = createItemId(item.name)
         itemDao.insertItem(ItemRec(item.name, item.itemClassId.asJdbiId().id))
         // insert values
         item.values.forEach { value ->
@@ -61,19 +62,19 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassSelector: It
                 is ScalarValue -> itemDao.insertValue(
                     ScalarValueRec(
                         itemName = item.name,
-                        attributeType = value.attribute().name,
+                        attributeType = value.attribute.name,
                         itemClassName = item.itemClassId.asJdbiId().id,
-                        value = value.getValue(),
+                        value = value.value,
                         scale = value.scale
                     )
                 )
                 is DictionaryValue -> itemDao.insertValue(
                     DictionaryValueRec(
                         itemName = item.name,
-                        attributeType = value.attribute().name,
+                        attributeType = value.attribute.name,
                         itemClassName = item.itemClassId.asJdbiId().id,
-                        attributeTypeName = value.attribute().name,
-                        code = value.getValue()
+                        attributeTypeName = value.attribute.name,
+                        code = value.value
                     )
                 )
                 else -> throw RuntimeException("Unknown value type: ${value.javaClass.name}.")
@@ -82,17 +83,35 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassSelector: It
         return@inTransaction item.copy(id = itemId)
     }
 
-    override fun updateValues(item: Item, values: Set<Value<*>>): Item =
+    override fun save(item: Item): Item = item.handleAll { command ->
+        when (command) {
+            is UpdateValuesCommand -> updateValues(command)
+            else -> throw IllegalArgumentException("Unknown command: ${command.javaClass.name}.")
+        }
+    }
+
+    override fun delete(item: Item) = db.useTransaction<RuntimeException> { handle ->
+        if (item.id.empty) {
+            throw IllegalArgumentException("The item ${item.id} cannot be deleted, because of empty id.")
+        }
+        val dao = handle.attach(ItemDao::class.java)
+        val id = item.id.asJdbiId().id
+        dao.deleteDictionaryValues(id)
+        dao.deleteScalars(id)
+        dao.deleteItem(id)
+    }
+
+    private fun updateValues(command: UpdateValuesCommand): Item =
         db.inTransaction<Item, RuntimeException> { handle ->
-            values.forEach { value ->
+            command.values.forEach { value ->
                 when (value) {
-                    is ScalarValue -> updateValue(handle, item, value)
-                    is DictionaryValue -> updateValue(handle, item, value)
+                    is ScalarValue -> updateValue(handle, command.base, value)
+                    is DictionaryValue -> updateValue(handle, command.base, value)
                     else -> throw IllegalArgumentException("Unsupported value type: ${value.javaClass.name}.")
                 }
             }
-            // TODO: this can be optimized just to fetch values via ItemDao
-            return@inTransaction get(item.id)
+            // TODO needs to be updated when optimistic locking counter will be in the game
+            return@inTransaction command.mutate().copy(mutations = Mutations())
         }
 
     private fun updateValue(handle: Handle, item: Item, value: ScalarValue) {
@@ -102,7 +121,7 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassSelector: It
                 itemName = item.name,
                 attributeType = value.attribute.name,
                 itemClassName = item.itemClassId.asJdbiId().id,
-                value = value.getValue(),
+                value = value.value,
                 scale = value.scale
             )
         )
@@ -119,7 +138,7 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassSelector: It
                 attributeType = value.attribute.name,
                 itemClassName = item.itemClassId.asJdbiId().id,
                 attributeTypeName = value.attribute.name,
-                code = value.getValue()
+                code = value.value
             )
         )
         if (cnt != 1) {

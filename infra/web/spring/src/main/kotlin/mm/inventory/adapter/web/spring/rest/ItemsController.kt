@@ -8,6 +8,7 @@ import mm.inventory.domain.items.item.Item
 import mm.inventory.domain.shared.InvalidDataException
 import mm.inventory.domain.shared.NotFoundException
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -69,5 +70,14 @@ class ItemsController(private val itemFacade: ItemFacade) {
             ResponseEntity.notFound().build()
         } catch (e: InvalidDataException) {
             ResponseEntity.badRequest().body(e.message)
+        }
+
+    @DeleteMapping("/items/{id}")
+    fun deleteItem(@PathVariable id: String): ResponseEntity<Any> =
+        try {
+            itemFacade.deleteItem(createItemId(id))
+            ResponseEntity.ok().build()
+        } catch (e: NotFoundException) {
+            ResponseEntity.notFound().build()
         }
 }

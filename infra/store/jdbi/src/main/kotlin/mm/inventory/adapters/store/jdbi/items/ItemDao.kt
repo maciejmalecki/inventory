@@ -27,11 +27,20 @@ interface ItemDao {
     @SqlQuery("SELECT name, item_class_name FROM Items WHERE name=?")
     fun selectItem(name: String): ItemRec?
 
+    @SqlUpdate("DELETE FROM Items where name=?")
+    fun deleteItem(name: String): Int
+
     @SqlQuery("SELECT item_name, attribute_type, item_class_name, value, scale FROM Scalar_values WHERE item_name=?")
     fun selectScalars(itemName: String): List<ScalarValueRec>
 
+    @SqlUpdate("DELETE FROM Scalar_values WHERE item_name=?")
+    fun deleteScalars(itemName: String): Int
+
     @SqlQuery("SELECT item_name, attribute_type, item_class_name, attribute_type_name, code FROM Dictionary_Values WHERE item_name=?")
     fun selectDictionaryValues(itemName: String): List<DictionaryValueRec>
+
+    @SqlUpdate("DELETE FROM Dictionary_values WHERE item_name=?")
+    fun deleteDictionaryValues(itemName: String): Int
 }
 
 data class ItemRec(val name: String, val itemClassName: String)
