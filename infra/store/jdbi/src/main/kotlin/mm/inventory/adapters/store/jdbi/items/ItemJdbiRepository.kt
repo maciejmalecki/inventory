@@ -84,6 +84,7 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassSelector: It
     }
 
     override fun save(item: Item): Item = item.handleAll { command ->
+        println("Handle ${command.javaClass.name}.")
         when (command) {
             is UpdateValuesCommand -> updateValues(command.base, command.values)
             else -> throw IllegalArgumentException("Unknown command: ${command.javaClass.name}.")

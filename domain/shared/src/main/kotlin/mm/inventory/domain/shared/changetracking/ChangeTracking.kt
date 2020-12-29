@@ -1,5 +1,6 @@
 package mm.inventory.domain.shared.changetracking
 
+import mm.inventory.domain.shared.NoChangeException
 import io.vavr.collection.List as VavrList
 
 interface MutatingCommand<T> {
@@ -15,16 +16,15 @@ data class Mutations<T>(
 
     fun append(command: MutatingCommand<T>): Mutations<T> = Mutations(commands.append(command))
 
-    fun handleAll(base: T, handler: MutatingCommandHandler<T>): T = handleAll(base, handler, commands)
+    fun handleAll(handler: MutatingCommandHandler<T>): T = handleAll(handler, commands)
 
     private tailrec fun handleAll(
-        base: T,
         handler: MutatingCommandHandler<T>,
         tailCommands: VavrList<MutatingCommand<T>>
     ): T =
         when (tailCommands.size()) {
-            0 -> base
+            0 -> throw NoChangeException("No change detected for ${this.javaClass.genericSuperclass.typeName}.")
             1 -> handler.invoke(tailCommands.first())
-            else -> handleAll(base, handler, tailCommands.subSequence(1))
+            else -> handleAll(handler, tailCommands.subSequence(1))
         }
 }

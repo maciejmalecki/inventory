@@ -23,7 +23,7 @@ class UpdateItem(
             val values = inValues.entries.map {
                 itemClass.getAttribute(it.key).parse(it.value)
             }.toImmutableSet()
-            item.updateValues(values)
-            return@inTransaction itemMutator.save(item)
+
+            return@inTransaction itemMutator.save(item.updateValues(values))
         }
 }

@@ -22,7 +22,6 @@ data class Item(
     internal val mutations: Mutations<Item> = Mutations()
 ) {
 
-
     val valuesByName: VavrMap<String, Value<*>> =
         toMap(values)
 
@@ -31,7 +30,7 @@ data class Item(
      * @param handler command handler used to execute commands
      * @return item aggregate as returned by last handler
      */
-    fun handleAll(handler: MutatingCommandHandler<Item>): Item = mutations.handleAll(this, handler)
+    fun handleAll(handler: MutatingCommandHandler<Item>): Item = mutations.handleAll(handler)
 
     /**
      * This method is unsafe to be used independently because it needs additional information from ItemClass aggregate,
