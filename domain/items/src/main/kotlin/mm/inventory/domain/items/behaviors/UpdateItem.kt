@@ -1,5 +1,6 @@
 package mm.inventory.domain.items.behaviors
 
+import kotlinx.collections.immutable.toImmutableSet
 import mm.inventory.domain.items.item.Item
 import mm.inventory.domain.items.item.ItemMutator
 import mm.inventory.domain.items.item.ItemSelector
@@ -21,8 +22,8 @@ class UpdateItem(
             val itemClass = itemClassSelector.get(item.itemClassId)
             val values = inValues.entries.map {
                 itemClass.getAttribute(it.key).parse(it.value)
-            }.toSet()
-
-            return@inTransaction itemMutator.updateValues(item, values)
+            }.toImmutableSet()
+            item.updateValues(values)
+            return@inTransaction itemMutator.save(item)
         }
 }
