@@ -21,8 +21,10 @@ data class Item(
     val values: ImmutableSet<Value<*>>,
     internal val mutations: Mutations<Item> = Mutations()
 ) {
-
-    val valuesByName: VavrMap<String, Value<*>> =
+    /**
+     * Values indexed by name for sake of convenience.
+     */
+    internal val valuesByName: VavrMap<String, Value<*>> =
         toMap(values)
 
     /**
@@ -44,16 +46,16 @@ data class Item(
 interface Value<out T> {
     val attribute: Attribute
     val valid: Boolean
-    val value: T
+    val data: T
 }
 
-data class ScalarValue(override val attribute: Attribute, override val value: BigDecimal, val scale: Int) :
+data class ScalarValue(override val attribute: Attribute, override val data: BigDecimal, val scale: Int) :
     Value<BigDecimal> {
     override val valid = true
 }
 
-data class DictionaryValue(override val attribute: Attribute, override val value: String) : Value<String> {
-    override val valid = attribute.type.isValid(value)
+data class DictionaryValue(override val attribute: Attribute, override val data: String) : Value<String> {
+    override val valid = attribute.type.isValid(data)
 }
 
 private fun toMap(inValues: Set<Value<*>>): VavrMap<String, Value<*>> =
