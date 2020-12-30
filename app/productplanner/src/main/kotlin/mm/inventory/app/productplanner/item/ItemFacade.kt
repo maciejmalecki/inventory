@@ -39,8 +39,11 @@ class ItemFacade(
 
     fun updateItem(id: ItemId, inValues: Map<String, String>) =
         sec.requireAllRoles(ITEMS_ROLE, ITEMS_WRITER_ROLE) {
-            val item = itemSelector.get(id)
-            itemMutator.save(item.updateValues(inValues))
+            tx.inTransaction {
+                val item = itemSelector.get(id)
+                val updatedItem = item.updateValues(inValues);
+                itemMutator.save(updatedItem)
+            }
         }
 
     fun deleteItem(id: ItemId) =
