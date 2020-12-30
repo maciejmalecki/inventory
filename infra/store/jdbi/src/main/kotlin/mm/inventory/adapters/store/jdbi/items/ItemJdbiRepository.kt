@@ -5,8 +5,7 @@ import mm.inventory.adapters.store.jdbi.itemclasses.asJdbiId
 import mm.inventory.adapters.store.jdbi.itemclasses.createItemClassId
 import mm.inventory.domain.items.item.DictionaryValue
 import mm.inventory.domain.items.item.Item
-import mm.inventory.domain.items.item.ItemMutator
-import mm.inventory.domain.items.item.ItemSelector
+import mm.inventory.domain.items.item.ItemRepository
 import mm.inventory.domain.items.item.ScalarValue
 import mm.inventory.domain.items.item.UpdateValuesCommand
 import mm.inventory.domain.items.item.parse
@@ -15,8 +14,7 @@ import mm.inventory.domain.shared.types.ItemId
 import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.Jdbi
 
-class ItemJdbiRepository(private val db: Jdbi, private val itemClassSelector: ItemClassSelector) : ItemSelector,
-    ItemMutator {
+class ItemJdbiRepository(private val db: Jdbi, private val itemClassSelector: ItemClassSelector) : ItemRepository {
 
     override fun findById(id: ItemId): Item? = db.withHandle<Item?, RuntimeException> { handle ->
 

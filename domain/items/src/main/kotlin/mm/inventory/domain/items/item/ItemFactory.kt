@@ -13,7 +13,7 @@ import mm.inventory.domain.shared.types.emptyItemId
 class ItemFactory(
     private val tx: BusinessTransaction,
     private val itemClassSelector: ItemClassSelector,
-    private val itemMutator: ItemMutator
+    private val itemRepository: ItemRepository
 ) {
 
     /**
@@ -31,6 +31,6 @@ class ItemFactory(
                 attribute.parse(rawValue)
             }
             val item = Item(emptyItemId, name, itemClassId, values.toImmutableSet())
-            return@inTransaction itemMutator.persist(item)
+            return@inTransaction itemRepository.persist(item)
         }
 }
