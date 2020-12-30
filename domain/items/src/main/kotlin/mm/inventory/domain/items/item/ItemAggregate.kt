@@ -5,9 +5,9 @@ import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.toImmutableSet
 import mm.inventory.domain.items.itemclass.Attribute
 import mm.inventory.domain.shared.InvalidDataException
-import mm.inventory.domain.shared.changetracking.MutatingCommand
-import mm.inventory.domain.shared.changetracking.MutatingCommandHandler
-import mm.inventory.domain.shared.changetracking.Mutations
+import mm.inventory.domain.shared.mutations.MutatingCommand
+import mm.inventory.domain.shared.mutations.MutatingCommandHandler
+import mm.inventory.domain.shared.mutations.Mutations
 import mm.inventory.domain.shared.types.ItemClassId
 import mm.inventory.domain.shared.types.ItemId
 import java.math.BigDecimal
@@ -33,14 +33,13 @@ data class Item(
     /**
      * Values indexed by name for sake of convenience.
      */
-    internal val valuesByName: VavrMap<String, Value<*>> = toMap(values)
+    private val valuesByName: VavrMap<String, Value<*>> = toMap(values)
 
     /**
      * Execute handler over list of mutations.
      * @param handler command handler used to execute commands
-     * @return item aggregate as returned by last handler
      */
-    fun handleAll(handler: MutatingCommandHandler<Item>): Item = mutations.handleAll(handler)
+    fun handleAll(handler: MutatingCommandHandler<Item>) = mutations.handleAll(handler)
 
     /**
      * Update values command
@@ -52,7 +51,11 @@ data class Item(
                 ?: throw InvalidDataException("Attribute ${it.key} does not exist in item $name.")
             value.attribute.parse(it.value)
         }.toImmutableSet()
-        return UpdateValuesCommand(this, values).mutate()
+
+        return copy(
+            values = toMap(values).merge(valuesByName).values().toImmutableSet(),
+            mutations = mutations.append(UpdateValuesCommand(this, values))
+        )
     }
 }
 
@@ -74,13 +77,7 @@ data class DictionaryValue(override val attribute: Attribute, override val data:
 data class UpdateValuesCommand(
     override val base: Item,
     val values: ImmutableSet<Value<*>>
-) : MutatingCommand<Item> {
-
-    override fun mutate(): Item = base.copy(
-        values = toMap(values).merge(base.valuesByName).values().toImmutableSet(),
-        mutations = base.mutations.append(this)
-    )
-}
+) : MutatingCommand<Item>
 
 private fun toMap(values: Set<Value<*>>): VavrMap<String, Value<*>> =
     values.stream().collect(Collectors.toMap({ it.attribute.name }, { it })).toVavrMap()

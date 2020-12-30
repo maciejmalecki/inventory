@@ -14,7 +14,7 @@ interface ItemMutator {
      * Command: saves aggregate to the store.
      * @param item to be saved
      */
-    fun save(item: Item): Item
+    fun save(item: Item)
 
     /**
      * Command: delete aggregate.

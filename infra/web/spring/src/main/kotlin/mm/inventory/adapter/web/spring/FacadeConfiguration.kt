@@ -9,12 +9,14 @@ import mm.inventory.domain.items.item.ItemSelector
 import mm.inventory.domain.items.item.ItemFactory
 import mm.inventory.domain.items.item.ItemMutator
 import mm.inventory.domain.shared.security.SecurityGuard
+import mm.inventory.domain.shared.transactions.BusinessTransaction
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
 class FacadeConfiguration(
     private val securityGuard: SecurityGuard,
+    private val businessTransaction: BusinessTransaction,
     private val itemClassSelector: ItemClassSelector,
     private val itemClassQuery: ItemClassQuery,
     private val itemSelector: ItemSelector,
@@ -26,5 +28,5 @@ class FacadeConfiguration(
     fun itemClassFacade() = ItemClassFacade(securityGuard, itemClassSelector, itemClassQuery)
 
     @Bean
-    fun itemFacade() = ItemFacade(securityGuard, itemSelector, itemMutator, itemQuery, itemFactoryCreator)
+    fun itemFacade() = ItemFacade(securityGuard, businessTransaction, itemSelector, itemMutator, itemQuery, itemFactoryCreator)
 }

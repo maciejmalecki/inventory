@@ -8,6 +8,8 @@ import mm.inventory.domain.items.item.Item
 import mm.inventory.domain.items.item.ItemMutator
 import mm.inventory.domain.items.item.ItemSelector
 import mm.inventory.domain.shared.security.SecurityGuard
+import mm.inventory.domain.shared.transactions.BusinessTransaction
+import mm.inventory.domain.shared.transactions.TransactionalHandler
 import mm.inventory.domain.shared.types.ItemClassId
 import mm.inventory.domain.shared.types.ItemId
 
@@ -16,6 +18,7 @@ import mm.inventory.domain.shared.types.ItemId
  */
 class ItemFacade(
     private val sec: SecurityGuard,
+    private val tx: BusinessTransaction,
     private val itemSelector: ItemSelector,
     private val itemMutator: ItemMutator,
     private val itemQuery: ItemQuery,
@@ -42,8 +45,9 @@ class ItemFacade(
 
     fun deleteItem(id: ItemId) =
         sec.requireAllRoles(ITEMS_ROLE, ITEMS_WRITER_ROLE) {
-            // TODO maybe this will be a separate behavior
-            val item = itemSelector.get(id)
-            itemMutator.delete(item)
+            tx.inTransaction {
+                val item = itemSelector.get(id)
+                itemMutator.delete(item)
+            }
         }
 }
