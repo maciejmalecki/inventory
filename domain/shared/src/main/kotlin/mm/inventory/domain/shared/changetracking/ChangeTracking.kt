@@ -25,6 +25,9 @@ data class Mutations<T>(
         when (tailCommands.size()) {
             0 -> throw NoChangeException("No change detected for ${this.javaClass.genericSuperclass.typeName}.")
             1 -> handler.invoke(tailCommands.first())
-            else -> handleAll(handler, tailCommands.subSequence(1))
+            else -> {
+                handler.invoke(tailCommands.first())
+                handleAll(handler, tailCommands.subSequence(1))
+            }
         }
 }
