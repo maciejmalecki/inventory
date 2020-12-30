@@ -6,8 +6,7 @@ import mm.inventory.app.productplanner.itemclass.ItemClassFacade
 import mm.inventory.app.productplanner.itemclass.ItemClassQuery
 import mm.inventory.domain.items.itemclass.ItemClassSelector
 import mm.inventory.domain.items.item.ItemSelector
-import mm.inventory.domain.items.behaviors.CreateItem
-import mm.inventory.domain.items.behaviors.UpdateItem
+import mm.inventory.domain.items.item.ItemFactory
 import mm.inventory.domain.items.item.ItemMutator
 import mm.inventory.domain.shared.security.SecurityGuard
 import org.springframework.context.annotation.Bean
@@ -21,12 +20,11 @@ class FacadeConfiguration(
     private val itemSelector: ItemSelector,
     private val itemMutator: ItemMutator,
     private val itemQuery: ItemQuery,
-    private val itemCreator: CreateItem,
-    private val itemUpdater: UpdateItem
+    private val itemFactoryCreator: ItemFactory
 ) {
     @Bean
     fun itemClassFacade() = ItemClassFacade(securityGuard, itemClassSelector, itemClassQuery)
 
     @Bean
-    fun itemFacade() = ItemFacade(securityGuard, itemSelector, itemMutator, itemQuery, itemCreator, itemUpdater)
+    fun itemFacade() = ItemFacade(securityGuard, itemSelector, itemMutator, itemQuery, itemFactoryCreator)
 }

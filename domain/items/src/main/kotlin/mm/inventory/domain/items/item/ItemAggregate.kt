@@ -4,6 +4,7 @@ import io.vavr.kotlin.toVavrMap
 import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.toImmutableSet
 import mm.inventory.domain.items.itemclass.Attribute
+import mm.inventory.domain.shared.InvalidDataException
 import mm.inventory.domain.shared.changetracking.MutatingCommand
 import mm.inventory.domain.shared.changetracking.MutatingCommandHandler
 import mm.inventory.domain.shared.changetracking.Mutations
@@ -42,11 +43,17 @@ data class Item(
     fun handleAll(handler: MutatingCommandHandler<Item>): Item = mutations.handleAll(handler)
 
     /**
-     * This method is unsafe to be used independently because it needs additional information from ItemClass aggregate,
-     * therefore it is internal. Use UpdateItem domain service to update values.
+     * Update values command
      * @param inValues set of modified values
      */
-    internal fun updateValues(inValues: ImmutableSet<Value<*>>): Item = UpdateValuesCommand(this, inValues).mutate()
+    fun updateValues(inValues: Map<String, String>): Item {
+        val values = inValues.entries.map {
+            val value = valuesByName[it.key].orNull
+                ?: throw InvalidDataException("Attribute ${it.key} does not exist in item $name.")
+            value.attribute.parse(it.value)
+        }.toImmutableSet()
+        return UpdateValuesCommand(this, values).mutate()
+    }
 }
 
 interface Value<out T> {

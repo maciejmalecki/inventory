@@ -3,8 +3,7 @@ package mm.inventory.app.productplanner.item
 import kotlinx.collections.immutable.ImmutableList
 import mm.inventory.domain.items.ITEMS_ROLE
 import mm.inventory.domain.items.ITEMS_WRITER_ROLE
-import mm.inventory.domain.items.behaviors.CreateItem
-import mm.inventory.domain.items.behaviors.UpdateItem
+import mm.inventory.domain.items.item.ItemFactory
 import mm.inventory.domain.items.item.Item
 import mm.inventory.domain.items.item.ItemMutator
 import mm.inventory.domain.items.item.ItemSelector
@@ -20,8 +19,7 @@ class ItemFacade(
     private val itemSelector: ItemSelector,
     private val itemMutator: ItemMutator,
     private val itemQuery: ItemQuery,
-    private val createItem: CreateItem,
-    private val updateItem: UpdateItem
+    private val itemFactory: ItemFactory
 ) {
     fun findAllItems(): ImmutableList<ItemHeader> = sec.requireRole(ITEMS_ROLE) {
         itemQuery.findAll()
@@ -33,12 +31,13 @@ class ItemFacade(
 
     fun createItem(name: String, itemClassId: ItemClassId, inValues: Map<String, String>): Item =
         sec.requireAllRoles(ITEMS_ROLE, ITEMS_WRITER_ROLE) {
-            createItem.execute(name, itemClassId, inValues)
+            itemFactory.create(name, itemClassId, inValues)
         }
 
     fun updateItem(id: ItemId, inValues: Map<String, String>) =
         sec.requireAllRoles(ITEMS_ROLE, ITEMS_WRITER_ROLE) {
-            updateItem.execute(id, inValues)
+            val item = itemSelector.get(id)
+            itemMutator.save(item.updateValues(inValues))
         }
 
     fun deleteItem(id: ItemId) =
