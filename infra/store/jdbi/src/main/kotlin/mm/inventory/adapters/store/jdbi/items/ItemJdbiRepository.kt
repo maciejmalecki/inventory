@@ -11,7 +11,6 @@ import mm.inventory.domain.items.item.ScalarValue
 import mm.inventory.domain.items.item.UpdateValuesCommand
 import mm.inventory.domain.items.item.parse
 import mm.inventory.domain.items.itemclass.ItemClassSelector
-import mm.inventory.domain.shared.changetracking.Mutations
 import mm.inventory.domain.shared.types.ItemId
 import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.Jdbi
@@ -64,7 +63,7 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassSelector: It
                         itemName = item.name,
                         attributeType = value.attribute.name,
                         itemClassName = item.itemClassId.asJdbiId().id,
-                        value = value.value,
+                        value = value.data,
                         scale = value.scale
                     )
                 )
@@ -74,7 +73,7 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassSelector: It
                         attributeType = value.attribute.name,
                         itemClassName = item.itemClassId.asJdbiId().id,
                         attributeTypeName = value.attribute.name,
-                        code = value.value
+                        code = value.data
                     )
                 )
                 else -> throw RuntimeException("Unknown value type: ${value.javaClass.name}.")
@@ -83,7 +82,7 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassSelector: It
         return@inTransaction item.copy(id = itemId)
     }
 
-    override fun save(item: Item): Item = item.handleAll { command ->
+    override fun save(item: Item) = item.handleAll { command ->
         when (command) {
             is UpdateValuesCommand -> updateValues(command)
             else -> throw IllegalArgumentException("Unknown command: ${command.javaClass.name}.")
@@ -101,8 +100,8 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassSelector: It
         dao.deleteItem(id)
     }
 
-    private fun updateValues(command: UpdateValuesCommand): Item =
-        db.inTransaction<Item, RuntimeException> { handle ->
+    private fun updateValues(command: UpdateValuesCommand) =
+        db.useTransaction<RuntimeException> { handle ->
             command.values.forEach { value ->
                 when (value) {
                     is ScalarValue -> updateValue(handle, command.base, value)
@@ -110,8 +109,6 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassSelector: It
                     else -> throw IllegalArgumentException("Unsupported value type: ${value.javaClass.name}.")
                 }
             }
-            // TODO needs to be updated when optimistic locking counter will be in the game
-            return@inTransaction command.mutate().copy(mutations = Mutations())
         }
 
     private fun updateValue(handle: Handle, item: Item, value: ScalarValue) {
@@ -121,7 +118,7 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassSelector: It
                 itemName = item.name,
                 attributeType = value.attribute.name,
                 itemClassName = item.itemClassId.asJdbiId().id,
-                value = value.value,
+                value = value.data,
                 scale = value.scale
             )
         )
@@ -138,7 +135,7 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassSelector: It
                 attributeType = value.attribute.name,
                 itemClassName = item.itemClassId.asJdbiId().id,
                 attributeTypeName = value.attribute.name,
-                code = value.value
+                code = value.data
             )
         )
         if (cnt != 1) {

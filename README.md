@@ -35,8 +35,8 @@ Selectors are exclusively used for querying data. This way, for given aggregate,
 
 Mutators are exclusively used for data modifications. This way, for given aggregate, if we depend only on a mutator, we are doing modifications. In terms of ports&adapters, mutators are ports that are modelled as interfaces suffixed with `Mutator`.
 
-### Behaviors
-Behavior is a class that is usually bound with one or more entities (or aggregates) and has at least one dependency to a mutator. It can depend on multiple mutators as well as on selectors.
+### Domain services
+t.b.d.
 
 ## App
 The App (application) is place where we model application specific logic - that is, the logic that you don't discuss with business experts but are nonetheless necessary to implement the application. We will include most of the CRUD functionalities here that are not needed with respect to the domain but are necessary to give data provisioning capabilities. All bulk operations included imports falls into this category too. When using CQRS approach, most of the "Q" functionality falls here as well.

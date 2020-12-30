@@ -1,9 +1,6 @@
-package mm.inventory.domain.items.behaviors
+package mm.inventory.domain.items.item
 
 import kotlinx.collections.immutable.toImmutableSet
-import mm.inventory.domain.items.item.Item
-import mm.inventory.domain.items.item.ItemMutator
-import mm.inventory.domain.items.item.parse
 import mm.inventory.domain.items.itemclass.ItemClassSelector
 import mm.inventory.domain.shared.InvalidDataException
 import mm.inventory.domain.shared.transactions.BusinessTransaction
@@ -13,7 +10,7 @@ import mm.inventory.domain.shared.types.emptyItemId
 /**
  * Implementation of "create item" use case.
  */
-class CreateItem(
+class ItemFactory(
     private val tx: BusinessTransaction,
     private val itemClassSelector: ItemClassSelector,
     private val itemMutator: ItemMutator
@@ -25,7 +22,7 @@ class CreateItem(
      * @param itemClassId id of the ItemClass
      * @param inValues attribute values specified as a "attribute name" to "string representation of attribute's value"
      */
-    fun execute(name: String, itemClassId: ItemClassId, inValues: Map<String, String>): Item =
+    fun create(name: String, itemClassId: ItemClassId, inValues: Map<String, String>): Item =
         tx.inTransaction {
             val itemClass = itemClassSelector.get(itemClassId)
             val values = itemClass.attributes.map { attribute ->

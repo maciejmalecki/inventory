@@ -6,8 +6,7 @@ import mm.inventory.adapters.store.jdbi.items.ItemJdbiQuery
 import mm.inventory.adapters.store.jdbi.items.ItemJdbiRepository
 import mm.inventory.adapters.store.jdbi.transactions.BusinessJdbiTransaction
 import mm.inventory.adapters.store.jdbi.units.UnitOfMeasurementJdbiSelector
-import mm.inventory.domain.items.behaviors.CreateItem
-import mm.inventory.domain.items.behaviors.UpdateItem
+import mm.inventory.domain.items.item.ItemFactory
 import org.jdbi.v3.core.Jdbi
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -29,10 +28,7 @@ class RepositoriesConfiguration(
     fun unitOfMeasurementSelector() = UnitOfMeasurementJdbiSelector(jdbi)
 
     @Bean
-    fun itemCreator() = CreateItem(businessTransaction(), itemClassSelector(), itemSelector())
-
-    @Bean
-    fun itemUpdater() = UpdateItem(businessTransaction(), itemSelector(), itemSelector(), itemClassSelector())
+    fun itemCreator() = ItemFactory(businessTransaction(), itemClassSelector(), itemSelector())
 
     @Bean
     fun itemCrudQuery() = ItemJdbiQuery(jdbi)
