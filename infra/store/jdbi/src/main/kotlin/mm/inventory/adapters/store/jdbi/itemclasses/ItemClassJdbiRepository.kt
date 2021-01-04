@@ -46,24 +46,6 @@ class ItemClassJdbiRepository(private val db: Jdbi) : ItemClassRepository {
                         attributeRecList.map(map(dictionaryValueRecMap)).toImmutableSet())
             }
 
-    // TODO temporary implementation
-    override fun findDraftById(id: ItemClassId): DraftItemClass? {
-        val itemClass = findById(id) ?: return null
-        return DraftItemClass(itemClass)
-    }
-
-    override fun persist(draftItemClass: DraftItemClass): DraftItemClass {
-        TODO("Not yet implemented")
-    }
-
-    override fun save(draftItemClass: DraftItemClass) {
-        TODO("Not yet implemented")
-    }
-
-    override fun delete(draftItemClass: DraftItemClass) {
-        TODO("Not yet implemented")
-    }
-
     private fun map(dictionaryValueRecMap: Map<String, List<AttributeTypeValueRec>>): (attributeWithType: AttributeWithTypeRec) -> Attribute = { attributeWithType ->
         when (attributeWithType.scalar) {
             true ->

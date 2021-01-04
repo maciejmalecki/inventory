@@ -7,7 +7,8 @@ import mm.inventory.domain.shared.types.emptyItemClassId
 
 class DraftItemClassFactory(
     private val tx: BusinessTransaction,
-    private val itemClassRepository: ItemClassRepository
+    private val itemClassRepository: ItemClassRepository,
+    private val draftItemClassRepository: DraftItemClassRepository
 ) {
     /**
      * Creates new Item Class as draft version.
@@ -23,7 +24,7 @@ class DraftItemClassFactory(
             amountUnit = amountUnitOfMeasurement,
             attributes = emptySet<Attribute>().toImmutableSet()
         )
-        return@inTransaction itemClassRepository.persist(DraftItemClass(emptyItemClass))
+        return@inTransaction draftItemClassRepository.persist(DraftItemClass(emptyItemClass))
     }
 
     /**
@@ -33,7 +34,11 @@ class DraftItemClassFactory(
      * @return draft item class
      */
     fun newDraft(itemClassId: ItemClassId): DraftItemClass = tx.inTransaction {
-        val draft = itemClassRepository.findDraftById(itemClassId)
-        return@inTransaction draft ?: itemClassRepository.persist(DraftItemClass(itemClassRepository.get(itemClassId)))
+        val draft = draftItemClassRepository.findDraftById(itemClassId)
+        return@inTransaction draft ?: draftItemClassRepository.persist(
+            DraftItemClass(
+                itemClassRepository.get(itemClassId)
+            )
+        )
     }
 }
