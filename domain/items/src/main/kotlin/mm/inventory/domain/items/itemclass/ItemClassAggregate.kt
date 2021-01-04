@@ -27,12 +27,6 @@ data class ItemClass(
             ?: throw NotFoundException("Attribute with name '$attributeTypeName' not found.")
 }
 
-data class ItemClassVersion(
-    val itemClass: ItemClass,
-    val version: Int
-)
-
-
 data class Attribute(val name: String, val type: AttributeType)
 interface AttributeType {
     fun isValid(value: String): Boolean
@@ -45,7 +39,6 @@ interface AttributeType {
 data class ScalarType(
     val unit: UnitOfMeasurement
 ) : AttributeType {
-
     override fun isValid(value: String): Boolean =
         try {
             BigDecimal(value)
@@ -53,7 +46,6 @@ data class ScalarType(
         } catch (e: NumberFormatException) {
             false
         }
-
 }
 
 data class DictionaryItem(val code: String, val value: String)
@@ -63,9 +55,7 @@ data class DictionaryItem(val code: String, val value: String)
  * @param items set of dictionary literals
  */
 data class DictionaryType(val items: ImmutableSet<DictionaryItem>) : AttributeType {
-
     override fun isValid(value: String) = items.map {
         it.code
     }.contains(value)
-
 }

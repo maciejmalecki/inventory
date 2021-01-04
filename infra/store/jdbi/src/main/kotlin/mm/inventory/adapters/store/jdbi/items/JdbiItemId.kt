@@ -5,12 +5,16 @@ import mm.inventory.domain.shared.types.ItemId
 fun createItemId(id: String): ItemId = JdbiItemId(id)
 
 internal class JdbiItemId(val id: String) : ItemId {
-    override fun `==`(other: ItemId): Boolean {
-        val jdbiId = other.toJdbiId() ?: return false
-        return jdbiId.id == id
-    }
+    override fun equals(other: Any?): Boolean =
+        when (other) {
+            null -> false
+            is JdbiItemId -> other.toJdbiId()?.id == id
+            else -> false
+        }
 
-    override fun toString() = id
+    override fun hashCode(): Int {
+        return id.hashCode()
+    }
 }
 
 internal fun ItemId.toJdbiId(): JdbiItemId? =

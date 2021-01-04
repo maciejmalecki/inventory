@@ -9,12 +9,12 @@ import mm.inventory.domain.items.item.ItemRepository
 import mm.inventory.domain.items.item.ScalarValue
 import mm.inventory.domain.items.item.UpdateValuesCommand
 import mm.inventory.domain.items.item.parse
-import mm.inventory.domain.items.itemclass.ItemClassSelector
+import mm.inventory.domain.items.itemclass.ItemClassRepository
 import mm.inventory.domain.shared.types.ItemId
 import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.Jdbi
 
-class ItemJdbiRepository(private val db: Jdbi, private val itemClassSelector: ItemClassSelector) : ItemRepository {
+class ItemJdbiRepository(private val db: Jdbi, private val itemClassRepository: ItemClassRepository) : ItemRepository {
 
     override fun findById(id: ItemId): Item? = db.withHandle<Item?, RuntimeException> { handle ->
 
@@ -22,7 +22,7 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassSelector: It
 
         val itemRec = itemDao.selectItem(id.asJdbiId().id)
             ?: return@withHandle null
-        val itemClass = itemClassSelector.get(createItemClassId(itemRec.itemClassName))
+        val itemClass = itemClassRepository.get(createItemClassId(itemRec.itemClassName))
 
         val scalarValues = itemDao.selectScalars(id.asJdbiId().id).map {
             val attribute = itemClass.getAttribute(it.attributeType)

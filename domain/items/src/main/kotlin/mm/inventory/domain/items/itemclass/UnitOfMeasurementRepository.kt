@@ -2,6 +2,6 @@ package mm.inventory.domain.items.itemclass
 
 import kotlinx.collections.immutable.ImmutableList
 
-interface UnitOfMeasurementSelector {
+interface UnitOfMeasurementRepository {
     fun findAll(): ImmutableList<UnitOfMeasurement>
 }

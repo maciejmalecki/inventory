@@ -5,9 +5,9 @@ import mm.inventory.adapters.store.jdbi.units.UnitDao
 import mm.inventory.domain.items.itemclass.Attribute
 import mm.inventory.domain.items.itemclass.DictionaryItem
 import mm.inventory.domain.items.itemclass.DictionaryType
+import mm.inventory.domain.items.itemclass.DraftItemClass
 import mm.inventory.domain.items.itemclass.ItemClass
-import mm.inventory.domain.items.itemclass.ItemClassSelector
-import mm.inventory.domain.items.itemclass.ItemClassVersion
+import mm.inventory.domain.items.itemclass.ItemClassRepository
 import mm.inventory.domain.items.itemclass.ScalarType
 import mm.inventory.domain.items.itemclass.UnitOfMeasurement
 import mm.inventory.domain.shared.types.ItemClassId
@@ -16,7 +16,7 @@ import org.jdbi.v3.core.Jdbi
 /**
  * JDBI based implementation of the ItemClassRepository from domain.
  */
-class ItemClassJdbiSelector(private val db: Jdbi) : ItemClassSelector {
+class ItemClassJdbiRepository(private val db: Jdbi) : ItemClassRepository {
     override fun findById(id: ItemClassId): ItemClass? =
             db.withHandle<ItemClass?, RuntimeException> { handle ->
 
@@ -47,9 +47,21 @@ class ItemClassJdbiSelector(private val db: Jdbi) : ItemClassSelector {
             }
 
     // TODO temporary implementation
-    override fun findById(id: ItemClassId, version: Int): ItemClassVersion? {
+    override fun findDraftById(id: ItemClassId): DraftItemClass? {
         val itemClass = findById(id) ?: return null
-        return ItemClassVersion(itemClass, version)
+        return DraftItemClass(itemClass)
+    }
+
+    override fun persist(draftItemClass: DraftItemClass): DraftItemClass {
+        TODO("Not yet implemented")
+    }
+
+    override fun save(draftItemClass: DraftItemClass) {
+        TODO("Not yet implemented")
+    }
+
+    override fun delete(draftItemClass: DraftItemClass) {
+        TODO("Not yet implemented")
     }
 
     private fun map(dictionaryValueRecMap: Map<String, List<AttributeTypeValueRec>>): (attributeWithType: AttributeWithTypeRec) -> Attribute = { attributeWithType ->
