@@ -4,7 +4,7 @@ import mm.inventory.domain.shared.types.ItemClassId
 
 interface DraftItemClassRepository {
 
-    fun findDraftById(id: ItemClassId): DraftItemClass?
+    fun findById(id: ItemClassId): DraftItemClass?
 
     fun persist(draftItemClass: DraftItemClass): DraftItemClass
 

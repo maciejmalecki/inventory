@@ -5,7 +5,6 @@ import mm.inventory.adapters.store.jdbi.units.UnitDao
 import mm.inventory.domain.items.itemclass.Attribute
 import mm.inventory.domain.items.itemclass.DictionaryItem
 import mm.inventory.domain.items.itemclass.DictionaryType
-import mm.inventory.domain.items.itemclass.DraftItemClass
 import mm.inventory.domain.items.itemclass.ItemClass
 import mm.inventory.domain.items.itemclass.ItemClassRepository
 import mm.inventory.domain.items.itemclass.ScalarType
@@ -32,14 +31,14 @@ class ItemClassJdbiRepository(private val db: Jdbi) : ItemClassRepository {
                         ?: throw RuntimeException("Unit for ${itemClassRec.unit} not found")
 
                 // load all attributes for given item class
-                val attributeRecList = itemClassDao.selectAttributesWithTypesForItemClass(id.asJdbiId().id)
+                val attributeRecList = itemClassDao.selectAttributesWithTypesForItemClass(id.asJdbiId().id, id.asJdbiId().version)
 
                 // load all relevant dictionary values
-                val dictionaryValueRecMap = itemClassDao.selectAttributeValuesForItemClass(id.asJdbiId().id).groupBy { it.attributeTypeName }
+                val dictionaryValueRecMap = itemClassDao.selectAttributeValuesForItemClass(id.asJdbiId().id, id.asJdbiId().version).groupBy { it.attributeTypeName }
 
                 // build up the aggregate out of fetched data
                 ItemClass(
-                        JdbiItemClassId(itemClassRec.name),
+                        JdbiItemClassId(itemClassRec.name, itemClassRec.version),
                         itemClassRec.name,
                         itemClassRec.description,
                         UnitOfMeasurement(unitRec.code, unitRec.name),

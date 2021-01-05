@@ -11,7 +11,7 @@ class ItemClassJdbiQuery(private val db: Jdbi) : ItemClassQuery {
     override fun findAll(): ImmutableList<ItemClassHeader> =
         db.withHandle<ImmutableList<ItemClassHeader>, RuntimeException> { handle ->
             handle.attach(ItemClassDao::class.java).selectItemClasses().map { rec ->
-                ItemClassHeader(createItemClassId(rec.name), rec.name, rec.description)
+                ItemClassHeader(createItemClassId(rec.name, rec.version), rec.name, rec.description)
             }.toImmutableList()
         }
 }

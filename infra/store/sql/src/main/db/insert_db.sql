@@ -26,17 +26,17 @@ INSERT INTO Attribute_Type_Values (attribute_type_name, code, value) VALUES ('re
 INSERT INTO Attribute_Type_Values (attribute_type_name, code, value) VALUES ('resistorCaseStyle', 'rl', 'Radial Leaded');
 
 -- Item Classes
-INSERT INTO Item_Classes (name, description, unit) VALUES ('resistor', 'Resistor', 'pcs');
-INSERT INTO Attributes (item_class_name, attribute_type) VALUES ('resistor', 'resistance');
-INSERT INTO Attributes (item_class_name, attribute_type) VALUES ('resistor', 'resistanceTolerance');
-INSERT INTO Attributes (item_class_name, attribute_type) VALUES ('resistor', 'powerRating');
-INSERT INTO Attributes (item_class_name, attribute_type) VALUES ('resistor', 'voltageRating');
-INSERT INTO Attributes (item_class_name, attribute_type) VALUES ('resistor', 'resistorCaseStyle');
+INSERT INTO Item_Classes (name, version, complete, description, unit) VALUES ('resistor', 1, TRUE, 'Resistor', 'pcs');
+INSERT INTO Attributes (item_class_name, item_class_version, attribute_type) VALUES ('resistor', 1, 'resistance');
+INSERT INTO Attributes (item_class_name, item_class_version, attribute_type) VALUES ('resistor', 1, 'resistanceTolerance');
+INSERT INTO Attributes (item_class_name, item_class_version, attribute_type) VALUES ('resistor', 1, 'powerRating');
+INSERT INTO Attributes (item_class_name, item_class_version, attribute_type) VALUES ('resistor', 1, 'voltageRating');
+INSERT INTO Attributes (item_class_name, item_class_version, attribute_type) VALUES ('resistor', 1, 'resistorCaseStyle');
 
 -- Items
-INSERT INTO Items (name, item_class_name) VALUES ('tht10K', 'resistor');
-INSERT INTO Scalar_Values (item_name, attribute_type, item_class_name, value, scale) VALUES ('tht10K', 'resistance', 'resistor', 10, 3);
-INSERT INTO Scalar_Values (item_name, attribute_type, item_class_name, value, scale) VALUES ('tht10K', 'resistanceTolerance', 'resistor', 1, 1);
-INSERT INTO Scalar_Values (item_name, attribute_type, item_class_name, value, scale) VALUES ('tht10K', 'powerRating', 'resistor', 0.25, 1);
-INSERT INTO Scalar_Values (item_name, attribute_type, item_class_name, value, scale) VALUES ('tht10K', 'voltageRating', 'resistor', 250, 1);
-INSERT INTO Dictionary_Values (item_name, attribute_type, item_class_name, attribute_type_name, code) VALUES ('tht10K', 'resistorCaseStyle', 'resistor', 'resistorCaseStyle', 'al');
+INSERT INTO Items (name, item_class_name, item_class_version) VALUES ('tht10K', 'resistor', 1);
+INSERT INTO Scalar_Values (item_name, attribute_type, item_class_name, item_class_version, value, scale) VALUES ('tht10K', 'resistance', 'resistor', 1, 10, 3);
+INSERT INTO Scalar_Values (item_name, attribute_type, item_class_name, item_class_version, value, scale) VALUES ('tht10K', 'resistanceTolerance', 'resistor', 1, 1, 1);
+INSERT INTO Scalar_Values (item_name, attribute_type, item_class_name, item_class_version, value, scale) VALUES ('tht10K', 'powerRating', 'resistor', 1, 0.25, 1);
+INSERT INTO Scalar_Values (item_name, attribute_type, item_class_name, item_class_version, value, scale) VALUES ('tht10K', 'voltageRating', 'resistor', 1, 250, 1);
+INSERT INTO Dictionary_Values (item_name, attribute_type, item_class_name, item_class_version, attribute_type_name, code) VALUES ('tht10K', 'resistorCaseStyle', 'resistor', 1, 'resistorCaseStyle', 'al');

@@ -34,7 +34,7 @@ class DraftItemClassFactory(
      * @return draft item class
      */
     fun newDraft(itemClassId: ItemClassId): DraftItemClass = tx.inTransaction {
-        val draft = draftItemClassRepository.findDraftById(itemClassId)
+        val draft = draftItemClassRepository.findById(itemClassId)
         return@inTransaction draft ?: draftItemClassRepository.persist(
             DraftItemClass(
                 itemClassRepository.get(itemClassId)

@@ -22,7 +22,7 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassRepository: 
 
         val itemRec = itemDao.selectItem(id.asJdbiId().id)
             ?: return@withHandle null
-        val itemClass = itemClassRepository.get(createItemClassId(itemRec.itemClassName))
+        val itemClass = itemClassRepository.get(createItemClassId(itemRec.itemClassName, itemRec.itemClassVersion))
 
         val scalarValues = itemDao.selectScalars(id.asJdbiId().id).map {
             val attribute = itemClass.getAttribute(it.attributeType)
@@ -52,7 +52,7 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassRepository: 
 
         // insert item record
         val itemId = createItemId(item.name)
-        itemDao.insertItem(ItemRec(item.name, item.itemClassId.asJdbiId().id))
+        itemDao.insertItem(ItemRec(item.name, item.itemClassId.asJdbiId().id, item.itemClassId.asJdbiId().version))
         // insert values
         item.values.forEach { value ->
             when (value) {
@@ -61,6 +61,7 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassRepository: 
                         itemName = item.name,
                         attributeType = value.attribute.name,
                         itemClassName = item.itemClassId.asJdbiId().id,
+                        itemClassVersion = item.itemClassId.asJdbiId().version,
                         value = value.data,
                         scale = value.scale
                     )
@@ -70,6 +71,7 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassRepository: 
                         itemName = item.name,
                         attributeType = value.attribute.name,
                         itemClassName = item.itemClassId.asJdbiId().id,
+                        itemClassVersion = item.itemClassId.asJdbiId().version,
                         attributeTypeName = value.attribute.name,
                         code = value.data
                     )
@@ -116,6 +118,7 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassRepository: 
                 itemName = item.name,
                 attributeType = value.attribute.name,
                 itemClassName = item.itemClassId.asJdbiId().id,
+                itemClassVersion = item.itemClassId.asJdbiId().version,
                 value = value.data,
                 scale = value.scale
             )
@@ -132,6 +135,7 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassRepository: 
                 itemName = item.name,
                 attributeType = value.attribute.name,
                 itemClassName = item.itemClassId.asJdbiId().id,
+                itemClassVersion = item.itemClassId.asJdbiId().version,
                 attributeTypeName = value.attribute.name,
                 code = value.data
             )

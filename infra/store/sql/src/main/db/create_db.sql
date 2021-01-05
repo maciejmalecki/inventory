@@ -23,18 +23,22 @@ CREATE TABLE Attribute_Type_Values
 
 CREATE TABLE Item_Classes
 (
-    name        VARCHAR(50) PRIMARY KEY,
+    name        VARCHAR(50) NOT NULL,
+    version     BIGINT NOT NULL,
+    complete    BOOLEAN NOT NULL,
     description VARCHAR(200) NOT NULL,
     unit        VARCHAR(20)  NOT NULL,
+    PRIMARY KEY (name, version),
     FOREIGN KEY (unit) REFERENCES Units (code)
 );
 
 CREATE TABLE Attributes
 (
     item_class_name VARCHAR(50) NOT NULL,
+    item_class_version BIGINT NOT NULL,
     attribute_type  VARCHAR(50) NOT NULL,
-    PRIMARY KEY (item_class_name, attribute_type),
-    FOREIGN KEY (item_class_name) REFERENCES Item_Classes (name),
+    PRIMARY KEY (item_class_name, item_class_version, attribute_type),
+    FOREIGN KEY (item_class_name, item_class_version) REFERENCES Item_Classes (name, version),
     FOREIGN KEY (attribute_type) REFERENCES Attribute_Types (name)
 );
 
@@ -49,7 +53,8 @@ CREATE TABLE Items
 (
     name            VARCHAR(50) PRIMARY KEY,
     item_class_name VARCHAR(50) NOT NULL,
-    FOREIGN KEY (item_class_name) REFERENCES Item_Classes (name)
+    item_class_version BIGINT NOT NULL,
+    FOREIGN KEY (item_class_name, item_class_version) REFERENCES Item_Classes (name, version)
 );
 
 CREATE TABLE Scalar_Values
@@ -57,11 +62,12 @@ CREATE TABLE Scalar_Values
     item_name       VARCHAR(50) NOT NULL,
     attribute_type  VARCHAR(50) NOT NULL,
     item_class_name VARCHAR(50) NOT NULL,
+    item_class_version BIGINT NOT NULL,
     value           DECIMAL(10, 4),
     scale           DECIMAL(3)  NOT NULL,
     PRIMARY KEY (item_name, attribute_type, item_class_name),
     FOREIGN KEY (item_name) REFERENCES Items (name),
-    FOREIGN KEY (attribute_type, item_class_name) REFERENCES Attributes (attribute_type, item_class_name)
+    FOREIGN KEY (attribute_type, item_class_name, item_class_version) REFERENCES Attributes (attribute_type, item_class_name, item_class_version)
 );
 
 CREATE TABLE Dictionary_Values
@@ -69,11 +75,12 @@ CREATE TABLE Dictionary_Values
     item_name           VARCHAR(50) NOT NULL,
     attribute_type      VARCHAR(50) NOT NULL,
     item_class_name     VARCHAR(50) NOT NULL,
+    item_class_version  BIGINT NOT NULL,
     attribute_type_name VARCHAR(50) NOT NULL,
     code                VARCHAR(50),
     PRIMARY KEY (item_name, attribute_type, item_class_name),
     FOREIGN KEY (item_name) REFERENCES Items (name),
-    FOREIGN KEY (attribute_type, item_class_name) REFERENCES Attributes (attribute_type, item_class_name),
+    FOREIGN KEY (attribute_type, item_class_name, item_class_version) REFERENCES Attributes (attribute_type, item_class_name, item_class_version),
     FOREIGN KEY (attribute_type_name, code) REFERENCES Attribute_Type_Values (attribute_type_name, code)
 );
 

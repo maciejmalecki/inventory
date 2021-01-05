@@ -2,20 +2,9 @@ package mm.inventory.adapters.store.jdbi.itemclasses
 
 import mm.inventory.domain.shared.types.ItemClassId
 
-fun createItemClassId(id: String): ItemClassId = JdbiItemClassId(id)
+fun createItemClassId(id: String, version: Long = -1L): ItemClassId = JdbiItemClassId(id, version)
 
-internal data class JdbiItemClassId(val id: String) : ItemClassId {
-    override fun equals(other: Any?): Boolean =
-        when (other) {
-            null -> false
-            is JdbiItemClassId -> other.toJdbiId()?.id == id
-            else -> false
-        }
-
-    override fun hashCode(): Int {
-        return id.hashCode()
-    }
-}
+internal data class JdbiItemClassId(val id: String, val version: Long) : ItemClassId
 
 internal fun ItemClassId.toJdbiId(): JdbiItemClassId? =
     when (this) {
