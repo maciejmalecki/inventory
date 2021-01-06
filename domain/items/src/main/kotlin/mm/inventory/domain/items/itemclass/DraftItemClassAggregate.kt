@@ -8,6 +8,8 @@ data class DraftItemClass(
     val itemClass: ItemClass,
     internal val mutations: Mutations<DraftItemClass> = Mutations()
 ) {
+    val hasMutations = !mutations.empty
+
     fun changeDescription(value: String): DraftItemClass =
         copy(
             itemClass = itemClass.copy(description = value),

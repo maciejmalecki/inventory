@@ -4,6 +4,7 @@ DROP TABLE Dictionary_Values;
 DROP TABLE Scalar_Values;
 DROP TABLE Items;
 DROP TABLE Attributes;
+DROP TABLE Item_Classes_Version_Counters;
 DROP TABLE Item_Classes;
 DROP TABLE Attribute_Type_Values;
 DROP TABLE Attribute_Types;

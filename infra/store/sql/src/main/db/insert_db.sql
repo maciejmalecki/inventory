@@ -27,6 +27,7 @@ INSERT INTO Attribute_Type_Values (attribute_type_name, code, value) VALUES ('re
 
 -- Item Classes
 INSERT INTO Item_Classes (name, version, complete, description, unit) VALUES ('resistor', 1, TRUE, 'Resistor', 'pcs');
+INSERT INTO Item_Classes_Version_Counters (name, last_version) VALUES ('resistor', 1);
 INSERT INTO Attributes (item_class_name, item_class_version, attribute_type) VALUES ('resistor', 1, 'resistance');
 INSERT INTO Attributes (item_class_name, item_class_version, attribute_type) VALUES ('resistor', 1, 'resistanceTolerance');
 INSERT INTO Attributes (item_class_name, item_class_version, attribute_type) VALUES ('resistor', 1, 'powerRating');
