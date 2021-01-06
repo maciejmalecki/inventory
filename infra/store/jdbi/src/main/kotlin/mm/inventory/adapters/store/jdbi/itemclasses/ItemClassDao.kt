@@ -11,7 +11,7 @@ import org.jdbi.v3.sqlobject.statement.SqlQuery
  */
 interface ItemClassDao {
 
-    @SqlQuery("SELECT name, version, description, unit FROM Item_classes ORDER BY name")
+    @SqlQuery("SELECT name, version, description, unit FROM Item_classes WHERE (name, version) IN (SELECT name, MAX(version) FROM Item_classes GROUP BY name) ORDER BY name")
     fun selectItemClasses(): List<ItemClassRec>
 
     @SqlQuery("SELECT MAX(version) FROM Item_classes WHERE name=?")
