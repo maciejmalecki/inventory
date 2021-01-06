@@ -12,13 +12,13 @@ export type Value = ScalarValue | DictionaryValue;
 
 export interface ScalarValue {
   attribute: Attribute;
-  value: number;
+  data: number;
   scale: number;
 }
 
 export interface DictionaryValue {
   attribute: Attribute;
-  value: string;
+  data: string;
 }
 
 export interface Item {
@@ -61,8 +61,8 @@ export class ItemService {
     return this.httpClient.post<string>(`${apiPrefix}/${name}`, attributeValuations, {observe: 'response'});
   }
 
-  createItem(name: string, itemClassName: string, attributeValuations: Array<AttributeValuation>): Observable<Item> {
-    return this.httpClient.post<Item>(`${apiPrefix}`, {name, itemClassName, inValues: attributeValuations});
+  createItem(name: string, itemClassName: string, itemClassVersion: number, attributeValuations: Array<AttributeValuation>): Observable<Item> {
+    return this.httpClient.post<Item>(`${apiPrefix}`, {name, itemClassName, itemClassVersion, inValues: attributeValuations});
   }
 
   deleteItem(name: string): Observable<HttpResponse<any>> {

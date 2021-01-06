@@ -9,6 +9,7 @@ export interface ItemClassHeader {
 
 export interface ItemClassId {
   id: string;
+  version: number;
 }
 
 export interface ItemClass {

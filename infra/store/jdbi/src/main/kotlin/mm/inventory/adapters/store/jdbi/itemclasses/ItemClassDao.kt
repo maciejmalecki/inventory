@@ -14,8 +14,11 @@ interface ItemClassDao {
     @SqlQuery("SELECT name, version, description, unit FROM Item_classes ORDER BY name")
     fun selectItemClasses(): List<ItemClassRec>
 
-    @SqlQuery("SELECT name, version, description, unit FROM Item_Classes WHERE name=? ORDER BY version DESC")
-    fun selectItemClassByName(itemClassName: String): ItemClassRec?
+    @SqlQuery("SELECT MAX(version) FROM Item_classes WHERE name=?")
+    fun selectNewestItemClassVersion(itemClassName: String): Long?
+
+    @SqlQuery("SELECT name, version, description, unit FROM Item_Classes WHERE name=? AND version=? ORDER BY version DESC")
+    fun selectItemClassByName(itemClassName: String, itemClassVersion: Long): ItemClassRec?
 
     @SqlQuery("SELECT a.attribute_type, at.name, at.scalar, u.code as unit_code, u.name as unit_name FROM Attributes a JOIN Attribute_Types at ON a.attribute_type = at.name LEFT OUTER JOIN Units u ON at.unit = u.code WHERE item_class_name=? AND item_class_version=?")
     fun selectAttributesWithTypesForItemClass(itemClassName: String, itemClassVersion: Long): List<AttributeWithTypeRec>

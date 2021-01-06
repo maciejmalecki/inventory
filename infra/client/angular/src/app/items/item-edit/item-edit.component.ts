@@ -39,7 +39,7 @@ export class ItemEditComponent implements OnInit {
           disabled: !this.createMode
         })
       }, ...this.item.values.map(value => ({
-        [value.attribute.name]: new FormControl(value.value, [])
+        [value.attribute.name]: new FormControl(value.data, [])
       })))
     );
   }
@@ -69,8 +69,7 @@ export class ItemEditComponent implements OnInit {
       }
     }
     if (this.createMode) {
-      this.itemService.createItem(this.item.name, this.item.itemClassId.id, changes).subscribe(response => {
-        console.log(response);
+      this.itemService.createItem(this.item.name, this.item.itemClassId.id, this.item.itemClassId.version, changes).subscribe(response => {
         this.router.navigate(['items', this.item.name]).catch(reason => console.warn(reason));
       });
     }

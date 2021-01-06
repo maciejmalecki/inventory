@@ -4,7 +4,9 @@ import mm.inventory.domain.shared.types.ItemClassId
 
 fun createItemClassId(id: String, version: Long = -1L): ItemClassId = JdbiItemClassId(id, version)
 
-internal data class JdbiItemClassId(val id: String, val version: Long) : ItemClassId
+internal data class JdbiItemClassId(val id: String, val version: Long) : ItemClassId {
+    val useNewest: Boolean = version == -1L
+}
 
 internal fun ItemClassId.toJdbiId(): JdbiItemClassId? =
     when (this) {

@@ -24,13 +24,13 @@ export class CreateItemResolver implements Resolve<Item> {
       if (isScalarType(attribute.type)) {
         return {
           attribute,
-          value: 0,
+          data: 0,
           scale: 1
         };
       } else if (isDictionaryType(attribute.type)) {
         return {
           attribute,
-          value: ''
+          data: ''
         };
       }
     }
