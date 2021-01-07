@@ -7,6 +7,7 @@ import mm.inventory.domain.items.itemclass.ItemClass
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -33,5 +34,11 @@ class ItemClassesController(private val itemClassFacade: ItemClassFacade) {
         } else {
             ResponseEntity.notFound().build()
         }
+    }
+
+    @PostMapping("/itemClasses/{id}/draft")
+    fun newDraftItemClass(@PathVariable id: String): ResponseEntity<ItemClass> {
+        val draftItemClass = itemClassFacade.createDraft(createItemClassId(id))
+        return ResponseEntity.ok(draftItemClass.itemClass)
     }
 }
