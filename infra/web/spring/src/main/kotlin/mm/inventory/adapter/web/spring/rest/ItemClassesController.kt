@@ -24,4 +24,14 @@ class ItemClassesController(private val itemClassFacade: ItemClassFacade) {
             ResponseEntity.notFound().build()
         }
     }
+
+    @GetMapping("/itemClasses/{id}/draft")
+    fun draftItemClass(@PathVariable id: String): ResponseEntity<ItemClass> {
+        val draftItemClass = itemClassFacade.findDraftById(createItemClassId(id))
+        return if (draftItemClass != null) {
+            ResponseEntity.ok(draftItemClass.itemClass)
+        } else {
+            ResponseEntity.notFound().build()
+        }
+    }
 }
