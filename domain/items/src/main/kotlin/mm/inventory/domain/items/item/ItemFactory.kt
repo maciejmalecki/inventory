@@ -1,7 +1,7 @@
 package mm.inventory.domain.items.item
 
 import kotlinx.collections.immutable.toImmutableSet
-import mm.inventory.domain.items.itemclass.ItemClassSelector
+import mm.inventory.domain.items.itemclass.ItemClassRepository
 import mm.inventory.domain.shared.InvalidDataException
 import mm.inventory.domain.shared.transactions.BusinessTransaction
 import mm.inventory.domain.shared.types.ItemClassId
@@ -12,8 +12,8 @@ import mm.inventory.domain.shared.types.emptyItemId
  */
 class ItemFactory(
     private val tx: BusinessTransaction,
-    private val itemClassSelector: ItemClassSelector,
-    private val itemMutator: ItemMutator
+    private val itemClassRepository: ItemClassRepository,
+    private val itemRepository: ItemRepository
 ) {
 
     /**
@@ -24,13 +24,13 @@ class ItemFactory(
      */
     fun create(name: String, itemClassId: ItemClassId, inValues: Map<String, String>): Item =
         tx.inTransaction {
-            val itemClass = itemClassSelector.get(itemClassId)
+            val itemClass = itemClassRepository.get(itemClassId)
             val values = itemClass.attributes.map { attribute ->
                 val rawValue = inValues[attribute.name]
                     ?: throw InvalidDataException("A value for `${attribute.name}` attribute is not provided.")
                 attribute.parse(rawValue)
             }
             val item = Item(emptyItemId, name, itemClassId, values.toImmutableSet())
-            return@inTransaction itemMutator.persist(item)
+            return@inTransaction itemRepository.persist(item)
         }
 }

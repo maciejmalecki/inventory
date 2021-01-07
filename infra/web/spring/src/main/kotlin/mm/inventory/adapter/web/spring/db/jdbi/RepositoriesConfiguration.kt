@@ -1,11 +1,11 @@
 package mm.inventory.adapter.web.spring.db.jdbi
 
 import mm.inventory.adapters.store.jdbi.itemclasses.ItemClassJdbiQuery
-import mm.inventory.adapters.store.jdbi.itemclasses.ItemClassJdbiSelector
+import mm.inventory.adapters.store.jdbi.itemclasses.ItemClassJdbiRepository
 import mm.inventory.adapters.store.jdbi.items.ItemJdbiQuery
 import mm.inventory.adapters.store.jdbi.items.ItemJdbiRepository
 import mm.inventory.adapters.store.jdbi.transactions.BusinessJdbiTransaction
-import mm.inventory.adapters.store.jdbi.units.UnitOfMeasurementJdbiSelector
+import mm.inventory.adapters.store.jdbi.units.UnitOfMeasurementJdbiRepository
 import mm.inventory.domain.items.item.ItemFactory
 import org.jdbi.v3.core.Jdbi
 import org.springframework.context.annotation.Bean
@@ -16,7 +16,7 @@ class RepositoriesConfiguration(
     private val jdbi: Jdbi
 ) {
     @Bean
-    fun itemClassSelector() = ItemClassJdbiSelector(jdbi)
+    fun itemClassSelector() = ItemClassJdbiRepository(jdbi)
 
     @Bean
     fun itemClassQuery() = ItemClassJdbiQuery(jdbi)
@@ -25,7 +25,7 @@ class RepositoriesConfiguration(
     fun itemSelector() = ItemJdbiRepository(jdbi, itemClassSelector())
 
     @Bean
-    fun unitOfMeasurementSelector() = UnitOfMeasurementJdbiSelector(jdbi)
+    fun unitOfMeasurementSelector() = UnitOfMeasurementJdbiRepository(jdbi)
 
     @Bean
     fun itemCreator() = ItemFactory(businessTransaction(), itemClassSelector(), itemSelector())

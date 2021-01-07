@@ -19,6 +19,7 @@ import java.util.stream.Collectors
 data class CreateItemRequest(
     val name: String,
     val itemClassName: String,
+    val itemClassVersion: Long,
     val inValues: List<AttributeValuation>
 )
 
@@ -38,7 +39,7 @@ class ItemsController(private val itemFacade: ItemFacade) {
         ResponseEntity.ok().body(
             itemFacade.createItem(
                 requestData.name,
-                createItemClassId(requestData.itemClassName),
+                createItemClassId(requestData.itemClassName, requestData.itemClassVersion),
                 requestData.inValues.stream().collect(
                     Collectors.toMap({ v -> v.attribute }, { v -> v.value })
                 )

@@ -26,7 +26,7 @@ export class ItemDetailsComponent implements OnInit {
   }
 
   getDictionaryValue(value: DictionaryValue): string {
-    return (value.attribute.type as DictionaryType).items.find(value1 => value1.code === value.value).value;
+    return (value.attribute.type as DictionaryType).items.find(value1 => value1.code === value.data).value;
   }
 
   delete(): void {

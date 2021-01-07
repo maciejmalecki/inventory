@@ -13,6 +13,8 @@ data class Mutations<T>(
     private val commands: VavrList<MutatingCommand<T>> = VavrList.empty()
 ) {
 
+    val empty = commands.isEmpty
+
     fun append(command: MutatingCommand<T>): Mutations<T> = Mutations(commands.append(command))
 
     fun handleAll(handler: MutatingCommandHandler<T>) = handleAll(handler, commands)
