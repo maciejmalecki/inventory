@@ -44,7 +44,7 @@ CREATE TABLE Attributes
     item_class_version BIGINT      NOT NULL,
     attribute_type     VARCHAR(50) NOT NULL,
     PRIMARY KEY (item_class_name, item_class_version, attribute_type),
-    FOREIGN KEY (item_class_name, item_class_version) REFERENCES Item_Classes (name, version),
+    FOREIGN KEY (item_class_name, item_class_version) REFERENCES Item_Classes (name, version) ON DELETE CASCADE,
     FOREIGN KEY (attribute_type) REFERENCES Attribute_Types (name)
 );
 

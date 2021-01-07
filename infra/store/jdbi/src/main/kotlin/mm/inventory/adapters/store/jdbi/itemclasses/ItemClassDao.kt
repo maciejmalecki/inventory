@@ -12,11 +12,14 @@ import org.jdbi.v3.sqlobject.statement.SqlUpdate
  */
 interface ItemClassDao {
 
-    @SqlQuery("SELECT name, version, description, unit FROM Item_classes WHERE (name, version) IN (SELECT name, MAX(version) FROM Item_classes GROUP BY name) ORDER BY name")
+    @SqlQuery("SELECT name, version, description, unit FROM Item_classes WHERE (name, version) IN (SELECT name, MAX(version) FROM Item_classes WHERE complete=TRUE GROUP BY name) ORDER BY name")
     fun selectItemClasses(): List<ItemClassRec>
 
-    @SqlQuery("SELECT MAX(version) FROM Item_classes WHERE name=?")
+    @SqlQuery("SELECT MAX(version) FROM Item_classes WHERE name=? AND complete=TRUE")
     fun selectNewestItemClassVersion(itemClassName: String): Long?
+
+    @SqlQuery("SELECT MIN(version) FROM Item_classes WHERE name=? AND complete=FALSE")
+    fun selectDraftVersion(itemClassName: String): Long?
 
     @SqlQuery("SELECT name, version, description, unit FROM Item_Classes WHERE name=? AND version=? ORDER BY version DESC")
     fun selectItemClassByName(itemClassName: String, itemClassVersion: Long): ItemClassRec?
@@ -39,8 +42,14 @@ interface ItemClassDao {
     @SqlUpdate("INSERT INTO Item_classes(name, version, complete, description, unit) VALUES (:itemClass.name, :itemClass.version, FALSE, :itemClass.description, :itemClass.unit)")
     fun insertItemClass(itemClass: ItemClassRec): Int
 
+    @SqlUpdate("INSERT INTO Attributes(item_class_name, item_class_version, attribute_type) VALUES (:attribute.itemClassName, :attribute.itemClassVersion, :attribute.attributeType)")
+    fun insertAttribute(attribute: AttributeRec): Int
+
     @SqlUpdate("UPDATE Item_classes SET complete=TRUE WHERE name=? AND version=? AND complete=FALSE")
     fun completeDraftItemClass(itemClassName: String, version: Long): Int
+
+    @SqlUpdate("DELETE FROM Item_classes WHERE name=? AND version=? AND complete=FALSE")
+    fun deleteDraftItemClass(itemClassName: String, version: Long): Int
 }
 
 data class ItemClassRec(
@@ -62,4 +71,10 @@ data class AttributeTypeValueRec(
     val attributeTypeName: String,
     val code: String,
     val value: String
+)
+
+data class AttributeRec(
+    val itemClassName: String,
+    val itemClassVersion: Long,
+    val attributeType: String
 )
