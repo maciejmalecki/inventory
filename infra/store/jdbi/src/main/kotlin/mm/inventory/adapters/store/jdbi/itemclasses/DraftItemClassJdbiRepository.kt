@@ -1,9 +1,14 @@
 package mm.inventory.adapters.store.jdbi.itemclasses
 
+import mm.inventory.adapters.store.updateAndExpect
+import mm.inventory.domain.items.itemclass.AddAttributeCommand
 import mm.inventory.domain.items.itemclass.Attribute
+import mm.inventory.domain.items.itemclass.ChangeAmountUnitCommand
+import mm.inventory.domain.items.itemclass.ChangeDescriptionCommand
 import mm.inventory.domain.items.itemclass.DraftItemClass
 import mm.inventory.domain.items.itemclass.DraftItemClassRepository
 import mm.inventory.domain.items.itemclass.ItemClassRepository
+import mm.inventory.domain.items.itemclass.RemoveAttributeCommand
 import mm.inventory.domain.shared.InvalidDataException
 import mm.inventory.domain.shared.mutations.Mutations
 import mm.inventory.domain.shared.types.ItemClassId
@@ -42,9 +47,8 @@ class DraftItemClassJdbiRepository(private val db: Jdbi, private val itemClassRe
             )
             // TODO: should we check if there is a draft already?
             // insert draft
-            val updateCnt = itemClassDao.insertItemClass(itemClassRec)
-            if (updateCnt != 1) {
-                throw InvalidDataException("Invalid update count: $updateCnt for Item Class Aggregate ${itemClass.name}/$version")
+            updateAndExpect(1) {
+                itemClassDao.insertItemClass(itemClassRec)
             }
             // insert attributes
             itemClass.attributes.forEach { attribute ->
@@ -56,16 +60,34 @@ class DraftItemClassJdbiRepository(private val db: Jdbi, private val itemClassRe
             )
         }
 
-    override fun save(draftItemClass: DraftItemClass) {
-        TODO("Not yet implemented")
+    override fun save(draftItemClass: DraftItemClass) = db.useTransaction<RuntimeException> { handle ->
+        val itemClassDao = handle.attach(ItemClassDao::class.java)
+        val id = draftItemClass.itemClass.id.asJdbiId()
+
+        draftItemClass.handleAll { command ->
+            when (command) {
+                is ChangeDescriptionCommand -> updateAndExpect(1) {
+                    itemClassDao.updateDescription(id, command.description)
+                }
+                is ChangeAmountUnitCommand -> updateAndExpect(1) {
+                    itemClassDao.updateUnit(id, command.amountUnit.code)
+                }
+                is AddAttributeCommand -> updateAndExpect(1) {
+                    itemClassDao.insertAttribute(AttributeRec(id.id, id.version, command.attribute.name))
+                }
+                is RemoveAttributeCommand -> updateAndExpect(1) {
+                    itemClassDao.deleteAttribute(AttributeRec(id.id, id.version, command.attribute.name))
+                }
+                else -> throw IllegalArgumentException("Unknown command: ${command.javaClass.name}.")
+            }
+        }
     }
 
     override fun delete(draftItemClass: DraftItemClass) = db.useTransaction<RuntimeException> { handle ->
         val itemClassDao = handle.attach(ItemClassDao::class.java)
-        val jdbiId = draftItemClass.itemClass.id.asJdbiId()
-        val deleteCnt = itemClassDao.deleteDraftItemClass(jdbiId.id, jdbiId.version)
-        if (deleteCnt != 1) {
-            throw InvalidDataException("Wrong update counter: $deleteCnt when deleting draft item class $jdbiId.")
+        val id = draftItemClass.itemClass.id.asJdbiId()
+        updateAndExpect(1) {
+            itemClassDao.deleteDraftItemClass(id)
         }
     }
 
@@ -74,10 +96,9 @@ class DraftItemClassJdbiRepository(private val db: Jdbi, private val itemClassRe
         if (draftItemClass.hasMutations) {
             throw InvalidDataException("Cannot complete Draft Item Class aggregate $itemClassId because it has unsaved mutations.")
         }
-        val itemClassDao = handle.attach(ItemClassDao::class.java)
-        val updateCount = itemClassDao.completeDraftItemClass(itemClassId.id, itemClassId.version)
-        if (updateCount != 1) {
-            throw InvalidDataException("The Draft Item Class $itemClassId cannot be completed.")
+        val id = handle.attach(ItemClassDao::class.java)
+        updateAndExpect(1) {
+            id.completeDraftItemClass(itemClassId)
         }
     }
 
@@ -87,9 +108,8 @@ class DraftItemClassJdbiRepository(private val db: Jdbi, private val itemClassRe
         version: Long,
         attribute: Attribute
     ) {
-        val updateCnt = itemClassDao.insertAttribute(AttributeRec(itemClassId.id, version, attribute.name))
-        if (updateCnt != 1) {
-            throw InvalidDataException("Invalid update count: $updateCnt for Attribute ${attribute.name}")
+        updateAndExpect(1) {
+            itemClassDao.insertAttribute(AttributeRec(itemClassId.id, version, attribute.name))
         }
     }
 

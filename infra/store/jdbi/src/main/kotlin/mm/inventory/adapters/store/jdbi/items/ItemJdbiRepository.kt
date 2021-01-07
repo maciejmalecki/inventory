@@ -82,10 +82,12 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassRepository: 
         return@inTransaction item.copy(id = itemId)
     }
 
-    override fun save(item: Item) = item.handleAll { command ->
-        when (command) {
-            is UpdateValuesCommand -> updateValues(command)
-            else -> throw IllegalArgumentException("Unknown command: ${command.javaClass.name}.")
+    override fun save(item: Item) = db.useTransaction<RuntimeException> { handle ->
+        item.handleAll { command ->
+            when (command) {
+                is UpdateValuesCommand -> updateValues(handle, command)
+                else -> throw IllegalArgumentException("Unknown command: ${command.javaClass.name}.")
+            }
         }
     }
 
@@ -100,14 +102,12 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassRepository: 
         dao.deleteItem(id)
     }
 
-    private fun updateValues(command: UpdateValuesCommand) =
-        db.useTransaction<RuntimeException> { handle ->
-            command.values.forEach { value ->
-                when (value) {
-                    is ScalarValue -> updateValue(handle, command.base, value)
-                    is DictionaryValue -> updateValue(handle, command.base, value)
-                    else -> throw IllegalArgumentException("Unsupported value type: ${value.javaClass.name}.")
-                }
+    private fun updateValues(handle: Handle, command: UpdateValuesCommand) =
+        command.values.forEach { value ->
+            when (value) {
+                is ScalarValue -> updateValue(handle, command.base, value)
+                is DictionaryValue -> updateValue(handle, command.base, value)
+                else -> throw IllegalArgumentException("Unsupported value type: ${value.javaClass.name}.")
             }
         }
 
@@ -144,5 +144,4 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassRepository: 
             throw RuntimeException("Wrong modification count: $cnt.")
         }
     }
-
 }

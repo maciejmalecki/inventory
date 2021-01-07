@@ -10,7 +10,7 @@ import org.jdbi.v3.sqlobject.statement.SqlUpdate
  * which are domain related artifacts, therefore different naming is used.
  * -------------------------------------------------------------------------------------------------------------------------------------------
  */
-interface ItemClassDao {
+internal interface ItemClassDao {
 
     @SqlQuery("SELECT name, version, description, unit FROM Item_classes WHERE (name, version) IN (SELECT name, MAX(version) FROM Item_classes WHERE complete=TRUE GROUP BY name) ORDER BY name")
     fun selectItemClasses(): List<ItemClassRec>
@@ -45,11 +45,20 @@ interface ItemClassDao {
     @SqlUpdate("INSERT INTO Attributes(item_class_name, item_class_version, attribute_type) VALUES (:attribute.itemClassName, :attribute.itemClassVersion, :attribute.attributeType)")
     fun insertAttribute(attribute: AttributeRec): Int
 
-    @SqlUpdate("UPDATE Item_classes SET complete=TRUE WHERE name=? AND version=? AND complete=FALSE")
-    fun completeDraftItemClass(itemClassName: String, version: Long): Int
+    @SqlUpdate("DELETE FROM Attributes WHERE item_class_name=:attribute.itemClassName AND item_class_version=:attribute.itemClassVersion AND attribute_type=:attribute.attributeType")
+    fun deleteAttribute(attribute: AttributeRec): Int
 
-    @SqlUpdate("DELETE FROM Item_classes WHERE name=? AND version=? AND complete=FALSE")
-    fun deleteDraftItemClass(itemClassName: String, version: Long): Int
+    @SqlUpdate("UPDATE Item_classes SET complete=TRUE WHERE name=:id.id AND version=:id.version AND complete=FALSE")
+    fun completeDraftItemClass(id:JdbiItemClassId): Int
+
+    @SqlUpdate("DELETE FROM Item_classes WHERE name=:id.id AND version=:id.version AND complete=FALSE")
+    fun deleteDraftItemClass(id:JdbiItemClassId): Int
+
+    @SqlUpdate("UPDATE Item_classes SET description = :description WHERE name=:id.id AND version=:id.version AND complete=FALSE")
+    fun updateDescription(id:JdbiItemClassId, description: String): Int
+
+    @SqlUpdate("UPDATE Item_classes SET unit=:unit WHERE name=:id.id AND version=:id.version AND complete=FALSE")
+    fun updateUnit(id:JdbiItemClassId, unit: String): Int
 }
 
 data class ItemClassRec(

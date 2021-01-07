@@ -2,6 +2,7 @@ package mm.inventory.domain.items.itemclass
 
 import kotlinx.collections.immutable.toImmutableSet
 import mm.inventory.domain.shared.mutations.MutatingCommand
+import mm.inventory.domain.shared.mutations.MutatingCommandHandler
 import mm.inventory.domain.shared.mutations.Mutations
 
 data class DraftItemClass(
@@ -33,6 +34,8 @@ data class DraftItemClass(
             itemClass = itemClass.copy(attributes = (itemClass.attributes - value).toImmutableSet()),
             mutations = mutations.append(RemoveAttributeCommand(this, value))
         )
+
+    fun handleAll(handler: MutatingCommandHandler<DraftItemClass>) = mutations.handleAll(handler)
 }
 
 data class ChangeDescriptionCommand(
