@@ -38,6 +38,11 @@ class ItemClassFacade(
         draftItemClassRepository.findById(id)
     }
 
+    fun save(draftItemClass: DraftItemClass) =
+        sec.requireAllRoles(ITEMS_ROLE, ITEM_CLASSES_ROLE, ITEM_CLASSES_WRITER_ROLE) {
+            draftItemClassRepository.save(draftItemClass)
+        }
+
     fun createDraft(id: ItemClassId): DraftItemClass =
         sec.requireAllRoles(ITEMS_ROLE, ITEM_CLASSES_ROLE, ITEM_CLASSES_WRITER_ROLE) {
             draftItemClassFactory.newDraft(id)
