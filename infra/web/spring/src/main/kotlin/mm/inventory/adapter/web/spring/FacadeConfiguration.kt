@@ -8,6 +8,7 @@ import mm.inventory.domain.items.itemclass.ItemClassRepository
 import mm.inventory.domain.items.item.ItemRepository
 import mm.inventory.domain.items.item.ItemFactory
 import mm.inventory.domain.items.itemclass.DraftItemClassFactory
+import mm.inventory.domain.items.itemclass.DraftItemClassManager
 import mm.inventory.domain.items.itemclass.DraftItemClassRepository
 import mm.inventory.domain.items.itemclass.UnitOfMeasurementRepository
 import mm.inventory.domain.shared.security.SecurityGuard
@@ -26,6 +27,7 @@ class FacadeConfiguration(
     private val itemQuery: ItemQuery,
     private val itemFactoryCreator: ItemFactory,
     private val draftItemClassFactory: DraftItemClassFactory,
+    private val draftItemClassManager: DraftItemClassManager,
     private val unitOfMeasurementRepository: UnitOfMeasurementRepository
 ) {
     @Bean
@@ -34,6 +36,7 @@ class FacadeConfiguration(
         itemClassRepository,
         draftItemClassRepository,
         draftItemClassFactory,
+        draftItemClassManager,
         itemClassQuery,
         unitOfMeasurementRepository
     )

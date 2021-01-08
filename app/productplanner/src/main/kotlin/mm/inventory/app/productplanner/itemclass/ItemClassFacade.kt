@@ -6,6 +6,7 @@ import mm.inventory.domain.items.ITEM_CLASSES_ROLE
 import mm.inventory.domain.items.ITEM_CLASSES_WRITER_ROLE
 import mm.inventory.domain.items.itemclass.DraftItemClass
 import mm.inventory.domain.items.itemclass.DraftItemClassFactory
+import mm.inventory.domain.items.itemclass.DraftItemClassManager
 import mm.inventory.domain.items.itemclass.DraftItemClassRepository
 import mm.inventory.domain.items.itemclass.ItemClass
 import mm.inventory.domain.items.itemclass.ItemClassRepository
@@ -21,6 +22,7 @@ class ItemClassFacade(
     private val itemClassRepository: ItemClassRepository,
     private val draftItemClassRepository: DraftItemClassRepository,
     private val draftItemClassFactory: DraftItemClassFactory,
+    private val draftItemClassManager: DraftItemClassManager,
     private val itemClassQuery: ItemClassQuery,
     private val unitOfMeasurementRepository: UnitOfMeasurementRepository
 ) {
@@ -44,5 +46,16 @@ class ItemClassFacade(
     fun createDraft(name: String, unitCode: String): DraftItemClass =
         sec.requireAllRoles(ITEMS_ROLE, ITEM_CLASSES_ROLE, ITEM_CLASSES_WRITER_ROLE) {
             draftItemClassFactory.createDraft(name, unitOfMeasurementRepository.get(unitCode))
+        }
+
+    fun completeDraft(draftItemClass: DraftItemClass): ItemClass =
+        sec.requireAllRoles(ITEMS_ROLE, ITEM_CLASSES_ROLE, ITEM_CLASSES_WRITER_ROLE) {
+            draftItemClassManager.completeDraft(draftItemClass)
+            return@requireAllRoles itemClassRepository.get(draftItemClass.itemClass.id)
+        }
+
+    fun rejectDraft(draftItemClass: DraftItemClass) =
+        sec.requireAllRoles(ITEMS_ROLE, ITEM_CLASSES_ROLE, ITEM_CLASSES_WRITER_ROLE) {
+            draftItemClassManager.rejectDraft(draftItemClass)
         }
 }
