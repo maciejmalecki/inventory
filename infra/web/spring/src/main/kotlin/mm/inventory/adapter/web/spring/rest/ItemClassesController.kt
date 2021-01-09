@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 
-data class UpdateDraftRequest(val description: String?, val unitCode: UnitOfMeasurement?)
+data class UpdateDraftRequest(val description: String?, val unitCode: String?)
 
 @RestController
 class ItemClassesController(private val itemClassFacade: ItemClassFacade) {
@@ -58,17 +58,7 @@ class ItemClassesController(private val itemClassFacade: ItemClassFacade) {
     @PostMapping("/itemClasses/{id}/draft")
     fun updateDraftItemClass(@PathVariable id: String, @RequestBody body: UpdateDraftRequest): ResponseEntity<Any> =
         try {
-            val draftItemClass = itemClassFacade.findDraftById(createItemClassId(id))
-                ?: throw NotFoundException("Draft item class for $id.")
-            if (body.description != null) {
-                draftItemClass.changeDescription(body.description)
-            }
-            if (body.unitCode != null) {
-                draftItemClass.changeAmountUnit(body.unitCode)
-            }
-            if (draftItemClass.hasMutations) {
-                itemClassFacade.save(draftItemClass)
-            }
+            itemClassFacade.updateDraft(createItemClassId(id), body.description, body.unitCode)
             ResponseEntity.ok().build()
         } catch (e: NotFoundException) {
             ResponseEntity.notFound().build()
@@ -77,12 +67,7 @@ class ItemClassesController(private val itemClassFacade: ItemClassFacade) {
     @PostMapping("/itemClasses/{id}/draft/complete")
     fun completeDraftItemClass(@PathVariable id: String): ResponseEntity<ItemClass> =
         try {
-            val draftItemClass = itemClassFacade.findDraftById(createItemClassId(id))
-            if (draftItemClass != null) {
-                ResponseEntity.ok(itemClassFacade.completeDraft(draftItemClass))
-            } else {
-                ResponseEntity.notFound().build()
-            }
+            ResponseEntity.ok(itemClassFacade.completeDraft(createItemClassId(id)))
         } catch (e: NotFoundException) {
             ResponseEntity.notFound().build()
         }
@@ -90,13 +75,8 @@ class ItemClassesController(private val itemClassFacade: ItemClassFacade) {
     @DeleteMapping("/itemClasses/{id}/draft")
     fun rejectDraftItemClass(@PathVariable id: String): ResponseEntity<Any> =
         try {
-            val draftItemClass = itemClassFacade.findDraftById(createItemClassId(id))
-            if (draftItemClass != null) {
-                itemClassFacade.rejectDraft(draftItemClass)
-                ResponseEntity.ok("rejected")
-            } else {
-                ResponseEntity.notFound().build()
-            }
+            itemClassFacade.rejectDraft(createItemClassId(id))
+            ResponseEntity.ok("rejected")
         } catch (e: NotFoundException) {
             ResponseEntity.notFound().build()
         }

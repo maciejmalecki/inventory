@@ -10,7 +10,9 @@ import mm.inventory.domain.items.itemclass.DraftItemClassManager
 import mm.inventory.domain.items.itemclass.DraftItemClassRepository
 import mm.inventory.domain.items.itemclass.ItemClass
 import mm.inventory.domain.items.itemclass.ItemClassRepository
+import mm.inventory.domain.items.itemclass.UnitOfMeasurement
 import mm.inventory.domain.items.itemclass.UnitOfMeasurementRepository
+import mm.inventory.domain.shared.NotFoundException
 import mm.inventory.domain.shared.security.SecurityGuard
 import mm.inventory.domain.shared.types.ItemClassId
 
@@ -38,9 +40,20 @@ class ItemClassFacade(
         draftItemClassRepository.findById(id)
     }
 
-    fun save(draftItemClass: DraftItemClass) =
+    fun updateDraft(id: ItemClassId, description: String?, unitCode: String?) =
         sec.requireAllRoles(ITEMS_ROLE, ITEM_CLASSES_ROLE, ITEM_CLASSES_WRITER_ROLE) {
-            draftItemClassRepository.save(draftItemClass)
+            val draftItemClass = draftItemClassRepository.findById(id)
+                ?: throw NotFoundException("Draft item class for $id.")
+            if (description != null) {
+                draftItemClass.changeDescription(description)
+            }
+            if (unitCode != null) {
+                val unit = unitOfMeasurementRepository.get(unitCode)
+                draftItemClass.changeAmountUnit(unit)
+            }
+            if (draftItemClass.hasMutations) {
+                draftItemClassRepository.save(draftItemClass)
+            }
         }
 
     fun createDraft(id: ItemClassId): DraftItemClass =
@@ -53,14 +66,18 @@ class ItemClassFacade(
             draftItemClassFactory.createDraft(name, unitOfMeasurementRepository.get(unitCode))
         }
 
-    fun completeDraft(draftItemClass: DraftItemClass): ItemClass =
+    fun completeDraft(id: ItemClassId): ItemClass =
         sec.requireAllRoles(ITEMS_ROLE, ITEM_CLASSES_ROLE, ITEM_CLASSES_WRITER_ROLE) {
+            val draftItemClass =
+                draftItemClassRepository.findById(id) ?: throw NotFoundException("Draft item class for $id not found.")
             draftItemClassManager.completeDraft(draftItemClass)
             return@requireAllRoles itemClassRepository.get(draftItemClass.itemClass.id)
         }
 
-    fun rejectDraft(draftItemClass: DraftItemClass) =
+    fun rejectDraft(id: ItemClassId) =
         sec.requireAllRoles(ITEMS_ROLE, ITEM_CLASSES_ROLE, ITEM_CLASSES_WRITER_ROLE) {
+            val draftItemClass =
+                draftItemClassRepository.findById(id) ?: throw NotFoundException("Draft item class for $id not found.")
             draftItemClassManager.rejectDraft(draftItemClass)
         }
 }
