@@ -1,4 +1,4 @@
-package mm.inventory.adapter.web.spring
+package mm.inventory.adapter.web.spring.conf
 
 import mm.inventory.app.productplanner.item.ItemQuery
 import mm.inventory.app.productplanner.item.ItemFacade

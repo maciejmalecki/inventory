@@ -1,4 +1,4 @@
-package mm.inventory.adapter.web.spring.db.jdbi
+package mm.inventory.adapter.web.spring.conf.jdbi
 
 import mm.inventory.adapters.store.jdbi.itemclasses.DraftItemClassJdbiRepository
 import mm.inventory.adapters.store.jdbi.itemclasses.ItemClassJdbiQuery
@@ -7,15 +7,12 @@ import mm.inventory.adapters.store.jdbi.items.ItemJdbiQuery
 import mm.inventory.adapters.store.jdbi.items.ItemJdbiRepository
 import mm.inventory.adapters.store.jdbi.transactions.BusinessJdbiTransaction
 import mm.inventory.adapters.store.jdbi.units.UnitOfMeasurementJdbiRepository
-import mm.inventory.domain.items.item.ItemFactory
-import mm.inventory.domain.items.itemclass.DraftItemClassFactory
-import mm.inventory.domain.items.itemclass.DraftItemClassManager
 import org.jdbi.v3.core.Jdbi
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-class RepositoriesConfiguration(
+class JdbiRepositoriesConfiguration(
     private val jdbi: Jdbi
 ) {
     @Bean
@@ -34,18 +31,8 @@ class RepositoriesConfiguration(
     fun unitOfMeasurementRepository() = UnitOfMeasurementJdbiRepository(jdbi)
 
     @Bean
-    fun itemCreator() = ItemFactory(businessTransaction(), itemClassRepository(), itemRepository())
-
-    @Bean
     fun itemCrudQuery() = ItemJdbiQuery(jdbi)
 
     @Bean
     fun businessTransaction() = BusinessJdbiTransaction(jdbi)
-
-    @Bean
-    fun draftItemClassFactory() =
-        DraftItemClassFactory(businessTransaction(), itemClassRepository(), draftItemClassRepository())
-
-    @Bean
-    fun draftItemClassManager() = DraftItemClassManager(businessTransaction(), draftItemClassRepository())
 }
