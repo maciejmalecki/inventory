@@ -1,8 +1,8 @@
 package mm.inventory.app.productplanner.itemclass
 
-import mm.inventory.domain.items.ITEMS_ROLE
-import mm.inventory.domain.items.ITEM_CLASSES_ROLE
-import mm.inventory.domain.items.ITEM_CLASSES_WRITER_ROLE
+import mm.inventory.app.productplanner.ITEMS_ROLE
+import mm.inventory.app.productplanner.ITEM_CLASSES_ROLE
+import mm.inventory.app.productplanner.ITEM_CLASSES_WRITER_ROLE
 import mm.inventory.domain.items.itemclass.DraftItemClass
 import mm.inventory.domain.items.itemclass.DraftItemClassFactory
 import mm.inventory.domain.items.itemclass.DraftItemClassManager

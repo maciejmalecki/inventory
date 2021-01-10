@@ -1,8 +1,8 @@
 package mm.inventory.app.productplanner.item
 
 import kotlinx.collections.immutable.ImmutableList
-import mm.inventory.domain.items.ITEMS_ROLE
-import mm.inventory.domain.items.ITEMS_WRITER_ROLE
+import mm.inventory.app.productplanner.ITEMS_ROLE
+import mm.inventory.app.productplanner.ITEMS_WRITER_ROLE
 import mm.inventory.domain.items.item.ItemFactory
 import mm.inventory.domain.items.item.Item
 import mm.inventory.domain.items.item.ItemRepository
