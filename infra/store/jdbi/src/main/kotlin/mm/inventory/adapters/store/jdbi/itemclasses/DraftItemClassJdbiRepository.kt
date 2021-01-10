@@ -39,16 +39,17 @@ class DraftItemClassJdbiRepository(private val db: Jdbi, private val itemClassRe
             val itemClassDao = handle.attach(ItemClassDao::class.java)
             // lock, update and check next version
             val version = nextVersion(itemClassDao, itemClassId.id)
-            val itemClassRec = ItemClassRec(
-                name = itemClass.name,
-                description = itemClass.description,
-                version = version,
-                unit = itemClass.amountUnit.code
-            )
             // TODO: should we check if there is a draft already?
             // insert draft
             updateAndExpect(1) {
-                itemClassDao.insertItemClass(itemClassRec)
+                itemClassDao.insertItemClass(
+                    ItemClassRec(
+                        name = itemClass.name,
+                        version = version,
+                        description = itemClass.description,
+                        unit = itemClass.amountUnit.code
+                    )
+                )
             }
             // insert attributes
             itemClass.attributes.forEach { attribute ->
@@ -92,13 +93,13 @@ class DraftItemClassJdbiRepository(private val db: Jdbi, private val itemClassRe
     }
 
     override fun complete(draftItemClass: DraftItemClass) = db.useTransaction<RuntimeException> { handle ->
+        val itemClassDao = handle.attach(ItemClassDao::class.java)
         val itemClassId = draftItemClass.itemClass.id.asJdbiId()
         if (draftItemClass.hasMutations) {
             throw InvalidDataException("Cannot complete Draft Item Class aggregate $itemClassId because it has unsaved mutations.")
         }
-        val id = handle.attach(ItemClassDao::class.java)
         updateAndExpect(1) {
-            id.completeDraftItemClass(itemClassId)
+            itemClassDao.completeDraftItemClass(itemClassId)
         }
     }
 

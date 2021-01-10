@@ -28,15 +28,14 @@ Within a subdomain, the primary packaging scheme should follow business componen
 ### Entities and aggregates
 Entities are classes of persistent objects. Aggregates are complex objects treated as a whole. Because of CQRS approach, I model entities and aggregates as immutable objects. Their state is obtained via selectors, but modifications are performed only via mutators. Because in this approach entities and aggregates are immutable, they cannot have any state mutating methods. That is, the only methods of such aggregates are querying methods. Instead of state mutating methods we use external objects, so-called Behaviors.
 
-### Selectors and mutators
-Selectors and mutators form so-called repositories, that is objects able to create, materialize and modify entities and aggregates. I have introduced selectors and mutators split to reflect CQRS better.
-
-Selectors are exclusively used for querying data. This way, for given aggregate, if we depend only on a selector, we are certainly not modifying this aggregate. In a term of ports&adapters, selectors are ports that are modelled as interfaces suffixed with `Selector`. 
-
-Mutators are exclusively used for data modifications. This way, for given aggregate, if we depend only on a mutator, we are doing modifications. In terms of ports&adapters, mutators are ports that are modelled as interfaces suffixed with `Mutator`.
+### Repositories
+So-called repositories, that is objects able to create, materialize and modify entities and aggregates.
+suffixed with `Mutator`.
 
 ### Domain services
-t.b.d.
+Domain services host logic that is not suitable for embedding directly into entities or aggregates. Domain services usually span over multiple aggregates and have multiple repositories and other domain services injected.
+
+A special kind of domain services are responsible for creating instances of aggregates or other objects thus are called factories.
 
 ## App
 The App (application) is place where we model application specific logic - that is, the logic that you don't discuss with business experts but are nonetheless necessary to implement the application. We will include most of the CRUD functionalities here that are not needed with respect to the domain but are necessary to give data provisioning capabilities. All bulk operations included imports falls into this category too. When using CQRS approach, most of the "Q" functionality falls here as well.

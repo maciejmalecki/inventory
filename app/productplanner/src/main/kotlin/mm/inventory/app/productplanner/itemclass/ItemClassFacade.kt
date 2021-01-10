@@ -1,7 +1,8 @@
 package mm.inventory.app.productplanner.itemclass
 
 import kotlinx.collections.immutable.ImmutableList
-import mm.inventory.domain.items.ITEMS_ROLE
+import mm.inventory.app.productplanner.ITEMS_ROLE
+import mm.inventory.app.productplanner.ITEM_CLASSES_ROLE
 import mm.inventory.domain.items.itemclass.ItemClass
 import mm.inventory.domain.items.itemclass.ItemClassRepository
 import mm.inventory.domain.shared.security.SecurityGuard
@@ -15,11 +16,12 @@ class ItemClassFacade(
     private val itemClassRepository: ItemClassRepository,
     private val itemClassQuery: ItemClassQuery
 ) {
-    fun findAll(): ImmutableList<ItemClassHeader> = sec.requireRole(ITEMS_ROLE) {
+    fun findAll(): ImmutableList<ItemClassHeader> = sec.requireAllRoles(ITEMS_ROLE, ITEM_CLASSES_ROLE) {
         itemClassQuery.findAll()
     }
 
-    fun findById(id: ItemClassId): ItemClass? = sec.requireRole(ITEMS_ROLE) {
+    fun findById(id: ItemClassId): ItemClass? = sec.requireAllRoles(ITEMS_ROLE, ITEM_CLASSES_ROLE) {
         itemClassRepository.findById(id)
     }
+
 }

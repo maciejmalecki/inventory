@@ -1,4 +1,4 @@
-package mm.inventory.domain.items
+package mm.inventory.app.productplanner
 
 import mm.inventory.domain.shared.security.Role
 

@@ -1,4 +1,4 @@
-package mm.inventory.adapter.web.spring.db.jdbi
+package mm.inventory.adapter.web.spring.conf.jdbi
 
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.kotlin.KotlinPlugin
