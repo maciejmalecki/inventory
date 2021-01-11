@@ -118,7 +118,7 @@ class DraftItemClassJdbiRepository(private val db: Jdbi, private val itemClassRe
     }
 
     private fun nextVersion(itemClassDao: ItemClassDao, itemClassName: String): Long {
-        val lastVersion = itemClassDao.selectCounter(itemClassName)
+        val lastVersion = itemClassDao.selectCounterAndLock(itemClassName)
         return if (lastVersion == null) {
             itemClassDao.insertCounter(itemClassName)
             1L

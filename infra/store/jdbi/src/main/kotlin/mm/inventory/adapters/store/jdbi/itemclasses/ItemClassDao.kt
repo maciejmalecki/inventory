@@ -31,7 +31,7 @@ internal interface ItemClassDao {
     fun selectAttributeValuesForItemClass(itemClassName: String, itemClassVersion: Long): List<AttributeTypeValueRec>
 
     @SqlQuery("SELECT last_version FROM Item_classes_version_counters WHERE name=? FOR UPDATE")
-    fun selectCounter(itemClassName: String): Long?
+    fun selectCounterAndLock(itemClassName: String): Long?
 
     @SqlUpdate("INSERT INTO Item_classes_version_counters VALUES (?, 1)")
     fun insertCounter(itemClassName: String): Int
@@ -39,7 +39,7 @@ internal interface ItemClassDao {
     @SqlUpdate("UPDATE Item_classes_version_counters SET last_version=:lastVersion WHERE name=:itemClassName")
     fun updateCounter(itemClassName: String, lastVersion: Long): Int
 
-    @SqlUpdate("UPDATE item_classes_version_counters SET last_version=(SELECT MAX(version) FROM Item_classes WHERE name=:itemClassName)")
+    @SqlUpdate("UPDATE Item_classes_version_counters SET last_version=(SELECT MAX(version) FROM Item_classes WHERE name=:itemClassName) WHERE name=:itemClassName")
     fun revertCounter(itemClassName: String): Int
 
     @SqlUpdate("INSERT INTO Item_classes(name, version, complete, description, unit) VALUES (:itemClass.name, :itemClass.version, FALSE, :itemClass.description, :itemClass.unit)")
