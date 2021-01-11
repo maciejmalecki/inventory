@@ -64,6 +64,6 @@ class ItemClassesController(
     @DeleteMapping("/itemClasses/{id}/draft")
     fun rejectDraftItemClass(@PathVariable id: String): ResponseEntity<Any> {
         draftItemClassFacade.rejectDraft(createItemClassId(id))
-        return ResponseEntity.ok("rejected")
+        return ResponseEntity.ok().build()
     }
 }
