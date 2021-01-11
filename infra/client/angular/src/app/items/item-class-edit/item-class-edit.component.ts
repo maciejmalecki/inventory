@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
-import {isDictionaryType, isScalarType, ItemClass} from '../../shared/services/item-class.service';
+import {ActivatedRoute, Router} from '@angular/router';
+import {isDictionaryType, isScalarType, ItemClass, ItemClassService} from '../../shared/services/item-class.service';
 import {FormControl, FormGroup, MaxLengthValidator} from '@angular/forms';
 
 @Component({
@@ -15,7 +15,10 @@ export class ItemClassEditComponent implements OnInit {
   isDictionaryType = isDictionaryType;
   formGroup: FormGroup;
 
-  constructor(private readonly route: ActivatedRoute) {
+  constructor(
+    private readonly route: ActivatedRoute,
+    private readonly router: Router,
+    private readonly itemClassService: ItemClassService) {
     this.itemClass = route.snapshot.data.itemClass;
   }
 
@@ -23,5 +26,10 @@ export class ItemClassEditComponent implements OnInit {
     this.formGroup = new FormGroup({
       description: new FormControl(this.itemClass.description, [])
     });
+  }
+
+  deleteDraft(): void {
+    this.itemClassService.rejectDraftItemClass(this.itemClass.name).toPromise()
+      .then(_ => this.router.navigate(['itemClasses', this.itemClass.name]));
   }
 }
