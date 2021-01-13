@@ -2,6 +2,8 @@ package mm.inventory.adapter.web.spring.conf
 
 import mm.inventory.app.productplanner.item.ItemQuery
 import mm.inventory.app.productplanner.item.ItemFacade
+import mm.inventory.app.productplanner.itemclass.AttributeTypeFacade
+import mm.inventory.app.productplanner.itemclass.AttributeTypeQuery
 import mm.inventory.app.productplanner.itemclass.DraftItemClassFacade
 import mm.inventory.app.productplanner.itemclass.ItemClassFacade
 import mm.inventory.app.productplanner.itemclass.ItemClassQuery
@@ -29,7 +31,8 @@ class FacadeConfiguration(
     private val itemFactoryCreator: ItemFactory,
     private val draftItemClassFactory: DraftItemClassFactory,
     private val draftItemClassManager: DraftItemClassManager,
-    private val unitOfMeasurementRepository: UnitOfMeasurementRepository
+    private val unitOfMeasurementRepository: UnitOfMeasurementRepository,
+    private val attributeTypeQuery: AttributeTypeQuery
 ) {
     @Bean
     fun itemClassFacade() = ItemClassFacade(
@@ -50,4 +53,7 @@ class FacadeConfiguration(
 
     @Bean
     fun itemFacade() = ItemFacade(securityGuard, businessTransaction, itemRepository, itemQuery, itemFactoryCreator)
+
+    @Bean
+    fun attributeTypeFacade() = AttributeTypeFacade(attributeTypeQuery)
 }
