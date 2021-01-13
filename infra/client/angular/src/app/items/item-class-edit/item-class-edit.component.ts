@@ -16,6 +16,8 @@ export class ItemClassEditComponent implements OnInit {
   isScalarType = isScalarType;
   isDictionaryType = isDictionaryType;
   formGroup: FormGroup;
+  selectedTypes: Array<AttributeTypeHeader>;
+  unselectedTypes: Array<AttributeTypeHeader>;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -24,6 +26,8 @@ export class ItemClassEditComponent implements OnInit {
 
     this.itemClass = route.snapshot.data.itemClass;
     this.attributeTypes = route.snapshot.data.attributeTypes;
+    this.selectedTypes = this.itemClass.attributes.map(value => ({name: value.name, scalar: isScalarType(value.type)}));
+    this.unselectedTypes = [...this.attributeTypes];
   }
 
   ngOnInit(): void {

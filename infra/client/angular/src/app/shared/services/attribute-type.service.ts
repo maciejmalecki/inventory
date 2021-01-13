@@ -3,8 +3,8 @@ import {Observable} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 
 export interface AttributeTypeHeader {
-  name: string,
-  scalar: boolean
+  name: string;
+  scalar: boolean;
 }
 
 const apiPrefix = '/api/attributeTypes';
