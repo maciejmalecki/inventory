@@ -10,5 +10,8 @@
       <mat-label>Description</mat-label>
       <textarea matInput rows="4" placeholder="Description" formControlName="description"></textarea>
     </mat-form-field>
+    <ol>
+      <li *ngFor="let attr of attributeTypes">{{ attr.name }} - {{ attr.scalar }}</li>
+    </ol>
   </form>
 </section>

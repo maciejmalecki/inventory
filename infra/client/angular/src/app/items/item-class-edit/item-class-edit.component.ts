@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {isDictionaryType, isScalarType, ItemClass, ItemClassService} from '../../shared/services/item-class.service';
-import {FormControl, FormGroup, MaxLengthValidator} from '@angular/forms';
+import {FormControl, FormGroup} from '@angular/forms';
+import {AttributeTypeHeader} from '../../shared/services/attribute-type.service';
 
 @Component({
   selector: 'app-item-class-edit',
@@ -11,6 +12,7 @@ import {FormControl, FormGroup, MaxLengthValidator} from '@angular/forms';
 export class ItemClassEditComponent implements OnInit {
 
   itemClass: ItemClass;
+  attributeTypes: Array<AttributeTypeHeader>;
   isScalarType = isScalarType;
   isDictionaryType = isDictionaryType;
   formGroup: FormGroup;
@@ -19,7 +21,9 @@ export class ItemClassEditComponent implements OnInit {
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly itemClassService: ItemClassService) {
+
     this.itemClass = route.snapshot.data.itemClass;
+    this.attributeTypes = route.snapshot.data.attributeTypes;
   }
 
   ngOnInit(): void {
