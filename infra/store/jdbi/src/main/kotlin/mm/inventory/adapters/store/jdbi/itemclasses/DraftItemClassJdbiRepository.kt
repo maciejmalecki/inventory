@@ -60,7 +60,7 @@ class DraftItemClassJdbiRepository(private val db: Jdbi, private val itemClassRe
         val itemClassDao = handle.attach(ItemClassDao::class.java)
         val id = draftItemClass.itemClass.id.asJdbiId()
 
-        draftItemClass.handleAll { command ->
+        draftItemClass.consume { command ->
             when (command) {
                 is ChangeDescriptionCommand -> updateAndExpect(1) {
                     itemClassDao.updateDescription(id, command.description)

@@ -5,9 +5,8 @@ import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.toImmutableSet
 import mm.inventory.domain.items.itemclass.Attribute
 import mm.inventory.domain.shared.InvalidDataException
+import mm.inventory.domain.shared.mutations.Mutable
 import mm.inventory.domain.shared.mutations.MutatingCommand
-import mm.inventory.domain.shared.mutations.MutatingCommandHandler
-import mm.inventory.domain.shared.mutations.Mutations
 import mm.inventory.domain.shared.types.ItemClassId
 import mm.inventory.domain.shared.types.ItemId
 import java.math.BigDecimal
@@ -27,35 +26,38 @@ data class Item(
     val id: ItemId,
     val name: String,
     val itemClassId: ItemClassId,
-    val values: ImmutableSet<Value<*>>,
-    internal val mutations: Mutations<Item> = Mutations()
+    val values: ImmutableSet<Value<*>>
 ) {
     /**
      * Values indexed by name for sake of convenience.
      */
-    private val valuesByName: VavrMap<String, Value<*>> = toMap(values)
+    val valuesByName: VavrMap<String, Value<*>> = toMap(values)
 
-    /**
-     * Execute handler over list of mutations.
-     * @param handler command handler used to execute commands
-     */
-    fun handleAll(handler: MutatingCommandHandler<Item>) = mutations.handleAll(handler)
+    fun mutable() = MutableItem(this)
+}
+
+class MutableItem(_snapshot: Item) : Mutable<Item>(_snapshot) {
+    val item: Item
+        get() = snapshot
 
     /**
      * Update values command
      * @param inValues set of modified values
      */
-    fun updateValues(inValues: Map<String, String>): Item {
+    fun updateValues(inValues: Map<String, String>): MutableItem {
         val values = inValues.entries.map {
-            val value = valuesByName[it.key].orNull
-                ?: throw InvalidDataException("Attribute ${it.key} does not exist in item $name.")
+            val value = snapshot.valuesByName[it.key].orNull
+                ?: throw InvalidDataException("Attribute ${it.key} does not exist in item ${snapshot.name}.")
             value.attribute.parse(it.value)
         }.toImmutableSet()
 
-        return copy(
-            values = toMap(values).merge(valuesByName).values().toImmutableSet(),
-            mutations = mutations.append(UpdateValuesCommand(this, values))
+        append(
+            UpdateValuesCommand(snapshot, values),
+            snapshot.copy(
+                values = toMap(values).merge(snapshot.valuesByName).values().toImmutableSet()
+            )
         )
+        return this
     }
 }
 

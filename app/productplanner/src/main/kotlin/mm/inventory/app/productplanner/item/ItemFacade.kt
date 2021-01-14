@@ -37,7 +37,7 @@ class ItemFacade(
     fun updateItem(id: ItemId, inValues: Map<String, String>) =
         sec.requireAllRoles(ITEMS_ROLE, ITEMS_WRITER_ROLE) {
             tx.inTransaction {
-                val item = itemRepository.get(id)
+                val item = itemRepository.get(id).mutable()
                 val updatedItem = item.updateValues(inValues);
                 itemRepository.save(updatedItem)
             }

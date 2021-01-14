@@ -6,6 +6,7 @@ import mm.inventory.adapters.store.jdbi.itemclasses.createItemClassId
 import mm.inventory.domain.items.item.DictionaryValue
 import mm.inventory.domain.items.item.Item
 import mm.inventory.domain.items.item.ItemRepository
+import mm.inventory.domain.items.item.MutableItem
 import mm.inventory.domain.items.item.ScalarValue
 import mm.inventory.domain.items.item.UpdateValuesCommand
 import mm.inventory.domain.items.item.parse
@@ -82,8 +83,8 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassRepository: 
         return@inTransaction item.copy(id = itemId)
     }
 
-    override fun save(item: Item) = db.useTransaction<RuntimeException> { handle ->
-        item.handleAll { command ->
+    override fun save(item: MutableItem) = db.useTransaction<RuntimeException> { handle ->
+        item.consume { command ->
             when (command) {
                 is UpdateValuesCommand -> updateValues(handle, command)
                 else -> throw IllegalArgumentException("Unknown command: ${command.javaClass.name}.")

@@ -17,16 +17,16 @@ interface ItemRepository {
      * Saves aggregate to the store.
      * @param item to be saved
      */
-    fun save(item: Item)
+    fun save(item: MutableItem)
 
     /**
      * Synchronises Item Aggregate with store and returns fresh snapshot.
-     * @param item to be saved
+     * @param mutableItem to be saved
      * @return actual Item Aggregate
      */
-    fun saveAndGet(item: Item): Item {
-        save(item)
-        return get(item.id)
+    fun saveAndGet(mutableItem: MutableItem): Item {
+        save(mutableItem)
+        return get(mutableItem.item.id)
     }
 
     /**
