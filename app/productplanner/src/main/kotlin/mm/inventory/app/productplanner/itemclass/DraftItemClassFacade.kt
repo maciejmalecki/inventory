@@ -61,7 +61,8 @@ class DraftItemClassFacade(
                 }
                 removedAttributeTypes.forEach { attrName ->
                     // it throws NotFound if attribute does not exist in item class, it is ok...
-                    draftItemClass.removeAttribute(draftItemClass.itemClass.getAttribute(attrName))
+                    val attribute = draftItemClass.itemClass.getAttribute(attrName)
+                    draftItemClass.removeAttribute(attribute)
                 }
                 if (draftItemClass.hasMutations) {
                     draftItemClassRepository.save(draftItemClass)
