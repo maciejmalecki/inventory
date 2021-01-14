@@ -41,14 +41,14 @@ class DraftItemClassFacade(
     ) =
         sec.requireAllRoles(ITEMS_ROLE, ITEM_CLASSES_ROLE, ITEM_CLASSES_WRITER_ROLE) {
             tx.inTransaction {
-                var draftItemClass = draftItemClassRepository.findById(id)
+                val draftItemClass = draftItemClassRepository.findById(id)?.mutable()
                     ?: throw NotFoundException("Draft item class for $id.")
                 if (description != null) {
-                    draftItemClass = draftItemClass.changeDescription(description)
+                    draftItemClass.changeDescription(description)
                 }
                 if (unitCode != null) {
                     val unit = unitOfMeasurementRepository.get(unitCode)
-                    draftItemClass = draftItemClass.changeAmountUnit(unit)
+                    draftItemClass.changeAmountUnit(unit)
                 }
                 addedAttributeTypes.forEach { attrName ->
                     if (draftItemClass.itemClass.hasAttribute(attrName)) {
@@ -57,12 +57,12 @@ class DraftItemClassFacade(
                     // it throws NotFound if such attribute type does not exist in the system, it is ok...
                     // TODO however, we have N reads where we can most likely fetch all attributes using IN clause, fix...
                     val attributeType = attributeTypeRepository.get(attrName)
-                    draftItemClass = draftItemClass.addAttribute(Attribute(attrName, attributeType))
+                    draftItemClass.addAttribute(Attribute(attrName, attributeType))
                 }
                 removedAttributeTypes.forEach { attrName ->
                     // it throws NotFound if attribute does not exist in item class, it is ok...
                     val attribute = draftItemClass.itemClass.getAttribute(attrName)
-                    draftItemClass = draftItemClass.removeAttribute(attribute)
+                    draftItemClass.removeAttribute(attribute)
                 }
                 if (draftItemClass.hasMutations) {
                     draftItemClassRepository.save(draftItemClass)

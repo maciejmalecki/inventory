@@ -1,41 +1,57 @@
 package mm.inventory.domain.items.itemclass
 
 import kotlinx.collections.immutable.toImmutableSet
+import mm.inventory.domain.shared.mutations.Mutable
 import mm.inventory.domain.shared.mutations.MutatingCommand
-import mm.inventory.domain.shared.mutations.MutatingCommandHandler
-import mm.inventory.domain.shared.mutations.Mutations
 
-data class DraftItemClass(
-    val itemClass: ItemClass,
-    internal val mutations: Mutations<DraftItemClass> = Mutations()
-) {
-    val hasMutations = !mutations.empty
+data class DraftItemClass(val itemClass: ItemClass) {
+    fun mutable() = MutableDraftItemClass(this)
+}
 
-    fun changeDescription(value: String): DraftItemClass =
-        copy(
-            itemClass = itemClass.copy(description = value),
-            mutations = mutations.append(ChangeDescriptionCommand(this, value))
+class MutableDraftItemClass(_snapshot: DraftItemClass) : Mutable<DraftItemClass>(_snapshot) {
+
+    val itemClass: ItemClass
+        get() = snapshot.itemClass
+
+    fun changeDescription(value: String): MutableDraftItemClass {
+        append(
+            ChangeDescriptionCommand(snapshot, value),
+            snapshot.copy(itemClass = snapshot.itemClass.copy(description = value))
         )
+        return this
+    }
 
-    fun changeAmountUnit(value: UnitOfMeasurement): DraftItemClass =
-        copy(
-            itemClass = itemClass.copy(amountUnit = value),
-            mutations = mutations.append(ChangeAmountUnitCommand(this, value))
+    fun changeAmountUnit(value: UnitOfMeasurement): MutableDraftItemClass {
+        append(
+            ChangeAmountUnitCommand(snapshot, value),
+            snapshot.copy(itemClass = snapshot.itemClass.copy(amountUnit = value))
         )
+        return this
+    }
 
-    fun addAttribute(value: Attribute): DraftItemClass =
-        copy(
-            itemClass = itemClass.copy(attributes = (itemClass.attributes + value).toImmutableSet()),
-            mutations = mutations.append(AddAttributeCommand(this, value))
+    fun addAttribute(value: Attribute): MutableDraftItemClass {
+        append(
+            AddAttributeCommand(snapshot, value),
+            snapshot.copy(
+                itemClass = snapshot.itemClass.copy(
+                    attributes = (snapshot.itemClass.attributes + value).toImmutableSet()
+                ),
+            )
         )
+        return this
+    }
 
-    fun removeAttribute(value: Attribute): DraftItemClass =
-        copy(
-            itemClass = itemClass.copy(attributes = (itemClass.attributes - value).toImmutableSet()),
-            mutations = mutations.append(RemoveAttributeCommand(this, value))
+    fun removeAttribute(value: Attribute): MutableDraftItemClass {
+        append(
+            RemoveAttributeCommand(snapshot, value),
+            snapshot.copy(
+                itemClass = snapshot.itemClass.copy(
+                    attributes = (snapshot.itemClass.attributes - value).toImmutableSet()
+                )
+            )
         )
-
-    fun handleAll(handler: MutatingCommandHandler<DraftItemClass>) = mutations.handleAll(handler)
+        return this
+    }
 }
 
 data class ChangeDescriptionCommand(

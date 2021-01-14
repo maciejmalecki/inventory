@@ -8,7 +8,7 @@ interface DraftItemClassRepository {
 
     fun persist(draftItemClass: DraftItemClass): DraftItemClass
 
-    fun save(draftItemClass: DraftItemClass)
+    fun save(draftItemClass: MutableDraftItemClass)
 
     fun delete(draftItemClass: DraftItemClass)
 

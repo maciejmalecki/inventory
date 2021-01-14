@@ -9,6 +9,28 @@ interface MutatingCommand<T> {
 
 typealias MutatingCommandHandler<T> = (command: MutatingCommand<T>) -> Unit
 
+open class Mutable<T>(private var _snapshot: T) {
+
+    var snapshot: T
+        get() = _snapshot
+        protected set(value) {
+            _snapshot = value
+        }
+
+    val hasMutations: Boolean
+        get() = !mutations.empty
+
+    private var mutations: Mutations<T> = Mutations()
+
+    fun handleAll(handler: MutatingCommandHandler<T>) = mutations.handleAll(handler)
+
+    protected fun append(command: MutatingCommand<T>, next: T): Mutable<T> {
+        mutations = mutations.append(command)
+        snapshot = next
+        return this
+    }
+}
+
 data class Mutations<T>(
     private val commands: VavrList<MutatingCommand<T>> = VavrList.empty()
 ) {
