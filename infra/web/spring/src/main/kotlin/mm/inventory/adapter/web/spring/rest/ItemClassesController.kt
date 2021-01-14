@@ -14,7 +14,12 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 
-data class UpdateDraftRequest(val description: String?, val unitCode: String?)
+data class UpdateDraftRequest(
+    val description: String?,
+    val unitCode: String?,
+    val addedAttributes: List<String>,
+    val removedAttributes: List<String>
+)
 
 @RestController
 class ItemClassesController(
@@ -53,7 +58,13 @@ class ItemClassesController(
 
     @PostMapping("/itemClasses/{id}/draft")
     fun updateDraftItemClass(@PathVariable id: String, @RequestBody body: UpdateDraftRequest): ResponseEntity<Any> {
-        draftItemClassFacade.updateDraft(createItemClassId(id), body.description, body.unitCode)
+        draftItemClassFacade.updateDraft(
+            id = createItemClassId(id),
+            description = body.description,
+            unitCode = body.unitCode,
+            addedAttributeTypes = body.addedAttributes,
+            removedAttributeTypes = body.removedAttributes
+        )
         return ResponseEntity.ok().build()
     }
 
@@ -64,6 +75,6 @@ class ItemClassesController(
     @DeleteMapping("/itemClasses/{id}/draft")
     fun rejectDraftItemClass(@PathVariable id: String): ResponseEntity<Any> {
         draftItemClassFacade.rejectDraft(createItemClassId(id))
-        return ResponseEntity.ok("rejected")
+        return ResponseEntity.ok().build()
     }
 }

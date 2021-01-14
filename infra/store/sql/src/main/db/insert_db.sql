@@ -24,6 +24,20 @@ INSERT INTO Attribute_Types (name, unit, scalar) VALUES ('voltageRating', 'V', T
 INSERT INTO Attribute_Types (name, unit, scalar) VALUES ('resistorCaseStyle', NULL, FALSE);
 INSERT INTO Attribute_Type_Values (attribute_type_name, code, value) VALUES ('resistorCaseStyle', 'al', 'Axial Leaded');
 INSERT INTO Attribute_Type_Values (attribute_type_name, code, value) VALUES ('resistorCaseStyle', 'rl', 'Radial Leaded');
+INSERT INTO Attribute_Types (name, unit, scalar)
+    VALUES
+        ('capacity', 'F', TRUE),
+        ('capacityTolerance', '%', TRUE),
+        ('capacitorCaseStyle', NULL, FALSE);
+INSERT INTO Attribute_Type_Values (attribute_type_name, code, value)
+    VALUES
+        ('capacitorCaseStyle', 'al', 'Axial Leaded'),
+        ('capacitorCaseStyle', 'rl', 'Radial Leaded');
+INSERT INTO Attribute_Types (name, unit, scalar)
+    VALUES
+        ('inputVoltageMin', 'V', TRUE),
+        ('inputVoltageMax', 'V', TRUE),
+        ('dropoutVoltage', 'V', TRUE);
 
 -- Item Classes
 INSERT INTO Item_Classes (name, version, complete, description, unit) VALUES ('resistor', 1, TRUE, 'Resistor', 'pcs');

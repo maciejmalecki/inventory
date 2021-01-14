@@ -19,6 +19,8 @@ data class ItemClass(
 ) {
     private val attributesByName = attributes.stream().collect(Collectors.toMap({ it.name }, { it })).toImmutableMap()
 
+    fun hasAttribute(name: String) = attributesByName.contains(name)
+
     /**
      * Gets attribute definition based on provided type name. Throws exception if attribute does not exist.
      */

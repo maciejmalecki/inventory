@@ -90,6 +90,9 @@ class DraftItemClassJdbiRepository(private val db: Jdbi, private val itemClassRe
         updateAndExpect(1) {
             itemClassDao.deleteDraftItemClass(id)
         }
+        updateAndExpect(1) {
+            itemClassDao.revertCounter(id.id)
+        }
     }
 
     override fun complete(draftItemClass: DraftItemClass) = db.useTransaction<RuntimeException> { handle ->
@@ -115,7 +118,7 @@ class DraftItemClassJdbiRepository(private val db: Jdbi, private val itemClassRe
     }
 
     private fun nextVersion(itemClassDao: ItemClassDao, itemClassName: String): Long {
-        val lastVersion = itemClassDao.selectCounter(itemClassName)
+        val lastVersion = itemClassDao.selectCounterAndLock(itemClassName)
         return if (lastVersion == null) {
             itemClassDao.insertCounter(itemClassName)
             1L

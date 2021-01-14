@@ -9,6 +9,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {ItemsComponent} from './items/items.component';
 import {ItemDetailsComponent} from './item-details/item-details.component';
 import { ItemEditComponent } from './item-edit/item-edit.component';
+import {DragDropModule} from '@angular/cdk/drag-drop';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { ItemEditComponent } from './item-edit/item-edit.component';
     RouterModule,
     MatModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    DragDropModule
   ]
 })
 export class ItemsModule {
