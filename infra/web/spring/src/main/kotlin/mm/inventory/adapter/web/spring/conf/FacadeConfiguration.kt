@@ -46,6 +46,7 @@ class FacadeConfiguration(
     @Bean
     fun draftItemClassFacade() = DraftItemClassFacade(
         securityGuard,
+        businessTransaction,
         draftItemClassRepository,
         draftItemClassFactory,
         draftItemClassManager,

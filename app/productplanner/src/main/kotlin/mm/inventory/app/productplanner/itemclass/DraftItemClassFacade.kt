@@ -15,10 +15,12 @@ import mm.inventory.domain.items.itemclass.UnitOfMeasurementRepository
 import mm.inventory.domain.shared.InvalidDataException
 import mm.inventory.domain.shared.NotFoundException
 import mm.inventory.domain.shared.security.SecurityGuard
+import mm.inventory.domain.shared.transactions.BusinessTransaction
 import mm.inventory.domain.shared.types.ItemClassId
 
 class DraftItemClassFacade(
     private val sec: SecurityGuard,
+    private val tx: BusinessTransaction,
     private val draftItemClassRepository: DraftItemClassRepository,
     private val draftItemClassFactory: DraftItemClassFactory,
     private val draftItemClassManager: DraftItemClassManager,
@@ -38,30 +40,32 @@ class DraftItemClassFacade(
         removedAttributeTypes: List<String> = emptyList()
     ) =
         sec.requireAllRoles(ITEMS_ROLE, ITEM_CLASSES_ROLE, ITEM_CLASSES_WRITER_ROLE) {
-            val draftItemClass = draftItemClassRepository.findById(id)
-                ?: throw NotFoundException("Draft item class for $id.")
-            if (description != null) {
-                draftItemClass.changeDescription(description)
-            }
-            if (unitCode != null) {
-                val unit = unitOfMeasurementRepository.get(unitCode)
-                draftItemClass.changeAmountUnit(unit)
-            }
-            addedAttributeTypes.forEach { attrName ->
-                if (draftItemClass.itemClass.hasAttribute(attrName)) {
-                    throw InvalidDataException("An attribute $attrName is already assigned to item class $id.")
+            tx.inTransaction {
+                val draftItemClass = draftItemClassRepository.findById(id)
+                    ?: throw NotFoundException("Draft item class for $id.")
+                if (description != null) {
+                    draftItemClass.changeDescription(description)
                 }
-                // it throws NotFound if such attribute type does not exist in the system, it is ok...
-                // TODO however, we have N reads where we can most likely fetch all attributes using IN clause, fix...
-                val attributeType = attributeTypeRepository.get(attrName)
-                draftItemClass.addAttribute(Attribute(attrName, attributeType))
-            }
-            removedAttributeTypes.forEach { attrName ->
-                // it throws NotFound if attribute does not exist in item class, it is ok...
-                draftItemClass.removeAttribute(draftItemClass.itemClass.getAttribute(attrName))
-            }
-            if (draftItemClass.hasMutations) {
-                draftItemClassRepository.save(draftItemClass)
+                if (unitCode != null) {
+                    val unit = unitOfMeasurementRepository.get(unitCode)
+                    draftItemClass.changeAmountUnit(unit)
+                }
+                addedAttributeTypes.forEach { attrName ->
+                    if (draftItemClass.itemClass.hasAttribute(attrName)) {
+                        throw InvalidDataException("An attribute $attrName is already assigned to item class $id.")
+                    }
+                    // it throws NotFound if such attribute type does not exist in the system, it is ok...
+                    // TODO however, we have N reads where we can most likely fetch all attributes using IN clause, fix...
+                    val attributeType = attributeTypeRepository.get(attrName)
+                    draftItemClass.addAttribute(Attribute(attrName, attributeType))
+                }
+                removedAttributeTypes.forEach { attrName ->
+                    // it throws NotFound if attribute does not exist in item class, it is ok...
+                    draftItemClass.removeAttribute(draftItemClass.itemClass.getAttribute(attrName))
+                }
+                if (draftItemClass.hasMutations) {
+                    draftItemClassRepository.save(draftItemClass)
+                }
             }
         }
 
