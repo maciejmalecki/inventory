@@ -3,6 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {isDictionaryType, isScalarType, ItemClass, ItemClassService} from '../../shared/services/item-class.service';
 import {FormControl, FormGroup} from '@angular/forms';
 import {AttributeTypeHeader} from '../../shared/services/attribute-type.service';
+import {CdkDragDrop, transferArrayItem} from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-item-class-edit',
@@ -27,7 +28,7 @@ export class ItemClassEditComponent implements OnInit {
     this.itemClass = route.snapshot.data.itemClass;
     this.attributeTypes = route.snapshot.data.attributeTypes;
     this.selectedTypes = this.itemClass.attributes.map(value => ({name: value.name, scalar: isScalarType(value.type)}));
-    this.unselectedTypes = [...this.attributeTypes];
+    this.unselectedTypes = []; // [...this.attributeTypes];
   }
 
   ngOnInit(): void {
@@ -39,5 +40,14 @@ export class ItemClassEditComponent implements OnInit {
   deleteDraft(): void {
     this.itemClassService.rejectDraftItemClass(this.itemClass.name).toPromise()
       .then(_ => this.router.navigate(['itemClasses', this.itemClass.name]));
+  }
+
+  drop($event: CdkDragDrop<Array<AttributeTypeHeader>>): void {
+    if ($event.previousContainer !== $event.container) {
+      transferArrayItem($event.previousContainer.data,
+        $event.container.data,
+        $event.previousIndex,
+        $event.currentIndex);
+    }
   }
 }

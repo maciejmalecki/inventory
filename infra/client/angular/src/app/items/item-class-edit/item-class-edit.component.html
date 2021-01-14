@@ -16,19 +16,32 @@
       <mat-label>Description</mat-label>
       <textarea matInput rows="4" placeholder="Description" formControlName="description"></textarea>
     </mat-form-field>
+
     <div cdkDropListGroup>
-      <div>
-        <h1>Used attributes</h1>
-        <div cdkDropList>
-          <div *ngFor="let attr of selectedTypes" [cdkDragData]="selectedTypes" cdkDrag>{{ attr.name }}
-            - {{ attr.scalar }}</div>
+      <h1>attributes</h1>
+      <div class="attributes">
+        <h2>used</h2>
+        <div
+          class="attributes-list"
+          cdkDropList
+          [cdkDropListData]="selectedTypes"
+          (cdkDropListDropped)="drop($event)"
+        >
+          <div *ngFor="let attr of selectedTypes" cdkDrag class="attribute-box">
+            {{ attr.name }} - {{ attr.scalar }}
+          </div>
         </div>
       </div>
-      <div>
-        <h1>Available attributes</h1>
-        <div cdkDropList>
-          <div *ngFor="let attr of unselectedTypes" [cdkDragData]="unselectedTypes" cdkDrag>{{ attr.name }}
-            - {{ attr.scalar }}</div>
+      <div class="attributes">
+        <h2>available</h2>
+        <div
+          class="attributes-list"
+          cdkDropList
+          [cdkDropListData]="unselectedTypes"
+          (cdkDropListDropped)="drop($event)">
+          <div *ngFor="let attr of unselectedTypes" cdkDrag class="attribute-box">
+            {{ attr.name }} - {{ attr.scalar }}
+          </div>
         </div>
       </div>
     </div>
