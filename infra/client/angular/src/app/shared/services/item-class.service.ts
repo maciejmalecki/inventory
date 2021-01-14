@@ -79,10 +79,17 @@ export class ItemClassService {
     return this.httpClient.put<ItemClass>(`${apiPrefix}/${name}/draft`, null);
   }
 
-  updateDraftItemClass(name: string, description: string | null, unitCode: string | null): Observable<HttpResponse<any>> {
+  updateDraftItemClass(
+    name: string,
+    description: string | null,
+    unitCode: string | null,
+    addedAttributes: Array<string>,
+    removedAttributes: Array<string>): Observable<HttpResponse<any>> {
     return this.httpClient.post<ItemClass>(`${apiPrefix}/${name}/draft`, {
       description,
-      unitCode
+      unitCode,
+      addedAttributes,
+      removedAttributes
     }, {observe: 'response'});
   }
 

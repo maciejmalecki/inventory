@@ -5,6 +5,8 @@ import {HttpClient} from '@angular/common/http';
 export interface AttributeTypeHeader {
   name: string;
   scalar: boolean;
+  unitCode: string | null;
+  unitName: string | null;
 }
 
 const apiPrefix = '/api/attributeTypes';

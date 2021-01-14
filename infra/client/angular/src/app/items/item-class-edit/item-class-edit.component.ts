@@ -5,6 +5,10 @@ import {FormControl, FormGroup} from '@angular/forms';
 import {AttributeTypeHeader} from '../../shared/services/attribute-type.service';
 import {CdkDragDrop, transferArrayItem} from '@angular/cdk/drag-drop';
 
+function sub(left: Array<AttributeTypeHeader>, right: Array<AttributeTypeHeader>): Array<AttributeTypeHeader> {
+  return left.filter(lValue => !!!right.find(rValue => rValue.name === lValue.name));
+}
+
 @Component({
   selector: 'app-item-class-edit',
   templateUrl: './item-class-edit.component.html',
@@ -27,8 +31,13 @@ export class ItemClassEditComponent implements OnInit {
 
     this.itemClass = route.snapshot.data.itemClass;
     this.attributeTypes = route.snapshot.data.attributeTypes;
-    this.selectedTypes = this.itemClass.attributes.map(value => ({name: value.name, scalar: isScalarType(value.type)}));
-    this.unselectedTypes = []; // [...this.attributeTypes];
+    this.selectedTypes = this.itemClass.attributes.map(value => ({
+      name: value.name,
+      scalar: isScalarType(value.type),
+      unitCode: isScalarType(value.type) ? value.type.unit.code : null,
+      unitName: isScalarType(value.type) ? value.type.unit.name : null
+    }));
+    this.unselectedTypes = sub(this.attributeTypes, this.selectedTypes);
   }
 
   ngOnInit(): void {

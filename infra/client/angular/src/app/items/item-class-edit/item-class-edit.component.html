@@ -28,7 +28,7 @@
           (cdkDropListDropped)="drop($event)"
         >
           <div *ngFor="let attr of selectedTypes" cdkDrag class="attribute-box">
-            {{ attr.name }} - {{ attr.scalar }}
+            {{ attr.name }} - {{ attr.scalar }} ({{ attr.unitCode }})
           </div>
         </div>
       </div>
@@ -40,7 +40,7 @@
           [cdkDropListData]="unselectedTypes"
           (cdkDropListDropped)="drop($event)">
           <div *ngFor="let attr of unselectedTypes" cdkDrag class="attribute-box">
-            {{ attr.name }} - {{ attr.scalar }}
+            {{ attr.name }} - {{ attr.scalar }} ({{ attr.unitCode }})
           </div>
         </div>
       </div>
