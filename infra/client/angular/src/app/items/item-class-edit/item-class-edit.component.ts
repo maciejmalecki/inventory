@@ -21,7 +21,7 @@ function mapToHeader(attribute: Attribute): AttributeTypeHeader {
     scalar: isScalarType(attribute.type),
     unitCode: isScalarType(attribute.type) ? attribute.type.unit.code : null,
     unitName: isScalarType(attribute.type) ? attribute.type.unit.name : null
-  }
+  };
 }
 
 @Component({
