@@ -8,9 +8,8 @@ import mm.inventory.domain.items.itemclass.ChangeDescriptionCommand
 import mm.inventory.domain.items.itemclass.DraftItemClass
 import mm.inventory.domain.items.itemclass.DraftItemClassRepository
 import mm.inventory.domain.items.itemclass.ItemClassRepository
+import mm.inventory.domain.items.itemclass.MutableDraftItemClass
 import mm.inventory.domain.items.itemclass.RemoveAttributeCommand
-import mm.inventory.domain.shared.InvalidDataException
-import mm.inventory.domain.shared.mutations.Mutations
 import mm.inventory.domain.shared.types.ItemClassId
 import org.jdbi.v3.core.Jdbi
 
@@ -31,9 +30,6 @@ class DraftItemClassJdbiRepository(private val db: Jdbi, private val itemClassRe
 
     override fun persist(draftItemClass: DraftItemClass): DraftItemClass =
         db.inTransaction<DraftItemClass, RuntimeException> { handle ->
-            if (draftItemClass.hasMutations) {
-                throw InvalidDataException("Draft Item Class aggregate with mutations cannot be persisted.")
-            }
             val itemClass = draftItemClass.itemClass
             val itemClassId = itemClass.id.asJdbiId()
             val itemClassDao = handle.attach(ItemClassDao::class.java)
@@ -57,15 +53,14 @@ class DraftItemClassJdbiRepository(private val db: Jdbi, private val itemClassRe
             }
             return@inTransaction draftItemClass.copy(
                 itemClass = itemClass.copy(id = createItemClassId(itemClassId.id, version)),
-                mutations = Mutations()
             )
         }
 
-    override fun save(draftItemClass: DraftItemClass) = db.useTransaction<RuntimeException> { handle ->
+    override fun save(draftItemClass: MutableDraftItemClass) = db.useTransaction<RuntimeException> { handle ->
         val itemClassDao = handle.attach(ItemClassDao::class.java)
         val id = draftItemClass.itemClass.id.asJdbiId()
 
-        draftItemClass.handleAll { command ->
+        draftItemClass.consume { command ->
             when (command) {
                 is ChangeDescriptionCommand -> updateAndExpect(1) {
                     itemClassDao.updateDescription(id, command.description)
@@ -98,9 +93,6 @@ class DraftItemClassJdbiRepository(private val db: Jdbi, private val itemClassRe
     override fun complete(draftItemClass: DraftItemClass) = db.useTransaction<RuntimeException> { handle ->
         val itemClassDao = handle.attach(ItemClassDao::class.java)
         val itemClassId = draftItemClass.itemClass.id.asJdbiId()
-        if (draftItemClass.hasMutations) {
-            throw InvalidDataException("Cannot complete Draft Item Class aggregate $itemClassId because it has unsaved mutations.")
-        }
         updateAndExpect(1) {
             itemClassDao.completeDraftItemClass(itemClassId)
         }

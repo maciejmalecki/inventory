@@ -25,4 +25,7 @@ export class ItemClassesComponent implements OnInit {
     });
   }
 
+  newItemClass(): void {
+
+  }
 }

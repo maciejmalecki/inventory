@@ -38,6 +38,14 @@ INSERT INTO Attribute_Types (name, unit, scalar)
         ('inputVoltageMin', 'V', TRUE),
         ('inputVoltageMax', 'V', TRUE),
         ('dropoutVoltage', 'V', TRUE);
+INSERT INTO Attribute_Types (name, unit, scalar) VALUES ('width', 'm', TRUE);
+INSERT INTO Attribute_Types (name, unit, scalar) VALUES ('height', 'm', TRUE);
+INSERT INTO Attribute_Types (name, unit, scalar) VALUES ('pcbType', NULL, FALSE);
+INSERT INTO Attribute_Type_Values (attribute_type_name, code, value)
+VALUES
+('pcbType', 'ss', 'Single Sided'),
+('pcbType', 'ds', 'Double Sided');
+
 
 -- Item Classes
 INSERT INTO Item_Classes (name, version, complete, description, unit) VALUES ('resistor', 1, TRUE, 'Resistor', 'pcs');
@@ -47,6 +55,15 @@ INSERT INTO Attributes (item_class_name, item_class_version, attribute_type) VAL
 INSERT INTO Attributes (item_class_name, item_class_version, attribute_type) VALUES ('resistor', 1, 'powerRating');
 INSERT INTO Attributes (item_class_name, item_class_version, attribute_type) VALUES ('resistor', 1, 'voltageRating');
 INSERT INTO Attributes (item_class_name, item_class_version, attribute_type) VALUES ('resistor', 1, 'resistorCaseStyle');
+
+INSERT INTO Item_Classes (name, version, complete, description, unit) VALUES ('capacitor', 1, TRUE, 'Capacitor', 'pcs');
+INSERT INTO Item_Classes_Version_Counters (name, last_version) VALUES ('capacitor', 1);
+
+INSERT INTO Item_Classes (name, version, complete, description, unit) VALUES ('regulator', 1, TRUE, 'Voltage Regulator', 'pcs');
+INSERT INTO Item_Classes_Version_Counters (name, last_version) VALUES ('regulator', 1);
+
+INSERT INTO Item_Classes (name, version, complete, description, unit) VALUES ('pcb', 1, TRUE, 'Printed Circuit Boards', 'pcs');
+INSERT INTO Item_Classes_Version_Counters (name, last_version) VALUES ('pcb', 1);
 
 -- Items
 INSERT INTO Items (name, item_class_name, item_class_version) VALUES ('tht10K', 'resistor', 1);

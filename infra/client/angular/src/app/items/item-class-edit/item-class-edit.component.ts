@@ -64,6 +64,11 @@ export class ItemClassEditComponent implements OnInit {
       .then(_ => this.router.navigate(['itemClasses', this.itemClass.name]));
   }
 
+  confirmDraft(): void {
+    this.itemClassService.completeDraftItemClass(this.itemClass.name).toPromise()
+      .then(_ => this.router.navigate(['itemClasses', this.itemClass.name]));
+  }
+
   save(): void {
     this.itemClassService.updateDraftItemClass(
       this.itemClass.name,
