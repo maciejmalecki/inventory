@@ -2,7 +2,7 @@
   <form [formGroup]="formGroup">
     <h1>
       {{ itemClass.name }}
-      <button mat-icon-button>
+      <button mat-icon-button (click)="save()">
         <mat-icon>save</mat-icon>
       </button>
       <button mat-icon-button routerLink="..">
