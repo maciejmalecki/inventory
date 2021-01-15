@@ -32,7 +32,7 @@ function mapToHeader(attribute: Attribute): AttributeHeader {
 export class ItemClassEditComponent implements OnInit {
 
   itemClass: ItemClass;
-  attributeTypes: Array<AttributeHeader>;
+  attributes: Array<AttributeHeader>;
   isScalarType = isScalarType;
   isDictionaryType = isDictionaryType;
   formGroup: FormGroup;
@@ -47,9 +47,9 @@ export class ItemClassEditComponent implements OnInit {
     private readonly itemClassService: ItemClassService) {
 
     this.itemClass = route.snapshot.data.itemClass;
-    this.attributeTypes = route.snapshot.data.attributeTypes;
+    this.attributes = route.snapshot.data.attributes;
     this.selectedTypes = this.itemClass.attributes.map(mapToHeader);
-    this.unselectedTypes = sub(this.attributeTypes, this.selectedTypes);
+    this.unselectedTypes = sub(this.attributes, this.selectedTypes);
   }
 
   ngOnInit(): void {

@@ -6,12 +6,12 @@ import {Observable} from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class AttributeTypesResolver implements Resolve<Array<AttributeHeader>> {
+export class AttributesResolver implements Resolve<Array<AttributeHeader>> {
 
-  constructor(private readonly attributeTypeService: AttributeService) {
+  constructor(private readonly attributeService: AttributeService) {
   }
 
   resolve(): Observable<Array<AttributeHeader>> {
-    return this.attributeTypeService.getAllAttributes();
+    return this.attributeService.getAllAttributes();
   }
 }
