@@ -11,7 +11,7 @@ import {ItemResolver} from './items/item.resolver';
 import {ItemEditComponent} from './items/item-edit/item-edit.component';
 import {CreateItemResolver} from './items/create-item.resolver';
 import {ItemClassEditResolver} from './items/item-class-edit/item-class-edit.resolver';
-import {AttributeTypesResolver} from './items/attribute-types.resolver';
+import {AttributesResolver} from './items/attributes-resolver.service';
 
 const routes: Routes = [
   {
@@ -44,7 +44,7 @@ const routes: Routes = [
     component: ItemClassEditComponent,
     resolve: {
       itemClass: ItemClassEditResolver,
-      attributeTypes: AttributeTypesResolver
+      attributes: AttributesResolver
     }
   },
   {

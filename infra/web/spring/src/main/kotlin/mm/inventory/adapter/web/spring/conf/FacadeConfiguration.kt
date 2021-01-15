@@ -2,15 +2,15 @@ package mm.inventory.adapter.web.spring.conf
 
 import mm.inventory.app.productplanner.item.ItemQuery
 import mm.inventory.app.productplanner.item.ItemFacade
-import mm.inventory.app.productplanner.itemclass.AttributeTypeFacade
-import mm.inventory.app.productplanner.itemclass.AttributeTypeQuery
+import mm.inventory.app.productplanner.itemclass.AttributeFacade
+import mm.inventory.app.productplanner.itemclass.AttributeQuery
 import mm.inventory.app.productplanner.itemclass.DraftItemClassFacade
 import mm.inventory.app.productplanner.itemclass.ItemClassFacade
 import mm.inventory.app.productplanner.itemclass.ItemClassQuery
 import mm.inventory.domain.items.itemclass.ItemClassRepository
 import mm.inventory.domain.items.item.ItemRepository
 import mm.inventory.domain.items.item.ItemFactory
-import mm.inventory.domain.items.itemclass.AttributeTypeRepository
+import mm.inventory.domain.items.itemclass.AttributeRepository
 import mm.inventory.domain.items.itemclass.DraftItemClassFactory
 import mm.inventory.domain.items.itemclass.DraftItemClassManager
 import mm.inventory.domain.items.itemclass.DraftItemClassRepository
@@ -33,8 +33,8 @@ class FacadeConfiguration(
     private val draftItemClassFactory: DraftItemClassFactory,
     private val draftItemClassManager: DraftItemClassManager,
     private val unitOfMeasurementRepository: UnitOfMeasurementRepository,
-    private val attributeTypeQuery: AttributeTypeQuery,
-    private val attributeTypeRepository: AttributeTypeRepository
+    private val attributeQuery: AttributeQuery,
+    private val attributeRepository: AttributeRepository
 ) {
     @Bean
     fun itemClassFacade() = ItemClassFacade(
@@ -52,12 +52,12 @@ class FacadeConfiguration(
         draftItemClassManager,
         unitOfMeasurementRepository,
         itemClassRepository,
-        attributeTypeRepository
+        attributeRepository
     )
 
     @Bean
     fun itemFacade() = ItemFacade(securityGuard, businessTransaction, itemRepository, itemQuery, itemFactoryCreator)
 
     @Bean
-    fun attributeTypeFacade() = AttributeTypeFacade(attributeTypeQuery)
+    fun attributeTypeFacade() = AttributeFacade(attributeQuery)
 }

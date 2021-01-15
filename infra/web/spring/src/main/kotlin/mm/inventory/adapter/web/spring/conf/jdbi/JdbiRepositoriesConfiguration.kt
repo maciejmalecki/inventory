@@ -1,7 +1,7 @@
 package mm.inventory.adapter.web.spring.conf.jdbi
 
-import mm.inventory.adapters.store.jdbi.itemclasses.AttributeTypeJdbiQuery
-import mm.inventory.adapters.store.jdbi.itemclasses.AttributeTypeJdbiRepository
+import mm.inventory.adapters.store.jdbi.itemclasses.AttributeJdbiQuery
+import mm.inventory.adapters.store.jdbi.itemclasses.AttributeJdbiRepository
 import mm.inventory.adapters.store.jdbi.itemclasses.DraftItemClassJdbiRepository
 import mm.inventory.adapters.store.jdbi.itemclasses.ItemClassJdbiQuery
 import mm.inventory.adapters.store.jdbi.itemclasses.ItemClassJdbiRepository
@@ -39,8 +39,8 @@ class JdbiRepositoriesConfiguration(
     fun businessTransaction() = BusinessJdbiTransaction(jdbi)
 
     @Bean
-    fun attributeTypeQuery() = AttributeTypeJdbiQuery(jdbi)
+    fun attributeTypeQuery() = AttributeJdbiQuery(jdbi)
 
     @Bean
-    fun attributeTypeRepository() = AttributeTypeJdbiRepository(jdbi)
+    fun attributeTypeRepository() = AttributeJdbiRepository(jdbi)
 }
