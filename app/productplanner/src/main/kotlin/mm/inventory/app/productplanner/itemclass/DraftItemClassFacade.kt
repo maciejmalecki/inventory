@@ -3,8 +3,7 @@ package mm.inventory.app.productplanner.itemclass
 import mm.inventory.app.productplanner.ITEMS_ROLE
 import mm.inventory.app.productplanner.ITEM_CLASSES_ROLE
 import mm.inventory.app.productplanner.ITEM_CLASSES_WRITER_ROLE
-import mm.inventory.domain.items.itemclass.Attribute
-import mm.inventory.domain.items.itemclass.AttributeTypeRepository
+import mm.inventory.domain.items.itemclass.AttributeRepository
 import mm.inventory.domain.items.itemclass.DraftItemClass
 import mm.inventory.domain.items.itemclass.DraftItemClassFactory
 import mm.inventory.domain.items.itemclass.DraftItemClassManager
@@ -26,7 +25,7 @@ class DraftItemClassFacade(
     private val draftItemClassManager: DraftItemClassManager,
     private val unitOfMeasurementRepository: UnitOfMeasurementRepository,
     private val itemClassRepository: ItemClassRepository,
-    private val attributeTypeRepository: AttributeTypeRepository
+    private val attributeRepository: AttributeRepository
 ) {
     fun findDraftById(id: ItemClassId): DraftItemClass? = sec.requireAllRoles(ITEMS_ROLE, ITEM_CLASSES_ROLE) {
         draftItemClassRepository.findById(id)
@@ -56,8 +55,8 @@ class DraftItemClassFacade(
                     }
                     // it throws NotFound if such attribute type does not exist in the system, it is ok...
                     // TODO however, we have N reads where we can most likely fetch all attributes using IN clause, fix...
-                    val attributeType = attributeTypeRepository.get(attrName)
-                    draftItemClass.addAttribute(Attribute(attrName, attributeType))
+                    val attribute = attributeRepository.get(attrName)
+                    draftItemClass.addAttribute(attribute)
                 }
                 removedAttributeTypes.forEach { attrName ->
                     // it throws NotFound if attribute does not exist in item class, it is ok...
