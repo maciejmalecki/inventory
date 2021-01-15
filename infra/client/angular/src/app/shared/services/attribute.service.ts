@@ -2,24 +2,24 @@ import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 
-export interface AttributeTypeHeader {
+export interface AttributeHeader {
   name: string;
   scalar: boolean;
   unitCode: string | null;
   unitName: string | null;
 }
 
-const apiPrefix = '/api/attributeTypes';
+const apiPrefix = '/api/attributes';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AttributeTypeService {
+export class AttributeService {
 
   constructor(private readonly httpClient: HttpClient) {
   }
 
-  getAllAttributeTypes(): Observable<Array<AttributeTypeHeader>> {
-    return this.httpClient.get<Array<AttributeTypeHeader>>(`${apiPrefix}`);
+  getAllAttributes(): Observable<Array<AttributeHeader>> {
+    return this.httpClient.get<Array<AttributeHeader>>(`${apiPrefix}`);
   }
 }

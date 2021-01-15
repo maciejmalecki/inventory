@@ -8,14 +8,14 @@ import {
   ItemClassService
 } from '../../shared/services/item-class.service';
 import {FormControl, FormGroup} from '@angular/forms';
-import {AttributeTypeHeader} from '../../shared/services/attribute-type.service';
+import {AttributeHeader} from '../../shared/services/attribute.service';
 import {CdkDragDrop, transferArrayItem} from '@angular/cdk/drag-drop';
 
-function sub(left: Array<AttributeTypeHeader>, right: Array<AttributeTypeHeader>): Array<AttributeTypeHeader> {
+function sub(left: Array<AttributeHeader>, right: Array<AttributeHeader>): Array<AttributeHeader> {
   return left.filter(lValue => !!!right.find(rValue => rValue.name === lValue.name));
 }
 
-function mapToHeader(attribute: Attribute): AttributeTypeHeader {
+function mapToHeader(attribute: Attribute): AttributeHeader {
   return {
     name: attribute.name,
     scalar: isScalarType(attribute.type),
@@ -32,12 +32,12 @@ function mapToHeader(attribute: Attribute): AttributeTypeHeader {
 export class ItemClassEditComponent implements OnInit {
 
   itemClass: ItemClass;
-  attributeTypes: Array<AttributeTypeHeader>;
+  attributeTypes: Array<AttributeHeader>;
   isScalarType = isScalarType;
   isDictionaryType = isDictionaryType;
   formGroup: FormGroup;
-  selectedTypes: Array<AttributeTypeHeader>;
-  unselectedTypes: Array<AttributeTypeHeader>;
+  selectedTypes: Array<AttributeHeader>;
+  unselectedTypes: Array<AttributeHeader>;
 
   private descriptionControl: FormControl;
 
@@ -80,7 +80,7 @@ export class ItemClassEditComponent implements OnInit {
       .then(_ => this.router.navigate(['itemClasses', this.itemClass.name]));
   }
 
-  drop($event: CdkDragDrop<Array<AttributeTypeHeader>>): void {
+  drop($event: CdkDragDrop<Array<AttributeHeader>>): void {
     if ($event.previousContainer !== $event.container) {
       transferArrayItem($event.previousContainer.data,
         $event.container.data,
