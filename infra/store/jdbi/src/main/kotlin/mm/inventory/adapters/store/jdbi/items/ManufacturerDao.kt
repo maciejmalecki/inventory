@@ -8,6 +8,9 @@ interface ManufacturerDao {
     @SqlQuery("SELECT id, name FROM Manufacturers ORDER BY name")
     fun selectAll(): List<ManufacturerRec>
 
+    @SqlQuery("SELECT id, name FROM Manufacturers WHERE id=?")
+    fun selectById(id: Long): ManufacturerRec?
+
     @SqlUpdate("INSERT INTO Manufacturers (name) VALUES (:manufacturer.name)")
     @GetGeneratedKeys("id")
     fun insert(manufacturer: ManufacturerRec): Long
