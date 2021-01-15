@@ -6,7 +6,7 @@ import java.math.BigDecimal
 
 interface ItemDao {
 
-    @SqlUpdate("INSERT INTO Items(name, item_class_name, item_class_version) VALUES (:item.name, :item.itemClassName, :item.itemClassVersion)")
+    @SqlUpdate("INSERT INTO Items(name, item_class_name, item_class_version, manufacturer_id, manufacturers_code) VALUES (:item.name, :item.itemClassName, :item.itemClassVersion, :item.manufacturerId, :item.manufacturersCode)")
     fun insertItem(item: ItemRec)
 
     @SqlUpdate("INSERT INTO Scalar_Values(item_name, attribute_type, item_class_name, item_class_version, value, scale) VALUES (:value.itemName, :value.attributeType, :value.itemClassName, :value.itemClassVersion, :value.value, :value.scale)")
@@ -21,11 +21,11 @@ interface ItemDao {
     @SqlUpdate("UPDATE Dictionary_Values SET code=:value.code WHERE item_name=:value.itemName AND attribute_type=:value.attributeType AND item_class_name=:value.itemClassName AND item_class_version=:value.itemClassVersion")
     fun updateValue(value: DictionaryValueRec): Int
 
-    @SqlQuery("SELECT name, item_class_name, item_class_version FROM Items ORDER BY name")
-    fun selectItems(): List<ItemRec>
+    @SqlQuery("SELECT items.name AS name, item_class_name, item_class_version, manufacturer_id, manufacturers.name AS manufacturer_name, manufacturers_code FROM Items LEFT OUTER JOIN Manufacturers ON items.manufacturer_id = manufacturers.id ORDER BY name")
+    fun selectItems(): List<ItemWithManufacturerRec>
 
-    @SqlQuery("SELECT name, item_class_name, item_class_version FROM Items WHERE name=?")
-    fun selectItem(name: String): ItemRec?
+    @SqlQuery("SELECT name, item_class_name, item_class_version, manufacturer_id, manufacturers_code FROM Items WHERE name=?")
+    fun selectItem(name: String): ItemWithManufacturerRec?
 
     @SqlUpdate("DELETE FROM Items where name=?")
     fun deleteItem(name: String): Int
@@ -46,8 +46,19 @@ interface ItemDao {
 data class ItemRec(
     val name: String,
     val itemClassName: String,
-    val itemClassVersion: Long
+    val itemClassVersion: Long,
+    val manufacturerId: Long?,
+    val manufacturersCode: String?
 )
+
+data class ItemWithManufacturerRec(
+    val name: String,
+    val itemClassName: String,
+    val itemClassVersion: Long,
+    val manufacturerId: Long?,
+    val manufacturerName: String?,
+    val manufacturersCode: String?
+);
 
 data class ScalarValueRec(
     val itemName: String,

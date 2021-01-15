@@ -6,6 +6,7 @@ import mm.inventory.app.productplanner.ITEMS_WRITER_ROLE
 import mm.inventory.domain.items.item.ItemFactory
 import mm.inventory.domain.items.item.Item
 import mm.inventory.domain.items.item.ItemRepository
+import mm.inventory.domain.items.item.Manufacturer
 import mm.inventory.domain.shared.security.SecurityGuard
 import mm.inventory.domain.shared.transactions.BusinessTransaction
 import mm.inventory.domain.shared.types.ItemClassId
@@ -19,7 +20,8 @@ class ItemFacade(
     private val tx: BusinessTransaction,
     private val itemRepository: ItemRepository,
     private val itemQuery: ItemQuery,
-    private val itemFactory: ItemFactory
+    private val itemFactory: ItemFactory,
+    private val manufacturerCrudRepository: ManufacturerCrudRepository
 ) {
     fun findAllItems(): ImmutableList<ItemHeader> = sec.requireRole(ITEMS_ROLE) {
         itemQuery.findAll()
@@ -49,5 +51,10 @@ class ItemFacade(
                 val item = itemRepository.get(id)
                 itemRepository.delete(item)
             }
+        }
+
+    fun findAllManufacturers(): ImmutableList<Manufacturer> =
+        sec.requireAllRoles(ITEMS_ROLE) {
+            manufacturerCrudRepository.findAll()
         }
 }

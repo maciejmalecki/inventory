@@ -30,7 +30,12 @@ class ItemFactory(
                     ?: throw InvalidDataException("A value for `${attribute.name}` attribute is not provided.")
                 attribute.parse(rawValue)
             }
-            val item = Item(emptyItemId, name, itemClassId, values.toImmutableSet())
+            val item = Item(
+                id = emptyItemId,
+                name = name,
+                itemClassId = itemClassId,
+                values = values.toImmutableSet()
+            )
             return@inTransaction itemRepository.persist(item)
         }
 }

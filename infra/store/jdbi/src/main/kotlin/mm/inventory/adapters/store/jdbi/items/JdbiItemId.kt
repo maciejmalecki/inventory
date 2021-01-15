@@ -8,7 +8,7 @@ internal class JdbiItemId(val id: String) : ItemId {
     override fun equals(other: Any?): Boolean =
         when (other) {
             null -> false
-            is JdbiItemId -> other.toJdbiId()?.id == id
+            is JdbiItemId -> other.id == id
             else -> false
         }
 

@@ -53,7 +53,15 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassRepository: 
 
         // insert item record
         val itemId = createItemId(item.name)
-        itemDao.insertItem(ItemRec(item.name, item.itemClassId.asJdbiId().id, item.itemClassId.asJdbiId().version))
+        itemDao.insertItem(
+            ItemRec(
+                name = item.name,
+                itemClassName = item.itemClassId.asJdbiId().id,
+                itemClassVersion = item.itemClassId.asJdbiId().version,
+                manufacturerId = item.manufacturer?.id?.asJdbiId()?.id,
+                manufacturersCode = item.manufacturersCode
+            )
+        )
         // insert values
         item.values.forEach { value ->
             when (value) {

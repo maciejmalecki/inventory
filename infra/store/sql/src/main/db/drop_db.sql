@@ -3,6 +3,7 @@ DROP TABLE Categories;
 DROP TABLE Dictionary_Values;
 DROP TABLE Scalar_Values;
 DROP TABLE Items;
+DROP TABLE Manufacturers;
 DROP TABLE Attributes;
 DROP TABLE Item_Classes_Version_Counters;
 DROP TABLE Item_Classes;
