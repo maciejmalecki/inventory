@@ -1,9 +1,8 @@
 package mm.inventory.adapters.store.jdbi.items
 
-import mm.inventory.domain.shared.types.ItemId
 import mm.inventory.domain.shared.types.ManufacturerId
 
-fun createManufacturerId(id: Long): ManufacturerId = JdbiManufacturerId(id)
+internal fun createManufacturerId(id: Long): ManufacturerId = JdbiManufacturerId(id)
 
 internal class JdbiManufacturerId(val id: Long) : ManufacturerId {
     override fun equals(other: Any?): Boolean =

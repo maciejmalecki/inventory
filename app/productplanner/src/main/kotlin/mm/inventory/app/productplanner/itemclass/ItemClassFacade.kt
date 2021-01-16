@@ -14,7 +14,8 @@ import mm.inventory.domain.shared.types.ItemClassId
 class ItemClassFacade(
     private val sec: SecurityGuard,
     private val itemClassRepository: ItemClassRepository,
-    private val itemClassQuery: ItemClassQuery
+    private val itemClassQuery: ItemClassQuery,
+    private val itemClassIdConverter: ItemClassIdConverter
 ) {
     fun findAll(): ImmutableList<ItemClassHeader> = sec.requireAllRoles(ITEMS_ROLE, ITEM_CLASSES_ROLE) {
         itemClassQuery.findAll()
@@ -24,4 +25,7 @@ class ItemClassFacade(
         itemClassRepository.findById(id)
     }
 
+    fun fromItemClassId(id: ItemClassId) = itemClassIdConverter.fromItemClassId(id)
+
+    fun toItemClassId(id: String, version: Long = -1L) = itemClassIdConverter.toItemClassId(id, version)
 }

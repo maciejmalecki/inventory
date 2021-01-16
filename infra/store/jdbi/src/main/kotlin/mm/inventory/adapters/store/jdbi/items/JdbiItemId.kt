@@ -2,7 +2,7 @@ package mm.inventory.adapters.store.jdbi.items
 
 import mm.inventory.domain.shared.types.ItemId
 
-fun createItemId(id: String): ItemId = JdbiItemId(id)
+internal fun createItemId(id: String): ItemId = JdbiItemId(id)
 
 internal class JdbiItemId(val id: String) : ItemId {
     override fun equals(other: Any?): Boolean =

@@ -2,12 +2,16 @@ package mm.inventory.adapter.web.spring.conf
 
 import mm.inventory.app.productplanner.item.ItemQuery
 import mm.inventory.app.productplanner.item.ItemFacade
+import mm.inventory.app.productplanner.item.ItemIdConverter
 import mm.inventory.app.productplanner.item.ManufacturerCrudRepository
 import mm.inventory.app.productplanner.itemclass.AttributeFacade
 import mm.inventory.app.productplanner.itemclass.AttributeQuery
 import mm.inventory.app.productplanner.itemclass.DraftItemClassFacade
 import mm.inventory.app.productplanner.itemclass.ItemClassFacade
+import mm.inventory.app.productplanner.itemclass.ItemClassIdConverter
 import mm.inventory.app.productplanner.itemclass.ItemClassQuery
+import mm.inventory.app.productplanner.itemclass.ManufacturerFacade
+import mm.inventory.app.productplanner.itemclass.ManufacturerIdConverter
 import mm.inventory.domain.items.itemclass.ItemClassRepository
 import mm.inventory.domain.items.item.ItemRepository
 import mm.inventory.domain.items.item.ItemFactory
@@ -28,21 +32,25 @@ class FacadeConfiguration(
     private val itemClassRepository: ItemClassRepository,
     private val draftItemClassRepository: DraftItemClassRepository,
     private val itemClassQuery: ItemClassQuery,
+    private val itemClassIdConverter: ItemClassIdConverter,
     private val itemRepository: ItemRepository,
     private val itemQuery: ItemQuery,
     private val itemFactoryCreator: ItemFactory,
+    private val itemIdConverter: ItemIdConverter,
     private val draftItemClassFactory: DraftItemClassFactory,
     private val draftItemClassManager: DraftItemClassManager,
     private val unitOfMeasurementRepository: UnitOfMeasurementRepository,
     private val attributeQuery: AttributeQuery,
     private val attributeRepository: AttributeRepository,
-    private val manufacturerCrudRepository: ManufacturerCrudRepository
+    private val manufacturerCrudRepository: ManufacturerCrudRepository,
+    private val manufacturerIdConverter: ManufacturerIdConverter
 ) {
     @Bean
     fun itemClassFacade() = ItemClassFacade(
         securityGuard,
         itemClassRepository,
-        itemClassQuery
+        itemClassQuery,
+        itemClassIdConverter
     )
 
     @Bean
@@ -64,9 +72,13 @@ class FacadeConfiguration(
         itemRepository,
         itemQuery,
         itemFactoryCreator,
+        itemIdConverter,
         manufacturerCrudRepository
     )
 
     @Bean
-    fun attributeTypeFacade() = AttributeFacade(attributeQuery)
+    fun attributeFacade() = AttributeFacade(attributeQuery)
+
+    @Bean
+    fun manufacturerFacade() = ManufacturerFacade(manufacturerCrudRepository, manufacturerIdConverter)
 }

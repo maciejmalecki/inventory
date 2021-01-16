@@ -1,6 +1,5 @@
 package mm.inventory.adapter.web.spring.rest
 
-import mm.inventory.adapters.store.jdbi.itemclasses.createItemClassId
 import mm.inventory.app.productplanner.itemclass.DraftItemClassFacade
 import mm.inventory.app.productplanner.itemclass.ItemClassFacade
 import mm.inventory.app.productplanner.itemclass.ItemClassHeader
@@ -32,7 +31,7 @@ class ItemClassesController(
 
     @GetMapping("/itemClasses/{id}")
     fun itemClass(@PathVariable id: String): ResponseEntity<ItemClass> {
-        val itemClass = itemClassFacade.findById(createItemClassId(id))
+        val itemClass = itemClassFacade.findById(itemClassFacade.toItemClassId(id))
         return if (itemClass != null) {
             ResponseEntity.ok(itemClass)
         } else {
@@ -42,7 +41,7 @@ class ItemClassesController(
 
     @GetMapping("/itemClasses/{id}/draft")
     fun draftItemClass(@PathVariable id: String): ResponseEntity<ItemClass> {
-        val draftItemClass = draftItemClassFacade.findDraftById(createItemClassId(id))
+        val draftItemClass = draftItemClassFacade.findDraftById(itemClassFacade.toItemClassId(id))
         return if (draftItemClass != null) {
             ResponseEntity.ok(draftItemClass.itemClass)
         } else {
@@ -52,14 +51,14 @@ class ItemClassesController(
 
     @PutMapping("/itemClasses/{id}/draft")
     fun newDraftItemClass(@PathVariable id: String): ResponseEntity<ItemClass> {
-        val draftItemClass = draftItemClassFacade.createDraft(createItemClassId(id))
+        val draftItemClass = draftItemClassFacade.createDraft(itemClassFacade.toItemClassId(id))
         return ResponseEntity.ok(draftItemClass.itemClass)
     }
 
     @PostMapping("/itemClasses/{id}/draft")
     fun updateDraftItemClass(@PathVariable id: String, @RequestBody body: UpdateDraftRequest): ResponseEntity<Any> {
         draftItemClassFacade.updateDraft(
-            id = createItemClassId(id),
+            id = itemClassFacade.toItemClassId(id),
             description = body.description,
             unitCode = body.unitCode,
             addedAttributeTypes = body.addedAttributes,
@@ -70,11 +69,11 @@ class ItemClassesController(
 
     @PostMapping("/itemClasses/{id}/draft/complete")
     fun completeDraftItemClass(@PathVariable id: String): ResponseEntity<ItemClass> =
-        ResponseEntity.ok(draftItemClassFacade.completeDraft(createItemClassId(id)))
+        ResponseEntity.ok(draftItemClassFacade.completeDraft(itemClassFacade.toItemClassId(id)))
 
     @DeleteMapping("/itemClasses/{id}/draft")
     fun rejectDraftItemClass(@PathVariable id: String): ResponseEntity<Any> {
-        draftItemClassFacade.rejectDraft(createItemClassId(id))
+        draftItemClassFacade.rejectDraft(itemClassFacade.toItemClassId(id))
         return ResponseEntity.ok().build()
     }
 }

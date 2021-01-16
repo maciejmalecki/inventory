@@ -21,7 +21,8 @@ class ItemFacade(
     private val itemRepository: ItemRepository,
     private val itemQuery: ItemQuery,
     private val itemFactory: ItemFactory,
-    private val manufacturerCrudRepository: ManufacturerCrudRepository
+    private val itemIdConverter: ItemIdConverter,
+    private val manufacturerCrudRepository: ManufacturerCrudRepository,
 ) {
     fun findAllItems(): ImmutableList<ItemHeader> = sec.requireRole(ITEMS_ROLE) {
         itemQuery.findAll()
@@ -79,4 +80,8 @@ class ItemFacade(
         sec.requireAllRoles(ITEMS_ROLE) {
             manufacturerCrudRepository.findAll()
         }
+
+    fun fromItemId(id: ItemId) = itemIdConverter.fromItemId(id)
+
+    fun toItemId(id: String) = itemIdConverter.toItemId(id)
 }
