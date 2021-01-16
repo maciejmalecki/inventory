@@ -31,11 +31,29 @@ class ItemFacade(
         itemRepository.findById(id)
     }
 
-    fun createItem(name: String, itemClassId: ItemClassId, inValues: Map<String, String>): Item =
+    fun createItem(
+        name: String,
+        itemClassId: ItemClassId,
+        manufacturer: Manufacturer?,
+        manufacturersCode: String?,
+        inValues: Map<String, String>
+    ): Item =
         sec.requireAllRoles(ITEMS_ROLE, ITEMS_WRITER_ROLE) {
+            // create new manufacturer when needed
+            val persistentManufacturer = manufacturer?.let {
+                if (manufacturer.id.empty) {
+                    manufacturerCrudRepository.persist(manufacturer)
+                } else {
+                    manufacturer
+                }
+            }
+
+            // create new item
             itemFactory.create(
                 name = name,
                 itemClassId = itemClassId,
+                manufacturer = persistentManufacturer,
+                manufacturersCode = manufacturersCode,
                 inValues = inValues
             )
         }

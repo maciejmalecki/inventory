@@ -22,7 +22,7 @@ class ManufacturerCrudJdbiRepository(private val db: Jdbi) : ManufacturerCrudRep
             }
         }
 
-    override fun insert(manufacturer: Manufacturer): Manufacturer =
+    override fun persist(manufacturer: Manufacturer): Manufacturer =
         db.inTransaction<Manufacturer, RuntimeException> { handle ->
             val dao = handle.attach(ManufacturerDao::class.java)
             // TODO maybe we can get rid of this ugly 0L?

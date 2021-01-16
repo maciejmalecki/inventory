@@ -14,5 +14,5 @@ interface ManufacturerCrudRepository {
     fun get(id: ManufacturerId): Manufacturer =
         findById(id) ?: throw NotFoundException("Manufacturer $id cannot be found.")
 
-    fun insert(manufacturer: Manufacturer): Manufacturer
+    fun persist(manufacturer: Manufacturer): Manufacturer
 }
