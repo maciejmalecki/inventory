@@ -20,9 +20,17 @@ class ItemFactory(
      * Creates new Item's instance based on provided description.
      * @param name name of the item
      * @param itemClassId id of the ItemClass
+     * @param manufacturer
+     * @param manufacturersCode
      * @param inValues attribute values specified as a "attribute name" to "string representation of attribute's value"
      */
-    fun create(name: String, itemClassId: ItemClassId, inValues: Map<String, String>): Item =
+    fun create(
+        name: String,
+        itemClassId: ItemClassId,
+        manufacturer: Manufacturer? = null,
+        manufacturersCode: String? = null,
+        inValues: Map<String, String>
+    ): Item =
         tx.inTransaction {
             val itemClass = itemClassRepository.get(itemClassId)
             val values = itemClass.attributes.map { attribute ->
@@ -34,6 +42,8 @@ class ItemFactory(
                 id = emptyItemId,
                 name = name,
                 itemClassId = itemClassId,
+                manufacturer = manufacturer,
+                manufacturersCode = manufacturersCode,
                 values = values.toImmutableSet()
             )
             return@inTransaction itemRepository.persist(item)

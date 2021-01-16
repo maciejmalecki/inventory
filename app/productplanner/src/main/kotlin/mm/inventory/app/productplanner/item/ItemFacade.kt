@@ -33,7 +33,11 @@ class ItemFacade(
 
     fun createItem(name: String, itemClassId: ItemClassId, inValues: Map<String, String>): Item =
         sec.requireAllRoles(ITEMS_ROLE, ITEMS_WRITER_ROLE) {
-            itemFactory.create(name, itemClassId, inValues)
+            itemFactory.create(
+                name = name,
+                itemClassId = itemClassId,
+                inValues = inValues
+            )
         }
 
     fun updateItem(id: ItemId, inValues: Map<String, String>) =

@@ -9,7 +9,6 @@ import mm.inventory.domain.shared.mutations.Mutable
 import mm.inventory.domain.shared.mutations.MutatingCommand
 import mm.inventory.domain.shared.types.ItemClassId
 import mm.inventory.domain.shared.types.ItemId
-import mm.inventory.domain.shared.types.ManufacturerId
 import java.math.BigDecimal
 import java.util.stream.Collectors
 import io.vavr.collection.Map as VavrMap
@@ -86,5 +85,3 @@ data class UpdateValuesCommand(
 
 private fun toMap(values: Set<Value<*>>): VavrMap<String, Value<*>> =
     values.stream().collect(Collectors.toMap({ it.attribute.name }, { it })).toVavrMap()
-
-data class Manufacturer(val id: ManufacturerId, val name: String)
