@@ -8,7 +8,6 @@ interface ItemClassId {
 
 val emptyItemClassId: ItemClassId = object : ItemClassId {
     override val version = -1L
+    override val empty = true
     override fun equals(other: Any?) = false
-    override val empty: Boolean
-        get() = true
 }

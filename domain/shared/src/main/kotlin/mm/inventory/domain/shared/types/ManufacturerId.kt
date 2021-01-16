@@ -6,7 +6,6 @@ interface ManufacturerId {
 }
 
 val emptyManufacturerId: ManufacturerId = object : ManufacturerId {
+    override val empty = true
     override fun equals(other: Any?) = false
-    override val empty: Boolean
-        get() = true
 }
