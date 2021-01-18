@@ -1,8 +1,8 @@
 package mm.inventory.adapters.store.jdbi.items
 
 import kotlinx.collections.immutable.toImmutableSet
-import mm.inventory.adapters.store.jdbi.itemclasses.asJdbiId
-import mm.inventory.adapters.store.jdbi.itemclasses.createItemClassId
+import mm.inventory.app.productplanner.itemclass.ItemClassAppId
+import mm.inventory.app.productplanner.itemclass.asAppId
 import mm.inventory.domain.items.item.DictionaryValue
 import mm.inventory.domain.items.item.Item
 import mm.inventory.domain.items.item.ItemRepository
@@ -23,7 +23,7 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassRepository: 
 
         val itemRec = itemDao.selectItem(id.asJdbiId().id)
             ?: return@withHandle null
-        val itemClass = itemClassRepository.get(createItemClassId(itemRec.itemClassName, itemRec.itemClassVersion))
+        val itemClass = itemClassRepository.get(ItemClassAppId(itemRec.itemClassName, itemRec.itemClassVersion))
 
         val scalarValues = itemDao.selectScalars(id.asJdbiId().id).map {
             val attribute = itemClass.getAttribute(it.attributeType)
@@ -56,8 +56,8 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassRepository: 
         itemDao.insertItem(
             ItemRec(
                 name = item.name,
-                itemClassName = item.itemClassId.asJdbiId().id,
-                itemClassVersion = item.itemClassId.asJdbiId().version,
+                itemClassName = item.itemClassId.asAppId().id,
+                itemClassVersion = item.itemClassId.asAppId().version,
                 manufacturerId = item.manufacturer?.id?.asJdbiId()?.id,
                 manufacturersCode = item.manufacturersCode
             )
@@ -69,8 +69,8 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassRepository: 
                     ScalarValueRec(
                         itemName = item.name,
                         attributeType = value.attribute.name,
-                        itemClassName = item.itemClassId.asJdbiId().id,
-                        itemClassVersion = item.itemClassId.asJdbiId().version,
+                        itemClassName = item.itemClassId.asAppId().id,
+                        itemClassVersion = item.itemClassId.asAppId().version,
                         value = value.data,
                         scale = value.scale
                     )
@@ -79,8 +79,8 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassRepository: 
                     DictionaryValueRec(
                         itemName = item.name,
                         attributeType = value.attribute.name,
-                        itemClassName = item.itemClassId.asJdbiId().id,
-                        itemClassVersion = item.itemClassId.asJdbiId().version,
+                        itemClassName = item.itemClassId.asAppId().id,
+                        itemClassVersion = item.itemClassId.asAppId().version,
                         attributeTypeName = value.attribute.name,
                         code = value.data
                     )
@@ -126,8 +126,8 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassRepository: 
             ScalarValueRec(
                 itemName = item.name,
                 attributeType = value.attribute.name,
-                itemClassName = item.itemClassId.asJdbiId().id,
-                itemClassVersion = item.itemClassId.asJdbiId().version,
+                itemClassName = item.itemClassId.asAppId().id,
+                itemClassVersion = item.itemClassId.asAppId().version,
                 value = value.data,
                 scale = value.scale
             )
@@ -143,8 +143,8 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassRepository: 
             DictionaryValueRec(
                 itemName = item.name,
                 attributeType = value.attribute.name,
-                itemClassName = item.itemClassId.asJdbiId().id,
-                itemClassVersion = item.itemClassId.asJdbiId().version,
+                itemClassName = item.itemClassId.asAppId().id,
+                itemClassVersion = item.itemClassId.asAppId().version,
                 attributeTypeName = value.attribute.name,
                 code = value.data
             )

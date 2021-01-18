@@ -1,6 +1,8 @@
 package mm.inventory.adapters.store.jdbi.itemclasses
 
 import mm.inventory.adapters.store.updateAndExpect
+import mm.inventory.app.productplanner.itemclass.ItemClassAppId
+import mm.inventory.app.productplanner.itemclass.asAppId
 import mm.inventory.domain.items.itemclass.AddAttributeCommand
 import mm.inventory.domain.items.itemclass.Attribute
 import mm.inventory.domain.items.itemclass.ChangeAmountUnitCommand
@@ -19,19 +21,19 @@ class DraftItemClassJdbiRepository(private val db: Jdbi, private val itemClassRe
     override fun findById(id: ItemClassId): DraftItemClass? =
         db.inTransaction<DraftItemClass, RuntimeException> { handle ->
             val itemClassDao = handle.attach(ItemClassDao::class.java)
-            val jdbiId = id.asJdbiId()
-            val draftVersion = itemClassDao.selectDraftVersion(jdbiId.id)
+            val appId = id.asAppId()
+            val draftVersion = itemClassDao.selectDraftVersion(appId.id)
             return@inTransaction if (draftVersion == null) {
                 null
             } else {
-                DraftItemClass(itemClassRepository.get(createItemClassId(jdbiId.id, draftVersion)))
+                DraftItemClass(itemClassRepository.get(ItemClassAppId(appId.id, draftVersion)))
             }
         }
 
     override fun persist(draftItemClass: DraftItemClass): DraftItemClass =
         db.inTransaction<DraftItemClass, RuntimeException> { handle ->
             val itemClass = draftItemClass.itemClass
-            val itemClassId = itemClass.id.asJdbiId()
+            val itemClassId = itemClass.id.asAppId()
             val itemClassDao = handle.attach(ItemClassDao::class.java)
             // lock, update and check next version
             val version = nextVersion(itemClassDao, itemClassId.id)
@@ -52,13 +54,13 @@ class DraftItemClassJdbiRepository(private val db: Jdbi, private val itemClassRe
                 insertAttribute(itemClassDao, itemClassId, version, attribute)
             }
             return@inTransaction draftItemClass.copy(
-                itemClass = itemClass.copy(id = createItemClassId(itemClassId.id, version)),
+                itemClass = itemClass.copy(id = ItemClassAppId(itemClassId.id, version)),
             )
         }
 
     override fun save(draftItemClass: MutableDraftItemClass) = db.useTransaction<RuntimeException> { handle ->
         val itemClassDao = handle.attach(ItemClassDao::class.java)
-        val id = draftItemClass.itemClass.id.asJdbiId()
+        val id = draftItemClass.itemClass.id.asAppId()
 
         draftItemClass.consume { command ->
             when (command) {
@@ -81,7 +83,7 @@ class DraftItemClassJdbiRepository(private val db: Jdbi, private val itemClassRe
 
     override fun delete(draftItemClass: DraftItemClass) = db.useTransaction<RuntimeException> { handle ->
         val itemClassDao = handle.attach(ItemClassDao::class.java)
-        val id = draftItemClass.itemClass.id.asJdbiId()
+        val id = draftItemClass.itemClass.id.asAppId()
         updateAndExpect(1) {
             itemClassDao.deleteDraftItemClass(id)
         }
@@ -92,7 +94,7 @@ class DraftItemClassJdbiRepository(private val db: Jdbi, private val itemClassRe
 
     override fun complete(draftItemClass: DraftItemClass) = db.useTransaction<RuntimeException> { handle ->
         val itemClassDao = handle.attach(ItemClassDao::class.java)
-        val itemClassId = draftItemClass.itemClass.id.asJdbiId()
+        val itemClassId = draftItemClass.itemClass.id.asAppId()
         updateAndExpect(1) {
             itemClassDao.completeDraftItemClass(itemClassId)
         }
@@ -100,7 +102,7 @@ class DraftItemClassJdbiRepository(private val db: Jdbi, private val itemClassRe
 
     private fun insertAttribute(
         itemClassDao: ItemClassDao,
-        itemClassId: JdbiItemClassId,
+        itemClassId: ItemClassAppId,
         version: Long,
         attribute: Attribute
     ) {

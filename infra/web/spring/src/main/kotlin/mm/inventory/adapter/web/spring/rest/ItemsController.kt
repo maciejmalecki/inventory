@@ -1,9 +1,10 @@
 package mm.inventory.adapter.web.spring.rest
 
+import mm.inventory.app.productplanner.item.ItemAppId
 import mm.inventory.app.productplanner.item.ItemFacade
 import mm.inventory.app.productplanner.item.ItemHeader
-import mm.inventory.app.productplanner.itemclass.ItemClassFacade
-import mm.inventory.app.productplanner.itemclass.ManufacturerFacade
+import mm.inventory.app.productplanner.itemclass.ItemClassAppId
+import mm.inventory.app.productplanner.itemclass.ManufacturerAppId
 import mm.inventory.domain.items.item.Item
 import mm.inventory.domain.items.item.Manufacturer
 import mm.inventory.domain.shared.types.emptyManufacturerId
@@ -25,7 +26,7 @@ data class CreateItemRequest(
     val inValues: List<AttributeValuation>
 )
 
-data class ManufacturerData(val id: String?, val name: String)
+data class ManufacturerData(val id: Long?, val name: String)
 
 data class AttributeValuation(
     val attribute: String,
@@ -34,9 +35,7 @@ data class AttributeValuation(
 
 @RestController
 class ItemsController(
-    private val itemFacade: ItemFacade,
-    private val itemClassFacade: ItemClassFacade,
-    private val manufacturerFacade: ManufacturerFacade) {
+    private val itemFacade: ItemFacade) {
 
     @GetMapping("/items")
     fun items(): ResponseEntity<List<ItemHeader>> = ResponseEntity.ok(itemFacade.findAllItems())
@@ -46,7 +45,7 @@ class ItemsController(
         ResponseEntity.ok().body(
             itemFacade.createItem(
                 name = requestData.name,
-                itemClassId = itemClassFacade.toItemClassId(requestData.itemClassName, requestData.itemClassVersion),
+                itemClassId = ItemClassAppId(requestData.itemClassName, requestData.itemClassVersion),
                 manufacturer = requestData.manufacturer?.let { toManufacturer(requestData.manufacturer) },
                 manufacturersCode = requestData.manufacturersCode,
                 inValues = requestData.inValues.stream().collect(
@@ -57,7 +56,7 @@ class ItemsController(
 
     @GetMapping("/items/{id}")
     fun item(@PathVariable id: String): ResponseEntity<Item> {
-        val item = itemFacade.findById(itemFacade.toItemId(id))
+        val item = itemFacade.findById(ItemAppId(id))
         return if (item != null) {
             ResponseEntity.ok(item)
         } else {
@@ -72,19 +71,19 @@ class ItemsController(
     ): ResponseEntity<Any> =
         ResponseEntity.ok(
             itemFacade.updateItem(
-                itemFacade.toItemId(id),
+                ItemAppId(id),
                 body.stream().collect(Collectors.toMap({ it.attribute }, { it.value }))
             )
         )
 
     @DeleteMapping("/items/{id}")
     fun deleteItem(@PathVariable id: String): ResponseEntity<Any> {
-        itemFacade.deleteItem(itemFacade.toItemId(id))
+        itemFacade.deleteItem(ItemAppId(id))
         return ResponseEntity.ok().build()
     }
 
     private fun toManufacturer(data: ManufacturerData) = Manufacturer(
-        id = data.id?.let { manufacturerFacade.toManufacturerId(data.id) } ?: emptyManufacturerId,
+        id = data.id?.let { ManufacturerAppId(data.id) } ?: emptyManufacturerId,
         name = data.name
     )
 }

@@ -5,12 +5,9 @@ import mm.inventory.adapters.store.jdbi.itemclasses.AttributeJdbiRepository
 import mm.inventory.adapters.store.jdbi.itemclasses.DraftItemClassJdbiRepository
 import mm.inventory.adapters.store.jdbi.itemclasses.ItemClassJdbiQuery
 import mm.inventory.adapters.store.jdbi.itemclasses.ItemClassJdbiRepository
-import mm.inventory.adapters.store.jdbi.items.ItemClassIdJdbiConverter
-import mm.inventory.adapters.store.jdbi.items.ItemIdJdbiConverter
 import mm.inventory.adapters.store.jdbi.items.ItemJdbiQuery
 import mm.inventory.adapters.store.jdbi.items.ItemJdbiRepository
 import mm.inventory.adapters.store.jdbi.items.ManufacturerCrudJdbiRepository
-import mm.inventory.adapters.store.jdbi.items.ManufacturerIdJdbiConverter
 import mm.inventory.adapters.store.jdbi.transactions.BusinessJdbiTransaction
 import mm.inventory.adapters.store.jdbi.units.UnitOfMeasurementJdbiRepository
 import org.jdbi.v3.core.Jdbi
@@ -50,13 +47,4 @@ class JdbiRepositoriesConfiguration(
 
     @Bean
     fun manufacturerCrudRepository() = ManufacturerCrudJdbiRepository(jdbi)
-
-    @Bean
-    fun manufacturerIdConverter() = ManufacturerIdJdbiConverter()
-
-    @Bean
-    fun itemIdConverter() = ItemIdJdbiConverter()
-
-    @Bean
-    fun itemClassIdConverter() = ItemClassIdJdbiConverter()
 }
