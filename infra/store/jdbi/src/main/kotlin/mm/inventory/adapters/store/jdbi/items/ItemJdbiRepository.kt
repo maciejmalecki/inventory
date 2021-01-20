@@ -1,13 +1,17 @@
 package mm.inventory.adapters.store.jdbi.items
 
 import kotlinx.collections.immutable.toImmutableSet
+import mm.inventory.adapters.store.updateAndExpect
+import mm.inventory.app.productplanner.item.asAppId
 import mm.inventory.app.productplanner.itemclass.ItemClassAppId
 import mm.inventory.app.productplanner.itemclass.asAppId
 import mm.inventory.domain.items.item.DictionaryValue
 import mm.inventory.domain.items.item.Item
 import mm.inventory.domain.items.item.ItemRepository
 import mm.inventory.domain.items.item.MutableItem
+import mm.inventory.domain.items.item.RemoveManufacturerCommand
 import mm.inventory.domain.items.item.ScalarValue
+import mm.inventory.domain.items.item.UpdateManufacturerCommand
 import mm.inventory.domain.items.item.UpdateValuesCommand
 import mm.inventory.domain.items.item.parse
 import mm.inventory.domain.items.itemclass.ItemClassRepository
@@ -95,6 +99,8 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassRepository: 
         item.consume { command ->
             when (command) {
                 is UpdateValuesCommand -> updateValues(handle, command)
+                is UpdateManufacturerCommand -> updateManufacturer(handle, command)
+                is RemoveManufacturerCommand -> removeManufacturer(handle, command)
                 else -> throw IllegalArgumentException("Unknown command: ${command.javaClass.name}.")
             }
         }
@@ -109,6 +115,15 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassRepository: 
         dao.deleteDictionaryValues(id)
         dao.deleteScalars(id)
         dao.deleteItem(id)
+    }
+
+    private fun updateManufacturer(handle: Handle, command: UpdateManufacturerCommand) = updateAndExpect(1) {
+        handle.attach(ItemDao::class.java)
+            .updateManufacturerId(command.manufacturer.id.asAppId(), command.base.id.asAppId())
+    }
+
+    private fun removeManufacturer(handle: Handle, command: RemoveManufacturerCommand) = updateAndExpect(1) {
+        handle.attach(ItemDao::class.java).removeManufacturerId(command.base.id.asAppId())
     }
 
     private fun updateValues(handle: Handle, command: UpdateValuesCommand) =

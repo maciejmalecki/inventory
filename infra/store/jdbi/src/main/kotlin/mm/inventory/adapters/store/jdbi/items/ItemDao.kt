@@ -1,5 +1,7 @@
 package mm.inventory.adapters.store.jdbi.items
 
+import mm.inventory.app.productplanner.item.ItemAppId
+import mm.inventory.app.productplanner.itemclass.ManufacturerAppId
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate
 import java.math.BigDecimal
@@ -26,6 +28,12 @@ interface ItemDao {
 
     @SqlQuery("SELECT name, item_class_name, item_class_version, manufacturer_id, manufacturers_code FROM Items WHERE name=?")
     fun selectItem(name: String): ItemWithManufacturerRec?
+
+    @SqlUpdate("UPDATE Items SET manufacturer_id=:manufacturerId.id WHERE name=:itemId.id")
+    fun updateManufacturerId(manufacturerId: ManufacturerAppId, itemId: ItemAppId): Int
+
+    @SqlUpdate("UPDATE Items SET manufacturer_id=NULL WHERE name=:itemId.id")
+    fun removeManufacturerId(itemId: ItemAppId): Int
 
     @SqlUpdate("DELETE FROM Items where name=?")
     fun deleteItem(name: String): Int

@@ -61,6 +61,29 @@ class MutableItem(_snapshot: Item) : Mutable<Item>(_snapshot) {
         )
         return this
     }
+
+    /**
+     * Update manufacturer command.
+     * @param manufacturer to be set
+     */
+    fun updateManufacturer(manufacturer: Manufacturer): MutableItem {
+        append(
+            UpdateManufacturerCommand(snapshot, manufacturer),
+            snapshot.copy(manufacturer = manufacturer)
+        )
+        return this
+    }
+
+    /**
+     * Remove manufacturer assignment.
+     */
+    fun removeManufacturer(): MutableItem {
+        append(
+            RemoveManufacturerCommand(snapshot),
+            snapshot.copy(manufacturer = null)
+        )
+        return this
+    }
 }
 
 interface Value<out T> {
@@ -81,6 +104,15 @@ data class DictionaryValue(override val attribute: Attribute, override val data:
 data class UpdateValuesCommand(
     override val base: Item,
     val values: ImmutableSet<Value<*>>
+) : MutatingCommand<Item>
+
+data class UpdateManufacturerCommand(
+    override val base: Item,
+    val manufacturer: Manufacturer
+) : MutatingCommand<Item>
+
+data class RemoveManufacturerCommand(
+    override val base: Item
 ) : MutatingCommand<Item>
 
 private fun toMap(values: Set<Value<*>>): VavrMap<String, Value<*>> =
