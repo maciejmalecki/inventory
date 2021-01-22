@@ -2,6 +2,7 @@ package mm.inventory.adapters.store.jdbi.items
 
 import kotlinx.collections.immutable.toImmutableSet
 import mm.inventory.adapters.store.updateAndExpect
+import mm.inventory.app.productplanner.item.ItemAppId
 import mm.inventory.app.productplanner.item.asAppId
 import mm.inventory.app.productplanner.itemclass.ItemClassAppId
 import mm.inventory.app.productplanner.itemclass.asAppId
@@ -25,23 +26,23 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassRepository: 
 
         val itemDao = handle.attach(ItemDao::class.java)
 
-        val itemRec = itemDao.selectItem(id.asJdbiId().id)
+        val itemRec = itemDao.selectItem(id.asAppId().id)
             ?: return@withHandle null
         val itemClass = itemClassRepository.get(ItemClassAppId(itemRec.itemClassName, itemRec.itemClassVersion))
 
-        val scalarValues = itemDao.selectScalars(id.asJdbiId().id).map {
+        val scalarValues = itemDao.selectScalars(id.asAppId().id).map {
             val attribute = itemClass.getAttribute(it.attributeType)
             ScalarValue(attribute, it.value!!, it.scale)
         }.toSet()
 
-        val dictionaryValues = itemDao.selectDictionaryValues(id.asJdbiId().id).map {
+        val dictionaryValues = itemDao.selectDictionaryValues(id.asAppId().id).map {
             val attribute = itemClass.getAttribute(it.attributeType)
             val code = it.code!!
             attribute.parse(code)
         }.toSet()
 
         Item(
-            id = JdbiItemId(itemRec.name),
+            id = ItemAppId(itemRec.name),
             name = itemRec.name,
             itemClassId = itemClass.id,
             values = (scalarValues union dictionaryValues).toImmutableSet()
@@ -56,13 +57,13 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassRepository: 
         val itemDao = handle.attach(ItemDao::class.java)
 
         // insert item record
-        val itemId = createItemId(item.name)
+        val itemId = ItemAppId(item.name)
         itemDao.insertItem(
             ItemRec(
                 name = item.name,
                 itemClassName = item.itemClassId.asAppId().id,
                 itemClassVersion = item.itemClassId.asAppId().version,
-                manufacturerId = item.manufacturer?.id?.asJdbiId()?.id,
+                manufacturerId = item.manufacturer?.id?.asAppId()?.id,
                 manufacturersCode = item.manufacturersCode
             )
         )
@@ -111,7 +112,7 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassRepository: 
             throw IllegalArgumentException("The item ${item.id} cannot be deleted, because of empty id.")
         }
         val dao = handle.attach(ItemDao::class.java)
-        val id = item.id.asJdbiId().id
+        val id = item.id.asAppId().id
         dao.deleteDictionaryValues(id)
         dao.deleteScalars(id)
         dao.deleteItem(id)
