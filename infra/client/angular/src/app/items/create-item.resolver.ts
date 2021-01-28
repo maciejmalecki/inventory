@@ -38,6 +38,7 @@ export class CreateItemResolver implements Resolve<Item> {
       return {
         name: '',
         itemClassId: itemClass.id,
+        manufacturer: null,
         values: itemClass.attributes.map(value => createValue(value))
       };
     }

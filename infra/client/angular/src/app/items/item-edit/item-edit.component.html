@@ -1,15 +1,26 @@
 <section class="mat-typography">
   <form [formGroup]="formGroup">
+    <mat-form-field>
+      <mat-label>Item name</mat-label>
+      <input type="text" matInput placeholder="Item name" formControlName="itemName">
+    </mat-form-field>
+    <button mat-icon-button (click)="save()">
+      <mat-icon>save</mat-icon>
+    </button>
+    <button mat-icon-button routerLink="..">
+      <mat-icon>cancel</mat-icon>
+    </button>
+    <div>
       <mat-form-field>
-        <mat-label>Item name</mat-label>
-        <input type="text" matInput placeholder="Item name" formControlName="itemName">
+        <mat-label>Manufacturer</mat-label>
+        <input type="text" formControlName="manufacturer" matInput [matAutocomplete]="manufacturer">
+        <mat-autocomplete #manufacturer="matAutocomplete" [displayWith]="manufacturerDisplayFn">
+          <mat-option *ngFor="let manufacturer of manufacturers" [value]="manufacturer">
+            {{ manufacturer.name }}
+          </mat-option>
+        </mat-autocomplete>
       </mat-form-field>
-      <button mat-icon-button (click)="save()">
-        <mat-icon>save</mat-icon>
-      </button>
-      <button mat-icon-button routerLink="..">
-        <mat-icon>cancel</mat-icon>
-      </button>
+    </div>
     <div *ngFor="let value of item.values">
       <mat-form-field class="editor" *ngIf="isScalarValue(value)">
         <mat-label>{{value.attribute.name}}</mat-label>

@@ -5,10 +5,12 @@ import mm.inventory.adapters.store.updateAndExpect
 import mm.inventory.app.productplanner.item.ItemAppId
 import mm.inventory.app.productplanner.item.asAppId
 import mm.inventory.app.productplanner.itemclass.ItemClassAppId
+import mm.inventory.app.productplanner.itemclass.ManufacturerAppId
 import mm.inventory.app.productplanner.itemclass.asAppId
 import mm.inventory.domain.items.item.DictionaryValue
 import mm.inventory.domain.items.item.Item
 import mm.inventory.domain.items.item.ItemRepository
+import mm.inventory.domain.items.item.Manufacturer
 import mm.inventory.domain.items.item.MutableItem
 import mm.inventory.domain.items.item.RemoveManufacturerCommand
 import mm.inventory.domain.items.item.ScalarValue
@@ -45,6 +47,13 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassRepository: 
             id = ItemAppId(itemRec.name),
             name = itemRec.name,
             itemClassId = itemClass.id,
+            manufacturer = itemRec.manufacturerId?.let {
+                Manufacturer(
+                    ManufacturerAppId(itemRec.manufacturerId),
+                    itemRec.manufacturerName ?: ""
+                )
+            },
+            manufacturersCode = itemRec.manufacturersCode,
             values = (scalarValues union dictionaryValues).toImmutableSet()
         )
     }

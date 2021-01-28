@@ -26,7 +26,7 @@ interface ItemDao {
     @SqlQuery("SELECT items.name AS name, item_class_name, item_class_version, manufacturer_id, manufacturers.name AS manufacturer_name, manufacturers_code FROM Items LEFT OUTER JOIN Manufacturers ON items.manufacturer_id = manufacturers.id ORDER BY name")
     fun selectItems(): List<ItemWithManufacturerRec>
 
-    @SqlQuery("SELECT name, item_class_name, item_class_version, manufacturer_id, manufacturers_code FROM Items WHERE name=?")
+    @SqlQuery("SELECT items.name AS name, item_class_name, item_class_version, manufacturer_id, manufacturers.name AS manufacturer_name, manufacturers_code FROM Items LEFT OUTER JOIN Manufacturers ON items.manufacturer_id = manufacturers.id WHERE items.name=?")
     fun selectItem(name: String): ItemWithManufacturerRec?
 
     @SqlUpdate("UPDATE Items SET manufacturer_id=:manufacturerId.id WHERE name=:itemId.id")

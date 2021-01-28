@@ -2,6 +2,7 @@ import {HttpClient, HttpResponse} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {Attribute, isDictionaryType, isScalarType, ItemClassId} from './item-class.service';
+import {Manufacturer} from './manufacturer.service';
 
 export interface ItemHeader {
   name: string;
@@ -23,6 +24,7 @@ export interface DictionaryValue {
 
 export interface Item {
   name: string;
+  manufacturer: Manufacturer | null;
   itemClassId: ItemClassId;
   values: Array<Value>;
 }

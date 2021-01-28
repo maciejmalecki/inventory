@@ -8,6 +8,7 @@ import {
 } from '../../shared/services/item.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FormControl, FormGroup} from '@angular/forms';
+import {Manufacturer} from '../../shared/services/manufacturer.service';
 
 @Component({
   selector: 'app-item-edit',
@@ -18,6 +19,7 @@ export class ItemEditComponent implements OnInit {
 
   createMode: boolean;
   item: Item;
+  manufacturers: Array<Manufacturer>;
   isScalarValue = isScalarValue;
   isDictionaryValue = isDictionaryValue;
   formGroup: FormGroup;
@@ -28,7 +30,10 @@ export class ItemEditComponent implements OnInit {
     private readonly itemService: ItemService
   ) {
     this.item = activatedRoute.snapshot.data.item;
+    this.manufacturers = activatedRoute.snapshot.data.manufacturers;
     this.createMode = activatedRoute.snapshot.data.createMode;
+
+    console.log(this.item);
   }
 
   ngOnInit(): void {
@@ -37,12 +42,15 @@ export class ItemEditComponent implements OnInit {
         itemName: new FormControl({
           value: this.item.name,
           disabled: !this.createMode
-        })
+        }),
+        manufacturer: new FormControl(this.item.manufacturer)
       }, ...this.item.values.map(value => ({
         [value.attribute.name]: new FormControl(value.data, [])
       })))
     );
   }
+
+  manufacturerDisplayFn = (manufacturer: Manufacturer) => manufacturer ? manufacturer.name : "";
 
   save(): void {
     const controls = this.formGroup.controls;
@@ -69,11 +77,10 @@ export class ItemEditComponent implements OnInit {
       }
     }
     if (this.createMode) {
-      this.itemService.createItem(this.item.name, this.item.itemClassId.id, this.item.itemClassId.version, changes).subscribe(response => {
+      this.itemService.createItem(this.item.name, this.item.itemClassId.id, this.item.itemClassId.version, changes).subscribe(_ => {
         this.router.navigate(['items', this.item.name]).catch(reason => console.warn(reason));
       });
-    }
-    else if (changes.length > 0) {
+    } else if (changes.length > 0) {
       this.itemService.updateItem(this.item.name, changes).subscribe(response => {
         if (response.ok) {
           this.router.navigate(['items', this.item.name]).catch(reason => console.warn(reason));
