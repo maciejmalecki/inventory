@@ -5,12 +5,12 @@ import {Observable} from 'rxjs';
 const apiPrefix = '/api/manufacturers';
 
 export interface ManufacturerId {
-  id: number
+  id: number;
 }
 
 export interface Manufacturer {
-  id: ManufacturerId,
-  name: string
+  id: ManufacturerId;
+  name: string;
 }
 
 @Injectable({

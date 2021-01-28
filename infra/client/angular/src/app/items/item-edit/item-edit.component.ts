@@ -50,7 +50,7 @@ export class ItemEditComponent implements OnInit {
     );
   }
 
-  manufacturerDisplayFn = (manufacturer: Manufacturer) => manufacturer ? manufacturer.name : "";
+  manufacturerDisplayFn = (manufacturer: Manufacturer) => manufacturer ? manufacturer.name : '';
 
   save(): void {
     const controls = this.formGroup.controls;
