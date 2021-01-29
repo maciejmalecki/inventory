@@ -55,12 +55,21 @@ CREATE TABLE Categories
     name        VARCHAR(200) NOT NULL
 );
 
+CREATE TABLE Manufacturers
+(
+    id   BIGSERIAL PRIMARY KEY,
+    name VARCHAR(200) NOT NULL
+);
+
 CREATE TABLE Items
 (
     name               VARCHAR(50) PRIMARY KEY,
     item_class_name    VARCHAR(50) NOT NULL,
     item_class_version BIGINT      NOT NULL,
-    FOREIGN KEY (item_class_name, item_class_version) REFERENCES Item_Classes (name, version)
+    manufacturer_id    BIGINT,
+    manufacturers_code VARCHAR(50),
+    FOREIGN KEY (item_class_name, item_class_version) REFERENCES Item_Classes (name, version),
+    FOREIGN KEY (manufacturer_id) REFERENCES Manufacturers (id)
 );
 
 CREATE TABLE Scalar_Values

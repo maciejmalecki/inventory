@@ -2,6 +2,8 @@ package mm.inventory.adapters.store.jdbi.itemclasses
 
 import kotlinx.collections.immutable.toImmutableSet
 import mm.inventory.adapters.store.jdbi.units.UnitDao
+import mm.inventory.app.productplanner.itemclass.ItemClassAppId
+import mm.inventory.app.productplanner.itemclass.asAppId
 import mm.inventory.domain.items.itemclass.Attribute
 import mm.inventory.domain.items.itemclass.DictionaryItem
 import mm.inventory.domain.items.itemclass.DictionaryType
@@ -22,7 +24,7 @@ class ItemClassJdbiRepository(private val db: Jdbi) : ItemClassRepository {
 
             val itemClassDao = handle.attach(ItemClassDao::class.java)
             val unitDao = handle.attach(UnitDao::class.java)
-            val jdbiId = resolve(itemClassDao, id.asJdbiId())
+            val jdbiId = resolve(itemClassDao, id.asAppId())
 
             // load bare item class
             val itemClassRec = itemClassDao.selectItemClassByName(jdbiId.id, jdbiId.version)
@@ -43,7 +45,7 @@ class ItemClassJdbiRepository(private val db: Jdbi) : ItemClassRepository {
 
             // build up the aggregate out of fetched data
             ItemClass(
-                JdbiItemClassId(itemClassRec.name, itemClassRec.version),
+                ItemClassAppId(itemClassRec.name, itemClassRec.version),
                 itemClassRec.name,
                 itemClassRec.description,
                 UnitOfMeasurement(unitRec.code, unitRec.name),
@@ -70,13 +72,13 @@ class ItemClassJdbiRepository(private val db: Jdbi) : ItemClassRepository {
             }
         }
 
-    private fun resolve(itemClassDao: ItemClassDao, jdbiId: JdbiItemClassId): JdbiItemClassId =
+    private fun resolve(itemClassDao: ItemClassDao, jdbiId: ItemClassAppId): ItemClassAppId =
         if (jdbiId.useNewest) {
-            createItemClassId(
+            ItemClassAppId(
                 jdbiId.id,
                 itemClassDao.selectNewestItemClassVersion(jdbiId.id)
                     ?: throw NotFoundException("No ItemClass for ${jdbiId.id} found.")
-            ).asJdbiId()
+            )
         } else {
             jdbiId
         }

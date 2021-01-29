@@ -23,21 +23,26 @@ export class CreateItemResolver implements Resolve<Item> {
     function createValue(attribute: Attribute): ScalarValue | DictionaryValue {
       if (isScalarType(attribute.type)) {
         return {
-          attribute,
-          data: 0,
+          name: attribute.name,
+          unit: attribute.type.unit,
+          value: 0,
           scale: 1
         };
       } else if (isDictionaryType(attribute.type)) {
         return {
-          attribute,
-          data: ''
+          name: attribute.name,
+          value: '',
+          items: attribute.type.items
         };
       }
     }
     function createBlankItem(itemClass: ItemClass): Item {
       return {
+        id: '',
         name: '',
         itemClassId: itemClass.id,
+        manufacturer: null,
+        manufacturersCode: null,
         values: itemClass.attributes.map(value => createValue(value))
       };
     }

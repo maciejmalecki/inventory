@@ -1,5 +1,6 @@
 package mm.inventory.adapters.store.jdbi.itemclasses
 
+import mm.inventory.app.productplanner.itemclass.ItemClassAppId
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate
 
@@ -52,16 +53,16 @@ internal interface ItemClassDao {
     fun deleteAttribute(attribute: AttributeRec): Int
 
     @SqlUpdate("UPDATE Item_classes SET complete=TRUE WHERE name=:id.id AND version=:id.version AND complete=FALSE")
-    fun completeDraftItemClass(id:JdbiItemClassId): Int
+    fun completeDraftItemClass(id:ItemClassAppId): Int
 
     @SqlUpdate("DELETE FROM Item_classes WHERE name=:id.id AND version=:id.version AND complete=FALSE")
-    fun deleteDraftItemClass(id:JdbiItemClassId): Int
+    fun deleteDraftItemClass(id:ItemClassAppId): Int
 
     @SqlUpdate("UPDATE Item_classes SET description = :description WHERE name=:id.id AND version=:id.version AND complete=FALSE")
-    fun updateDescription(id:JdbiItemClassId, description: String): Int
+    fun updateDescription(id:ItemClassAppId, description: String): Int
 
     @SqlUpdate("UPDATE Item_classes SET unit=:unit WHERE name=:id.id AND version=:id.version AND complete=FALSE")
-    fun updateUnit(id:JdbiItemClassId, unit: String): Int
+    fun updateUnit(id:ItemClassAppId, unit: String): Int
 }
 
 data class ItemClassRec(

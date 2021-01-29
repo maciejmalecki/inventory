@@ -19,6 +19,8 @@ import io.vavr.collection.Map as VavrMap
  * @param id of the aggregate
  * @param name of the aggregate
  * @param itemClassId link to the ItemClass aggregate
+ * @param manufacturer item's manufacturer link if specified
+ * @param manufacturersCode serial code of the item when specified by manufacturer
  * @param values of the aggregate
  * @param mutations list of aggregate mutations
  */
@@ -26,12 +28,14 @@ data class Item(
     val id: ItemId,
     val name: String,
     val itemClassId: ItemClassId,
-    val values: ImmutableSet<Value<*>>
+    val manufacturer: Manufacturer? = null,
+    val manufacturersCode: String? = null,
+    val values: ImmutableSet<Value>
 ) {
     /**
      * Values indexed by name for sake of convenience.
      */
-    val valuesByName: VavrMap<String, Value<*>> = toMap(values)
+    val valuesByName: VavrMap<String, Value> = toMap(values)
 
     fun mutable() = MutableItem(this)
 }
@@ -59,27 +63,58 @@ class MutableItem(_snapshot: Item) : Mutable<Item>(_snapshot) {
         )
         return this
     }
+
+    /**
+     * Update manufacturer command.
+     * @param manufacturer to be set
+     */
+    fun updateManufacturer(manufacturer: Manufacturer): MutableItem {
+        append(
+            UpdateManufacturerCommand(snapshot, manufacturer),
+            snapshot.copy(manufacturer = manufacturer)
+        )
+        return this
+    }
+
+    /**
+     * Remove manufacturer assignment.
+     */
+    fun removeManufacturer(): MutableItem {
+        append(
+            RemoveManufacturerCommand(snapshot),
+            snapshot.copy(manufacturer = null)
+        )
+        return this
+    }
 }
 
-interface Value<out T> {
+interface Value {
     val attribute: Attribute
     val valid: Boolean
-    val data: T
 }
 
-data class ScalarValue(override val attribute: Attribute, override val data: BigDecimal, val scale: Int) :
-    Value<BigDecimal> {
+data class ScalarValue(override val attribute: Attribute, val value: BigDecimal, val scale: Int) :
+    Value {
     override val valid = true
 }
 
-data class DictionaryValue(override val attribute: Attribute, override val data: String) : Value<String> {
-    override val valid = attribute.type.isValid(data)
+data class DictionaryValue(override val attribute: Attribute, val value: String) : Value {
+    override val valid = attribute.type.isValid(value)
 }
 
 data class UpdateValuesCommand(
     override val base: Item,
-    val values: ImmutableSet<Value<*>>
+    val values: ImmutableSet<Value>
 ) : MutatingCommand<Item>
 
-private fun toMap(values: Set<Value<*>>): VavrMap<String, Value<*>> =
+data class UpdateManufacturerCommand(
+    override val base: Item,
+    val manufacturer: Manufacturer
+) : MutatingCommand<Item>
+
+data class RemoveManufacturerCommand(
+    override val base: Item
+) : MutatingCommand<Item>
+
+private fun toMap(values: Set<Value>): VavrMap<String, Value> =
     values.stream().collect(Collectors.toMap({ it.attribute.name }, { it })).toVavrMap()

@@ -6,7 +6,6 @@ interface ItemId {
 }
 
 val emptyItemId: ItemId = object : ItemId {
+    override val empty = true
     override fun equals(other: Any?): Boolean = false
-    override val empty: Boolean
-        get() = true
 }

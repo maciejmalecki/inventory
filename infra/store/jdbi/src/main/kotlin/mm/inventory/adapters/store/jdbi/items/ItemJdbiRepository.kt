@@ -1,13 +1,20 @@
 package mm.inventory.adapters.store.jdbi.items
 
 import kotlinx.collections.immutable.toImmutableSet
-import mm.inventory.adapters.store.jdbi.itemclasses.asJdbiId
-import mm.inventory.adapters.store.jdbi.itemclasses.createItemClassId
+import mm.inventory.adapters.store.updateAndExpect
+import mm.inventory.app.productplanner.item.ItemAppId
+import mm.inventory.app.productplanner.item.asAppId
+import mm.inventory.app.productplanner.itemclass.ItemClassAppId
+import mm.inventory.app.productplanner.itemclass.ManufacturerAppId
+import mm.inventory.app.productplanner.itemclass.asAppId
 import mm.inventory.domain.items.item.DictionaryValue
 import mm.inventory.domain.items.item.Item
 import mm.inventory.domain.items.item.ItemRepository
+import mm.inventory.domain.items.item.Manufacturer
 import mm.inventory.domain.items.item.MutableItem
+import mm.inventory.domain.items.item.RemoveManufacturerCommand
 import mm.inventory.domain.items.item.ScalarValue
+import mm.inventory.domain.items.item.UpdateManufacturerCommand
 import mm.inventory.domain.items.item.UpdateValuesCommand
 import mm.inventory.domain.items.item.parse
 import mm.inventory.domain.items.itemclass.ItemClassRepository
@@ -21,25 +28,32 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassRepository: 
 
         val itemDao = handle.attach(ItemDao::class.java)
 
-        val itemRec = itemDao.selectItem(id.asJdbiId().id)
+        val itemRec = itemDao.selectItem(id.asAppId().id)
             ?: return@withHandle null
-        val itemClass = itemClassRepository.get(createItemClassId(itemRec.itemClassName, itemRec.itemClassVersion))
+        val itemClass = itemClassRepository.get(ItemClassAppId(itemRec.itemClassName, itemRec.itemClassVersion))
 
-        val scalarValues = itemDao.selectScalars(id.asJdbiId().id).map {
+        val scalarValues = itemDao.selectScalars(id.asAppId().id).map {
             val attribute = itemClass.getAttribute(it.attributeType)
             ScalarValue(attribute, it.value!!, it.scale)
         }.toSet()
 
-        val dictionaryValues = itemDao.selectDictionaryValues(id.asJdbiId().id).map {
+        val dictionaryValues = itemDao.selectDictionaryValues(id.asAppId().id).map {
             val attribute = itemClass.getAttribute(it.attributeType)
             val code = it.code!!
             attribute.parse(code)
         }.toSet()
 
         Item(
-            id = JdbiItemId(itemRec.name),
+            id = ItemAppId(itemRec.name),
             name = itemRec.name,
             itemClassId = itemClass.id,
+            manufacturer = itemRec.manufacturerId?.let {
+                Manufacturer(
+                    ManufacturerAppId(itemRec.manufacturerId),
+                    itemRec.manufacturerName ?: ""
+                )
+            },
+            manufacturersCode = itemRec.manufacturersCode,
             values = (scalarValues union dictionaryValues).toImmutableSet()
         )
     }
@@ -52,8 +66,16 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassRepository: 
         val itemDao = handle.attach(ItemDao::class.java)
 
         // insert item record
-        val itemId = createItemId(item.name)
-        itemDao.insertItem(ItemRec(item.name, item.itemClassId.asJdbiId().id, item.itemClassId.asJdbiId().version))
+        val itemId = ItemAppId(item.name)
+        itemDao.insertItem(
+            ItemRec(
+                name = item.name,
+                itemClassName = item.itemClassId.asAppId().id,
+                itemClassVersion = item.itemClassId.asAppId().version,
+                manufacturerId = item.manufacturer?.id?.asAppId()?.id,
+                manufacturersCode = item.manufacturersCode
+            )
+        )
         // insert values
         item.values.forEach { value ->
             when (value) {
@@ -61,9 +83,9 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassRepository: 
                     ScalarValueRec(
                         itemName = item.name,
                         attributeType = value.attribute.name,
-                        itemClassName = item.itemClassId.asJdbiId().id,
-                        itemClassVersion = item.itemClassId.asJdbiId().version,
-                        value = value.data,
+                        itemClassName = item.itemClassId.asAppId().id,
+                        itemClassVersion = item.itemClassId.asAppId().version,
+                        value = value.value,
                         scale = value.scale
                     )
                 )
@@ -71,10 +93,10 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassRepository: 
                     DictionaryValueRec(
                         itemName = item.name,
                         attributeType = value.attribute.name,
-                        itemClassName = item.itemClassId.asJdbiId().id,
-                        itemClassVersion = item.itemClassId.asJdbiId().version,
+                        itemClassName = item.itemClassId.asAppId().id,
+                        itemClassVersion = item.itemClassId.asAppId().version,
                         attributeTypeName = value.attribute.name,
-                        code = value.data
+                        code = value.value
                     )
                 )
                 else -> throw RuntimeException("Unknown value type: ${value.javaClass.name}.")
@@ -87,6 +109,8 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassRepository: 
         item.consume { command ->
             when (command) {
                 is UpdateValuesCommand -> updateValues(handle, command)
+                is UpdateManufacturerCommand -> updateManufacturer(handle, command)
+                is RemoveManufacturerCommand -> removeManufacturer(handle, command)
                 else -> throw IllegalArgumentException("Unknown command: ${command.javaClass.name}.")
             }
         }
@@ -97,10 +121,19 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassRepository: 
             throw IllegalArgumentException("The item ${item.id} cannot be deleted, because of empty id.")
         }
         val dao = handle.attach(ItemDao::class.java)
-        val id = item.id.asJdbiId().id
+        val id = item.id.asAppId().id
         dao.deleteDictionaryValues(id)
         dao.deleteScalars(id)
         dao.deleteItem(id)
+    }
+
+    private fun updateManufacturer(handle: Handle, command: UpdateManufacturerCommand) = updateAndExpect(1) {
+        handle.attach(ItemDao::class.java)
+            .updateManufacturerId(command.manufacturer.id.asAppId(), command.base.id.asAppId())
+    }
+
+    private fun removeManufacturer(handle: Handle, command: RemoveManufacturerCommand) = updateAndExpect(1) {
+        handle.attach(ItemDao::class.java).removeManufacturerId(command.base.id.asAppId())
     }
 
     private fun updateValues(handle: Handle, command: UpdateValuesCommand) =
@@ -118,9 +151,9 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassRepository: 
             ScalarValueRec(
                 itemName = item.name,
                 attributeType = value.attribute.name,
-                itemClassName = item.itemClassId.asJdbiId().id,
-                itemClassVersion = item.itemClassId.asJdbiId().version,
-                value = value.data,
+                itemClassName = item.itemClassId.asAppId().id,
+                itemClassVersion = item.itemClassId.asAppId().version,
+                value = value.value,
                 scale = value.scale
             )
         )
@@ -135,10 +168,10 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassRepository: 
             DictionaryValueRec(
                 itemName = item.name,
                 attributeType = value.attribute.name,
-                itemClassName = item.itemClassId.asJdbiId().id,
-                itemClassVersion = item.itemClassId.asJdbiId().version,
+                itemClassName = item.itemClassId.asAppId().id,
+                itemClassVersion = item.itemClassId.asAppId().version,
                 attributeTypeName = value.attribute.name,
-                code = value.data
+                code = value.value
             )
         )
         if (cnt != 1) {

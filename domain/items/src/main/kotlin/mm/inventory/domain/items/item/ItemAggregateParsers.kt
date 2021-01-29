@@ -12,7 +12,7 @@ import java.math.BigDecimal
  * @return parsed value
  * @throws InvalidDataException if attribute type is not supported or if format of data is incorrect.
  */
-fun Attribute.parse(value: String): Value<*> =
+fun Attribute.parse(value: String): Value =
     when (type) {
         is ScalarType -> parseScalarValue(value)
         is DictionaryType -> parseDictionaryValue(value)

@@ -1,11 +1,11 @@
 package mm.inventory.domain.shared.types
 
-interface ItemClassId {
+interface ManufacturerId {
     val empty: Boolean
         get() = false
 }
 
-val emptyItemClassId: ItemClassId = object : ItemClassId {
+val emptyManufacturerId: ManufacturerId = object : ManufacturerId {
     override val empty = true
     override fun equals(other: Any?) = false
 }

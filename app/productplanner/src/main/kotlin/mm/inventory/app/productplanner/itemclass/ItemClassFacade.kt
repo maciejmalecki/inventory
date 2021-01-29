@@ -23,5 +23,4 @@ class ItemClassFacade(
     fun findById(id: ItemClassId): ItemClass? = sec.requireAllRoles(ITEMS_ROLE, ITEM_CLASSES_ROLE) {
         itemClassRepository.findById(id)
     }
-
 }

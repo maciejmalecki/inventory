@@ -12,6 +12,7 @@ import {ItemEditComponent} from './items/item-edit/item-edit.component';
 import {CreateItemResolver} from './items/create-item.resolver';
 import {ItemClassEditResolver} from './items/item-class-edit/item-class-edit.resolver';
 import {AttributesResolver} from './items/attributes-resolver.service';
+import {ManufacturerResolver} from './items/manufacturer.resolver';
 
 const routes: Routes = [
   {
@@ -65,7 +66,8 @@ const routes: Routes = [
       createMode: false
     },
     resolve: {
-      item: ItemResolver
+      item: ItemResolver,
+      manufacturers: ManufacturerResolver
     }
   },
   {
@@ -75,7 +77,8 @@ const routes: Routes = [
       createMode: true
     },
     resolve: {
-      item: ItemResolver
+      item: ItemResolver,
+      manufacturers: ManufacturerResolver
     }
   },
 ];
