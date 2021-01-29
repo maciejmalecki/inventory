@@ -1,10 +1,22 @@
 <section class="mat-typography">
   <h1>{{ item.name }}
-    <a mat-icon-button routerLink="edit"><mat-icon>edit</mat-icon></a>
-    <button mat-icon-button (click)="delete()"><mat-icon>delete</mat-icon></button>
+    <a mat-icon-button routerLink="edit">
+      <mat-icon>edit</mat-icon>
+    </a>
+    <button mat-icon-button (click)="delete()">
+      <mat-icon>delete</mat-icon>
+    </button>
   </h1>
   <mat-divider></mat-divider>
   <mat-list role="list">
+    <mat-list-item role="listitem" *ngIf="item.manufacturer">
+      <div class="value-name">Manufacturer</div>
+      <div class="value scalar">{{item.manufacturer.name}}</div>
+    </mat-list-item>
+    <mat-list-item role="listitem" *ngIf="item.manufacturersCode">
+      <div class="value-name">Manufacturer's code</div>
+      <div class="value scalar">{{item.manufacturersCode}}</div>
+    </mat-list-item>
     <mat-list-item role="listitem" *ngFor="let value of item.values">
       <div class="value-name">{{value.name}}</div>
       <div class="value scalar" *ngIf="isScalarValue(value)">{{ value.value }}</div>&nbsp;

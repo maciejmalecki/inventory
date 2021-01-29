@@ -63,11 +63,13 @@ class ItemFacade(
      * Update item aggregate according to provided modifications.
      * @param id of the aggregate
      * @param manufacturer manufacturer
+     * @param manufacturersCode code of the manufacturer
      * @param inValues valuation changes
      */
     fun updateItem(
         id: ItemId,
         manufacturer: Manufacturer?,
+        manufacturersCode: String?,
         inValues: Map<String, String>
     ): Unit =
         sec.requireAllRoles(ITEMS_ROLE, ITEMS_WRITER_ROLE) {
@@ -76,13 +78,14 @@ class ItemFacade(
                 item.updateValues(inValues)
                 if (manufacturer == null && item.item.manufacturer != null) {
                     item.removeManufacturer()
-                } else if (manufacturer != null && item.item.manufacturer != manufacturer) {
+                } else if (manufacturer != null && (item.item.manufacturer != manufacturer || item.item.manufacturersCode != manufacturersCode)) {
                     item.updateManufacturer(
                         if (manufacturer.id.empty) {
                             manufacturerCrudRepository.persist(manufacturer)
                         } else {
                             manufacturer
-                        }
+                        },
+                        manufacturersCode
                     )
                 }
                 itemRepository.save(item)

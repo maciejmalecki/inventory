@@ -68,11 +68,12 @@ class MutableItem(_snapshot: Item) : Mutable<Item>(_snapshot) {
     /**
      * Update manufacturer command.
      * @param manufacturer to be set
+     * @param manufacturersCode to be set
      */
-    fun updateManufacturer(manufacturer: Manufacturer): MutableItem {
+    fun updateManufacturer(manufacturer: Manufacturer, manufacturersCode: String?): MutableItem {
         append(
-            UpdateManufacturerCommand(snapshot, manufacturer),
-            snapshot.copy(manufacturer = manufacturer)
+            UpdateManufacturerCommand(snapshot, manufacturer, manufacturersCode),
+            snapshot.copy(manufacturer = manufacturer, manufacturersCode = manufacturersCode)
         )
         return this
     }
@@ -110,7 +111,8 @@ data class UpdateValuesCommand(
 
 data class UpdateManufacturerCommand(
     override val base: Item,
-    val manufacturer: Manufacturer
+    val manufacturer: Manufacturer,
+    val manufacturersCode: String?
 ) : MutatingCommand<Item>
 
 data class RemoveManufacturerCommand(

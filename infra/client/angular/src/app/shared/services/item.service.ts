@@ -63,9 +63,14 @@ export class ItemService {
     return this.httpClient.get<Item>(`${apiPrefix}/${name}`);
   }
 
-  updateItem(name: string, manufacturer: Manufacturer | null, attributeValuations: Array<AttributeValuation>): Observable<HttpResponse<string>> {
+  updateItem(
+    name: string,
+    manufacturer: Manufacturer | null,
+    manufacturersCode: string | null,
+    attributeValuations: Array<AttributeValuation>): Observable<HttpResponse<string>> {
     return this.httpClient.post<string>(`${apiPrefix}/${name}`, {
       manufacturer,
+      manufacturersCode,
       inValues: attributeValuations
     }, {observe: 'response'});
   }

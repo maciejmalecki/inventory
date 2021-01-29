@@ -29,11 +29,11 @@ interface ItemDao {
     @SqlQuery("SELECT items.name AS name, item_class_name, item_class_version, manufacturer_id, manufacturers.name AS manufacturer_name, manufacturers_code FROM Items LEFT OUTER JOIN Manufacturers ON items.manufacturer_id = manufacturers.id WHERE items.name=?")
     fun selectItem(name: String): ItemWithManufacturerRec?
 
-    @SqlUpdate("UPDATE Items SET manufacturer_id=:manufacturerId.id WHERE name=:itemId.id")
-    fun updateManufacturerId(manufacturerId: ManufacturerAppId, itemId: ItemAppId): Int
+    @SqlUpdate("UPDATE Items SET manufacturer_id=:manufacturerId.id, manufacturers_code=:manufacturersCode WHERE name=:itemId.id")
+    fun updateManufacturer(manufacturerId: ManufacturerAppId, manufacturersCode: String?, itemId: ItemAppId): Int
 
-    @SqlUpdate("UPDATE Items SET manufacturer_id=NULL WHERE name=:itemId.id")
-    fun removeManufacturerId(itemId: ItemAppId): Int
+    @SqlUpdate("UPDATE Items SET manufacturer_id=NULL, manufacturers_code=NULL WHERE name=:itemId.id")
+    fun removeManufacturer(itemId: ItemAppId): Int
 
     @SqlUpdate("DELETE FROM Items where name=?")
     fun deleteItem(name: String): Int

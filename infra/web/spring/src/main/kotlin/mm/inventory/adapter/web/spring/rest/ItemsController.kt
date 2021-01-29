@@ -40,6 +40,7 @@ data class CreateItemRequest(
 
 data class UpdateItemRequest(
     val manufacturer: ManufacturerProjection?,
+    val manufacturersCode: String?,
     val inValues: List<AttributeValuation>
 )
 
@@ -121,6 +122,7 @@ class ItemsController(
         itemFacade.updateItem(
             id = ItemAppId(id),
             manufacturer = body.manufacturer?.let { toManufacturer(body.manufacturer) },
+            manufacturersCode = body.manufacturersCode,
             inValues = body.inValues.stream().collect(Collectors.toMap({ it.attribute }, { it.value }))
         )
         return ResponseEntity.ok().build()

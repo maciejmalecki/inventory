@@ -130,11 +130,11 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassRepository: 
 
     private fun updateManufacturer(handle: Handle, command: UpdateManufacturerCommand) = updateAndExpect(1) {
         handle.attach(ItemDao::class.java)
-            .updateManufacturerId(command.manufacturer.id.asAppId(), command.base.id.asAppId())
+            .updateManufacturer(command.manufacturer.id.asAppId(), command.manufacturersCode, command.base.id.asAppId())
     }
 
     private fun removeManufacturer(handle: Handle, command: RemoveManufacturerCommand) = updateAndExpect(1) {
-        handle.attach(ItemDao::class.java).removeManufacturerId(command.base.id.asAppId())
+        handle.attach(ItemDao::class.java).removeManufacturer(command.base.id.asAppId())
     }
 
     private fun updateValues(handle: Handle, command: UpdateValuesCommand) =
