@@ -4,12 +4,8 @@ import {Observable} from 'rxjs';
 
 const apiPrefix = '/api/manufacturers';
 
-export interface ManufacturerId {
-  id: number;
-}
-
 export interface Manufacturer {
-  id: ManufacturerId;
+  id: number | null;
   name: string;
 }
 

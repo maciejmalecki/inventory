@@ -1,7 +1,7 @@
 import {HttpClient, HttpResponse} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
-import {Attribute, isDictionaryType, isScalarType, ItemClassId} from './item-class.service';
+import {DictionaryItem, ItemClassId, UnitOfMeasurement} from './item-class.service';
 import {Manufacturer} from './manufacturer.service';
 
 export interface ItemHeader {
@@ -12,19 +12,23 @@ export interface ItemHeader {
 export type Value = ScalarValue | DictionaryValue;
 
 export interface ScalarValue {
-  attribute: Attribute;
-  data: number;
+  name: string;
+  unit: UnitOfMeasurement;
+  value: number;
   scale: number;
 }
 
 export interface DictionaryValue {
-  attribute: Attribute;
-  data: string;
+  name: string;
+  value: string;
+  items: Array<DictionaryItem>;
 }
 
 export interface Item {
+  id: string;
   name: string;
   manufacturer: Manufacturer | null;
+  manufacturersCode: string | null;
   itemClassId: ItemClassId;
   values: Array<Value>;
 }
@@ -35,11 +39,11 @@ export interface AttributeValuation {
 }
 
 export function isScalarValue(value: Value): value is ScalarValue {
-  return isScalarType(value.attribute.type);
+  return (value as ScalarValue).unit !== undefined;
 }
 
 export function isDictionaryValue(value: Value): value is DictionaryValue {
-  return isDictionaryType(value.attribute.type);
+  return (value as DictionaryValue).items !== undefined;
 }
 
 const apiPrefix = '/api/items';
@@ -59,8 +63,11 @@ export class ItemService {
     return this.httpClient.get<Item>(`${apiPrefix}/${name}`);
   }
 
-  updateItem(name: string, attributeValuations: Array<AttributeValuation>): Observable<HttpResponse<string>> {
-    return this.httpClient.post<string>(`${apiPrefix}/${name}`, attributeValuations, {observe: 'response'});
+  updateItem(name: string, manufacturer: Manufacturer | null, attributeValuations: Array<AttributeValuation>): Observable<HttpResponse<string>> {
+    return this.httpClient.post<string>(`${apiPrefix}/${name}`, {
+      manufacturer,
+      inValues: attributeValuations
+    }, {observe: 'response'});
   }
 
   createItem(name: string, itemClassName: string, itemClassVersion: number, attributeValuations: Array<AttributeValuation>): Observable<Item> {

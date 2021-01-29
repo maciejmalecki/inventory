@@ -38,16 +38,18 @@ export class ItemEditComponent implements OnInit {
 
   ngOnInit(): void {
     this.formGroup = new FormGroup(
-      Object.assign({
+      {
         itemName: new FormControl({
           value: this.item.name,
           disabled: !this.createMode
         }),
-        manufacturer: new FormControl(this.item.manufacturer)
-      }, ...this.item.values.map(value => ({
-        [value.attribute.name]: new FormControl(value.data, [])
-      })))
-    );
+        manufacturer: new FormControl(this.item.manufacturer),
+        values: new FormGroup(
+          Object.assign({},
+            ...this.item.values.map(value => ({
+              [value.name]: new FormControl(value.value, [])
+            }))))
+      });
   }
 
   manufacturerDisplayFn = (manufacturer: Manufacturer) => manufacturer ? manufacturer.name : '';
@@ -55,10 +57,12 @@ export class ItemEditComponent implements OnInit {
   save(): void {
     const controls = this.formGroup.controls;
     const changes: Array<AttributeValuation> = [];
+
     if (this.formGroup.invalid) {
       console.warn('An attempt to save invalid data.');
       return;
     }
+
     if (this.createMode || this.formGroup.dirty) {
       const nameFC = this.formGroup.get('itemName');
       if (this.createMode) {
@@ -81,7 +85,7 @@ export class ItemEditComponent implements OnInit {
         this.router.navigate(['items', this.item.name]).catch(reason => console.warn(reason));
       });
     } else if (changes.length > 0) {
-      this.itemService.updateItem(this.item.name, changes).subscribe(response => {
+      this.itemService.updateItem(this.item.name, this.item.manufacturer, changes).subscribe(response => {
         if (response.ok) {
           this.router.navigate(['items', this.item.name]).catch(reason => console.warn(reason));
         } else {

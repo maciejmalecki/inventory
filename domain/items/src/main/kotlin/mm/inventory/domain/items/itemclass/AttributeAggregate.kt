@@ -3,7 +3,11 @@ package mm.inventory.domain.items.itemclass
 import kotlinx.collections.immutable.ImmutableSet
 import java.math.BigDecimal
 
-data class Attribute(val name: String, val type: AttributeType)
+data class Attribute(
+    val name: String,
+    val type: AttributeType
+)
+
 interface AttributeType {
     fun isValid(value: String): Boolean
 }

@@ -3,8 +3,8 @@ package mm.inventory.app.productplanner.item
 import kotlinx.collections.immutable.ImmutableList
 import mm.inventory.app.productplanner.ITEMS_ROLE
 import mm.inventory.app.productplanner.ITEMS_WRITER_ROLE
-import mm.inventory.domain.items.item.ItemFactory
 import mm.inventory.domain.items.item.Item
+import mm.inventory.domain.items.item.ItemFactory
 import mm.inventory.domain.items.item.ItemRepository
 import mm.inventory.domain.items.item.Manufacturer
 import mm.inventory.domain.shared.security.SecurityGuard
@@ -58,12 +58,33 @@ class ItemFacade(
             )
         }
 
-    fun updateItem(id: ItemId, inValues: Map<String, String>) =
+    /**
+     * Update item aggregate according to provided modifications.
+     * @param id of the aggregate
+     * @param manufacturer manufacturer
+     * @param inValues valuation changes
+     */
+    fun updateItem(
+        id: ItemId,
+        manufacturer: Manufacturer?,
+        inValues: Map<String, String>
+    ): Unit =
         sec.requireAllRoles(ITEMS_ROLE, ITEMS_WRITER_ROLE) {
             tx.inTransaction {
                 val item = itemRepository.get(id).mutable()
-                val updatedItem = item.updateValues(inValues);
-                itemRepository.save(updatedItem)
+                item.updateValues(inValues)
+                if (manufacturer == null && item.item.manufacturer != null) {
+                    item.removeManufacturer()
+                } else if (manufacturer != null && item.item.manufacturer != manufacturer) {
+                    item.updateManufacturer(
+                        if (manufacturer.id.empty) {
+                            manufacturerCrudRepository.persist(manufacturer)
+                        } else {
+                            manufacturer
+                        }
+                    )
+                }
+                itemRepository.save(item)
             }
         }
 
@@ -73,10 +94,5 @@ class ItemFacade(
                 val item = itemRepository.get(id)
                 itemRepository.delete(item)
             }
-        }
-
-    fun findAllManufacturers(): ImmutableList<Manufacturer> =
-        sec.requireAllRoles(ITEMS_ROLE) {
-            manufacturerCrudRepository.findAll()
         }
 }

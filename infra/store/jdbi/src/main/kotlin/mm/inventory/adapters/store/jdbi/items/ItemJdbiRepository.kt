@@ -85,7 +85,7 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassRepository: 
                         attributeType = value.attribute.name,
                         itemClassName = item.itemClassId.asAppId().id,
                         itemClassVersion = item.itemClassId.asAppId().version,
-                        value = value.data,
+                        value = value.value,
                         scale = value.scale
                     )
                 )
@@ -96,7 +96,7 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassRepository: 
                         itemClassName = item.itemClassId.asAppId().id,
                         itemClassVersion = item.itemClassId.asAppId().version,
                         attributeTypeName = value.attribute.name,
-                        code = value.data
+                        code = value.value
                     )
                 )
                 else -> throw RuntimeException("Unknown value type: ${value.javaClass.name}.")
@@ -153,7 +153,7 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassRepository: 
                 attributeType = value.attribute.name,
                 itemClassName = item.itemClassId.asAppId().id,
                 itemClassVersion = item.itemClassId.asAppId().version,
-                value = value.data,
+                value = value.value,
                 scale = value.scale
             )
         )
@@ -171,7 +171,7 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassRepository: 
                 itemClassName = item.itemClassId.asAppId().id,
                 itemClassVersion = item.itemClassId.asAppId().version,
                 attributeTypeName = value.attribute.name,
-                code = value.data
+                code = value.value
             )
         )
         if (cnt != 1) {
