@@ -1,7 +1,7 @@
 package mm.inventory.adapters.store.jdbi.items
 
 import mm.inventory.app.productplanner.item.ItemAppId
-import mm.inventory.app.productplanner.itemclass.ManufacturerAppId
+import mm.inventory.app.productplanner.manufacturer.ManufacturerAppId
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate
 import java.math.BigDecimal

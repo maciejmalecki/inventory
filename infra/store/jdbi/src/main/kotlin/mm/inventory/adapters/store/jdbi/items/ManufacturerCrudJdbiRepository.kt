@@ -2,8 +2,9 @@ package mm.inventory.adapters.store.jdbi.items
 
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
+import mm.inventory.app.productplanner.manufacturer.ManufacturerAppId
 import mm.inventory.app.productplanner.manufacturer.ManufacturerCrudRepository
-import mm.inventory.app.productplanner.itemclass.ManufacturerAppId
+import mm.inventory.app.productplanner.manufacturer.asAppId
 import mm.inventory.domain.items.manufacturer.Manufacturer
 import mm.inventory.domain.shared.types.ManufacturerId
 import org.jdbi.v3.core.Jdbi
