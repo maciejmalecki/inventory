@@ -2,6 +2,7 @@ package mm.inventory.domain.items.item
 
 import kotlinx.collections.immutable.toImmutableSet
 import mm.inventory.domain.items.itemclass.ItemClassRepository
+import mm.inventory.domain.items.manufacturer.Manufacturer
 import mm.inventory.domain.shared.InvalidDataException
 import mm.inventory.domain.shared.transactions.BusinessTransaction
 import mm.inventory.domain.shared.types.ItemClassId

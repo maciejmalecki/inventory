@@ -1,6 +1,4 @@
-package mm.inventory.app.productplanner.itemclass
-
-import mm.inventory.app.productplanner.item.ManufacturerCrudRepository
+package mm.inventory.app.productplanner.manufacturer
 
 class ManufacturerFacade(
     private val manufacturerCrudRepository: ManufacturerCrudRepository

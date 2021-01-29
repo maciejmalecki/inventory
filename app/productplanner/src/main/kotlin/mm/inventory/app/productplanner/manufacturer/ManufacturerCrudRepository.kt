@@ -1,7 +1,7 @@
-package mm.inventory.app.productplanner.item
+package mm.inventory.app.productplanner.manufacturer
 
 import kotlinx.collections.immutable.ImmutableList
-import mm.inventory.domain.items.item.Manufacturer
+import mm.inventory.domain.items.manufacturer.Manufacturer
 import mm.inventory.domain.shared.NotFoundException
 import mm.inventory.domain.shared.types.ManufacturerId
 

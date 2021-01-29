@@ -1,4 +1,4 @@
-package mm.inventory.domain.items.item
+package mm.inventory.domain.items.manufacturer
 
 import mm.inventory.domain.shared.types.ManufacturerId
 

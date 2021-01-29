@@ -4,6 +4,7 @@ import io.vavr.kotlin.toVavrMap
 import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.toImmutableSet
 import mm.inventory.domain.items.itemclass.Attribute
+import mm.inventory.domain.items.manufacturer.Manufacturer
 import mm.inventory.domain.shared.InvalidDataException
 import mm.inventory.domain.shared.mutations.Mutable
 import mm.inventory.domain.shared.mutations.MutatingCommand

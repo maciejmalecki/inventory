@@ -3,13 +3,13 @@ package mm.inventory.adapter.web.spring.rest
 import mm.inventory.app.productplanner.item.ItemAppId
 import mm.inventory.app.productplanner.item.ItemFacade
 import mm.inventory.app.productplanner.item.ItemHeader
-import mm.inventory.app.productplanner.item.asAppId
+import mm.inventory.app.productplanner.manufacturer.asAppId
 import mm.inventory.app.productplanner.itemclass.ItemClassAppId
 import mm.inventory.app.productplanner.itemclass.ManufacturerAppId
 import mm.inventory.app.productplanner.itemclass.asAppId
 import mm.inventory.domain.items.item.DictionaryValue
 import mm.inventory.domain.items.item.Item
-import mm.inventory.domain.items.item.Manufacturer
+import mm.inventory.domain.items.manufacturer.Manufacturer
 import mm.inventory.domain.items.item.ScalarValue
 import mm.inventory.domain.items.itemclass.DictionaryItem
 import mm.inventory.domain.items.itemclass.DictionaryType

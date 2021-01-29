@@ -1,4 +1,4 @@
-package mm.inventory.app.productplanner.itemclass
+package mm.inventory.app.productplanner.manufacturer
 
 import mm.inventory.domain.shared.types.ManufacturerId
 

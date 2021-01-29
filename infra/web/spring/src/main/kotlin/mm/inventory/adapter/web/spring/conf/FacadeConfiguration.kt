@@ -2,13 +2,13 @@ package mm.inventory.adapter.web.spring.conf
 
 import mm.inventory.app.productplanner.item.ItemQuery
 import mm.inventory.app.productplanner.item.ItemFacade
-import mm.inventory.app.productplanner.item.ManufacturerCrudRepository
+import mm.inventory.app.productplanner.manufacturer.ManufacturerCrudRepository
 import mm.inventory.app.productplanner.itemclass.AttributeFacade
 import mm.inventory.app.productplanner.itemclass.AttributeQuery
 import mm.inventory.app.productplanner.itemclass.DraftItemClassFacade
 import mm.inventory.app.productplanner.itemclass.ItemClassFacade
 import mm.inventory.app.productplanner.itemclass.ItemClassQuery
-import mm.inventory.app.productplanner.itemclass.ManufacturerFacade
+import mm.inventory.app.productplanner.manufacturer.ManufacturerFacade
 import mm.inventory.domain.items.itemclass.ItemClassRepository
 import mm.inventory.domain.items.item.ItemRepository
 import mm.inventory.domain.items.item.ItemFactory
