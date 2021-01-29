@@ -25,18 +25,15 @@ export interface UnitOfMeasurement {
   name: string;
 }
 
-export interface Attribute {
+export type Attribute = ScalarAttribute | DictionaryAttribute;
+
+export interface ScalarAttribute {
   name: string;
-  type: AttributeType;
-}
-
-export type AttributeType = ScalarType | DictionaryType;
-
-export interface ScalarType {
   unit: UnitOfMeasurement;
 }
 
-export interface DictionaryType {
+export interface DictionaryAttribute {
+  name: string;
   items: Array<DictionaryItem>;
 }
 
@@ -45,12 +42,12 @@ export interface DictionaryItem {
   value: string;
 }
 
-export function isScalarType(attributeType: AttributeType): attributeType is ScalarType {
-  return (attributeType as ScalarType).unit !== undefined;
+export function isScalarAttribute(attribute: Attribute): attribute is ScalarAttribute {
+  return (attribute as ScalarAttribute).unit !== undefined;
 }
 
-export function isDictionaryType(attributeType: AttributeType): attributeType is DictionaryType {
-  return (attributeType as DictionaryType).items !== undefined;
+export function isDictionaryAttribute(attribute: Attribute): attribute is DictionaryAttribute {
+  return (attribute as DictionaryAttribute).items !== undefined;
 }
 
 const apiPrefix = '/api/itemClasses';

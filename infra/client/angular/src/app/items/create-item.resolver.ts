@@ -2,9 +2,7 @@ import {DictionaryValue, Item, ScalarValue} from '../shared/services/item.servic
 import {ActivatedRouteSnapshot, Resolve, RouterStateSnapshot} from '@angular/router';
 import {Injectable} from '@angular/core';
 import {
-  Attribute,
-  isDictionaryType,
-  isScalarType,
+  Attribute, isDictionaryAttribute, isScalarAttribute,
   ItemClass,
   ItemClassService
 } from '../shared/services/item-class.service';
@@ -21,18 +19,18 @@ export class CreateItemResolver implements Resolve<Item> {
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Item> {
     function createValue(attribute: Attribute): ScalarValue | DictionaryValue {
-      if (isScalarType(attribute.type)) {
+      if (isScalarAttribute(attribute)) {
         return {
           name: attribute.name,
-          unit: attribute.type.unit,
+          unit: attribute.unit,
           value: 0,
           scale: 1
         };
-      } else if (isDictionaryType(attribute.type)) {
+      } else if (isDictionaryAttribute(attribute)) {
         return {
           name: attribute.name,
           value: '',
-          items: attribute.type.items
+          items: attribute.items
         };
       }
     }

@@ -6,17 +6,17 @@
     <mat-grid-tile *ngFor="let attribute of itemClass.attributes">
       <mat-card class="attribute-card">
         <mat-card-header>
-          <mat-icon mat-card-avatar matPrefix *ngIf="isScalarType(attribute.type)">flash_on</mat-icon>
-          <mat-icon mat-card-avatar matPrefix *ngIf="isDictionaryType(attribute.type)">list_alt</mat-icon>
+          <mat-icon mat-card-avatar matPrefix *ngIf="isScalar(attribute)">flash_on</mat-icon>
+          <mat-icon mat-card-avatar matPrefix *ngIf="isDictionary(attribute)">list_alt</mat-icon>
           <mat-card-title>{{attribute.name}}</mat-card-title>
         </mat-card-header>
         <mat-card-content>
-          <div *ngIf="isScalarType(attribute.type)">
-            {{ attribute.type.unit.code }} ({{ attribute.type.unit.name }})
+          <div *ngIf="isScalar(attribute)">
+            {{ attribute.unit.code }} ({{ attribute.unit.name }})
           </div>
-          <div *ngIf="isDictionaryType(attribute.type)">
+          <div *ngIf="isDictionary(attribute)">
             <ul>
-              <li *ngFor="let item of attribute.type.items; let last = last">
+              <li *ngFor="let item of attribute.items; let last = last">
                 {{item.value}} ({{item.code}})
               </li>
             </ul>
