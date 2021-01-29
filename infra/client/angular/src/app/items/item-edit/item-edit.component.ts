@@ -24,6 +24,10 @@ export class ItemEditComponent implements OnInit {
   isDictionaryValue = isDictionaryValue;
   formGroup: FormGroup;
 
+  private valuesFormGroup: FormGroup;
+  private nameFormControl: FormControl;
+  private manufacturerFormControl: FormControl;
+
   constructor(
     private readonly activatedRoute: ActivatedRoute,
     private readonly router: Router,
@@ -32,30 +36,30 @@ export class ItemEditComponent implements OnInit {
     this.item = activatedRoute.snapshot.data.item;
     this.manufacturers = activatedRoute.snapshot.data.manufacturers;
     this.createMode = activatedRoute.snapshot.data.createMode;
-
-    console.log(this.item);
   }
 
   ngOnInit(): void {
+    this.nameFormControl = new FormControl({
+      value: this.item.name,
+      disabled: !this.createMode
+    });
+    this.manufacturerFormControl = new FormControl(this.item.manufacturer);
+    this.valuesFormGroup = new FormGroup(
+      Object.assign({},
+        ...this.item.values.map(value => ({
+          [value.name]: new FormControl(value.value, [])
+        }))));
     this.formGroup = new FormGroup(
       {
-        itemName: new FormControl({
-          value: this.item.name,
-          disabled: !this.createMode
-        }),
-        manufacturer: new FormControl(this.item.manufacturer),
-        values: new FormGroup(
-          Object.assign({},
-            ...this.item.values.map(value => ({
-              [value.name]: new FormControl(value.value, [])
-            }))))
+        itemName: this.nameFormControl,
+        manufacturer: this.manufacturerFormControl,
+        values: this.valuesFormGroup
       });
   }
 
   manufacturerDisplayFn = (manufacturer: Manufacturer) => manufacturer ? manufacturer.name : '';
 
   save(): void {
-    const controls = this.formGroup.controls;
     const changes: Array<AttributeValuation> = [];
 
     if (this.formGroup.invalid) {
@@ -63,28 +67,30 @@ export class ItemEditComponent implements OnInit {
       return;
     }
 
-    if (this.createMode || this.formGroup.dirty) {
-      const nameFC = this.formGroup.get('itemName');
-      if (this.createMode) {
-        this.item.name = nameFC.value;
-      }
-      for (const prop in controls) {
-        if (Object.prototype.hasOwnProperty.call(controls, prop)) {
-          const formControl = this.formGroup.get(prop);
-          if (this.createMode || formControl.dirty) {
-            changes.push({
-              attribute: prop,
-              value: formControl.value
-            });
-          }
+    if (this.createMode) {
+      this.item.name = this.nameFormControl.value;
+    }
+    if (this.manufacturerFormControl.dirty) {
+      this.item.manufacturer = this.manufacturerFormControl.value;
+    }
+
+    for (const prop in this.valuesFormGroup.controls) {
+      if (Object.prototype.hasOwnProperty.call(this.valuesFormGroup.controls, prop)) {
+        const formControl = this.valuesFormGroup.get(prop);
+        if (this.createMode || formControl.dirty) {
+          changes.push({
+            attribute: prop,
+            value: formControl.value
+          });
         }
       }
     }
+
     if (this.createMode) {
       this.itemService.createItem(this.item.name, this.item.itemClassId.id, this.item.itemClassId.version, changes).subscribe(_ => {
         this.router.navigate(['items', this.item.name]).catch(reason => console.warn(reason));
       });
-    } else if (changes.length > 0) {
+    } else if (this.formGroup.dirty) {
       this.itemService.updateItem(this.item.name, this.item.manufacturer, changes).subscribe(response => {
         if (response.ok) {
           this.router.navigate(['items', this.item.name]).catch(reason => console.warn(reason));
