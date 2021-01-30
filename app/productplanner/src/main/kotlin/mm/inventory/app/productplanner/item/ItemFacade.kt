@@ -41,13 +41,7 @@ class ItemFacade(
     ): Item =
         sec.requireAllRoles(ITEMS_ROLE, ITEMS_WRITER_ROLE) {
             // create new manufacturer when needed
-            val persistentManufacturer = manufacturer?.let {
-                if (manufacturer.id.empty) {
-                    manufacturerCrudRepository.persist(manufacturer)
-                } else {
-                    manufacturer
-                }
-            }
+            val persistentManufacturer = manufacturer?.let { persistOrGet(manufacturer) }
 
             // create new item
             itemFactory.create(
@@ -79,14 +73,7 @@ class ItemFacade(
                 if (manufacturer == null && item.item.manufacturer != null) {
                     item.removeManufacturer()
                 } else if (manufacturer != null && (item.item.manufacturer != manufacturer || item.item.manufacturersCode != manufacturersCode)) {
-                    item.updateManufacturer(
-                        if (manufacturer.id.empty) {
-                            manufacturerCrudRepository.persist(manufacturer)
-                        } else {
-                            manufacturer
-                        },
-                        manufacturersCode
-                    )
+                    item.updateManufacturer(persistOrGet(manufacturer), manufacturersCode)
                 }
                 itemRepository.save(item)
             }
@@ -99,4 +86,10 @@ class ItemFacade(
                 itemRepository.delete(item)
             }
         }
+
+    private fun persistOrGet(manufacturer: Manufacturer): Manufacturer = if (manufacturer.id.empty) {
+        manufacturerCrudRepository.persist(manufacturer)
+    } else {
+        manufacturerCrudRepository.get(manufacturer.id)
+    }
 }
