@@ -1,5 +1,7 @@
 rootProject.name = "inventory"
 
+val skipFrontend: Boolean = startParameter.systemPropertiesArgs["skipFrontend"]?.toBoolean() ?:false
+
 // -- domain circle
 include(":domain:shared")
 include(":domain:items")
@@ -14,11 +16,13 @@ include(":app:importcategories")
 // -- infrastructure circle
 
 // store implementations
-include(":infra:store:sql")
 include(":infra:store:r2dbc")
 include(":infra:store:jdbi")
+include(":infra:store:inventorystore")
 
 // web app implementations
 include(":infra:web:spring")
 include(":infra:web:webflux")
-include(":infra:client:angular")
+if(!skipFrontend) {
+    include(":infra:client:angular")
+}

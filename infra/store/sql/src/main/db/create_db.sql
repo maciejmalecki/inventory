@@ -108,3 +108,12 @@ CREATE TABLE Categories_Tree_Path
     FOREIGN KEY (ancestor_id) REFERENCES Categories (category_id),
     FOREIGN KEY (descendant_id) REFERENCES Categories (category_id)
 );
+
+CREATE TABLE Item_Stock
+(
+    id        BIGSERIAL PRIMARY KEY,
+    item_name VARCHAR(50)    NOT NULL,
+    amount    DECIMAL(10, 4) NOT NULL,
+    created   TIMESTAMP      NOT NULL DEFAULT now(),
+    FOREIGN KEY (item_name) REFERENCES Items (name)
+);
