@@ -12,6 +12,8 @@ interface MutatingCommand<T> {
 
 typealias MutatingCommandHandler<T> = (command: MutatingCommand<T>) -> Unit
 
+typealias MutatingCommandHandlerWithResponse<T, R> = (command: MutatingCommand<T>, previousResponse: R?) -> R
+
 /**
  * Mutable wrapper for an entity/an aggregate. This wrapper is capable of registering changes as a list of commands.
  */
@@ -38,8 +40,16 @@ open class Mutable<T>(private var _snapshot: T) {
      * "Consume" all changes by performing handler on each of them. Changes are empty afterwards.
      */
     fun consume(handler: MutatingCommandHandler<T>) {
-        mutations.handleAll(handler)
+        consume { command: MutatingCommand<T>, _: Any? ->
+            handler.invoke(command)
+            null
+        }
+    }
+
+    fun <R> consume(handler: MutatingCommandHandlerWithResponse<T, R>): R? {
+        val result = mutations.handleAll(handler, null)
         mutations = Mutations()
+        return result
     }
 
     /**
@@ -61,18 +71,20 @@ internal class Mutations<T>(
 
     fun append(command: MutatingCommand<T>): Mutations<T> = Mutations(commands.append(command))
 
-    fun handleAll(handler: MutatingCommandHandler<T>) = handleAll(handler, commands)
+    fun <R> handleAll(handler: MutatingCommandHandlerWithResponse<T, R>, previousResponse: R?) =
+        handleAll(handler, previousResponse, commands)
 
-    private tailrec fun handleAll(
-        handler: MutatingCommandHandler<T>,
+    private tailrec fun <R> handleAll(
+        handler: MutatingCommandHandlerWithResponse<T, R>,
+        previousResponse: R?,
         tailCommands: VavrList<MutatingCommand<T>>
-    ): Unit =
+    ): R? =
         when (tailCommands.size()) {
             0 -> throw NoChangeException("No change detected for ${this.javaClass.genericSuperclass.typeName}.")
-            1 -> handler.invoke(tailCommands.first())
+            1 -> handler.invoke(tailCommands.first(), previousResponse)
             else -> {
-                handler.invoke(tailCommands.first())
-                handleAll(handler, tailCommands.subSequence(1))
+                val response = handler.invoke(tailCommands.first(), previousResponse)
+                handleAll(handler, response, tailCommands.subSequence(1))
             }
         }
 }
