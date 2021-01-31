@@ -6,5 +6,5 @@ interface ItemStockRepository {
 
     fun findByItemId(itemId: ItemId): ItemStock
 
-    fun update(itemStock: ItemStock): ItemStock
+    fun update(itemStock: MutableItemStock): Unit
 }

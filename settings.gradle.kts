@@ -17,8 +17,9 @@ include(":app:importcategories")
 
 // store implementations
 include(":infra:store:r2dbc")
-include(":infra:store:jdbi")
-include(":infra:store:inventorystore")
+include(":infra:store:jdbi-common")
+include(":infra:store:items-store")
+include(":infra:store:inventory-store")
 
 // web app implementations
 include(":infra:web:spring")
