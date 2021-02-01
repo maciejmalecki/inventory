@@ -9,6 +9,8 @@ import mm.inventory.app.productplanner.itemclass.DraftItemClassFacade
 import mm.inventory.app.productplanner.itemclass.ItemClassFacade
 import mm.inventory.app.productplanner.itemclass.ItemClassQuery
 import mm.inventory.app.productplanner.manufacturer.ManufacturerFacade
+import mm.inventory.app.productplanner.stock.StockFacade
+import mm.inventory.domain.inventory.stock.ItemStockRepository
 import mm.inventory.domain.items.itemclass.ItemClassRepository
 import mm.inventory.domain.items.item.ItemRepository
 import mm.inventory.domain.items.item.ItemFactory
@@ -37,7 +39,8 @@ class FacadeConfiguration(
     private val unitOfMeasurementRepository: UnitOfMeasurementRepository,
     private val attributeQuery: AttributeQuery,
     private val attributeRepository: AttributeRepository,
-    private val manufacturerCrudRepository: ManufacturerCrudRepository
+    private val manufacturerCrudRepository: ManufacturerCrudRepository,
+    private val itemStockRepository: ItemStockRepository
 ) {
     @Bean
     fun itemClassFacade() = ItemClassFacade(
@@ -73,4 +76,7 @@ class FacadeConfiguration(
 
     @Bean
     fun manufacturerFacade() = ManufacturerFacade(manufacturerCrudRepository)
+
+    @Bean
+    fun stockFacade() = StockFacade(securityGuard, businessTransaction, itemStockRepository)
 }

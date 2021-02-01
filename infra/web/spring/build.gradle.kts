@@ -13,7 +13,10 @@ val postgresqlJdbcVersion: String by project
 dependencies {
     implementation(project(":domain:shared"))
     implementation(project(":domain:items"))
+    implementation(project(":domain:inventory"))
+
     implementation(project(":app:productplanner"))
+
     implementation(project(":infra:store:jdbi-common"))
     implementation(project(":infra:store:items-store"))
     implementation(project(":infra:store:inventory-store"))
