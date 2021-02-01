@@ -33,6 +33,9 @@ class MutableItemStock(_snapshot: ItemStock) : Mutable<ItemStock>(_snapshot) {
         if (amount <= BigDecimal.ZERO) {
             throw InvalidDataException("Cannot deduct with negative value.")
         }
+        if (snapshot.amount < amount) {
+            throw InvalidDataException("Insufficient stock to deduct from: ${snapshot.amount}<$amount.")
+        }
         append(
             DeductCommand(snapshot, amount),
             snapshot.copy(amount = snapshot.amount - amount)

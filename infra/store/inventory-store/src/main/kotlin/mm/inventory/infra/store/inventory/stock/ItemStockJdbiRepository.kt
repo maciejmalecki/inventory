@@ -35,7 +35,6 @@ class ItemStockJdbiRepository(private val db: Jdbi) : ItemStockRepository {
                 }
 
                 is DeductCommand -> {
-                    // TODO check for negative value
                     dao.insertItemStock(command.base.id.asAppId(), -command.amount)
                     id.copy(serial = id.serial + 1)
                 }
