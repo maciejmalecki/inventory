@@ -1,0 +1,11 @@
+@startuml
+package shared #lightgrey {
+}
+package items #lightyellow {
+}
+package inventory #lightyellow {
+}
+
+items ...> shared
+inventory ...> shared
+@enduml

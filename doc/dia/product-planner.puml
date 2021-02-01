@@ -1,0 +1,17 @@
+@startuml
+package app <<Rectangle>> #lightblue {
+    package productplanner {
+    }
+}
+package domain <<Rectangle>> #lightyellow {
+    package shared {
+    }
+    package items {
+    }
+    package inventory {
+    }
+}
+productplanner ...> items
+productplanner ...> inventory
+productplanner ...> shared
+@enduml
