@@ -9,6 +9,7 @@ import {DashboardModule} from './dashboard/dashboard.module';
 import {ItemsModule} from './items/items.module';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
+import {SharedModule} from './shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -19,6 +20,7 @@ import {MatIconModule} from '@angular/material/icon';
     AppRoutingModule,
     HttpClientModule,
     BrowserAnimationsModule,
+    SharedModule,
     DashboardModule,
     ItemsModule,
     MatButtonModule,

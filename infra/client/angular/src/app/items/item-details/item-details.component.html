@@ -7,10 +7,10 @@
       <mat-icon>delete</mat-icon>
     </button>
   </h1>
+  <app-item-stock-editor
+    [item]="item">
+  </app-item-stock-editor>
   <mat-divider></mat-divider>
-  <div>
-    On stock: {{ stock.amount }}.
-  </div>
   <mat-list role="list">
     <mat-list-item role="listitem" *ngIf="item.manufacturer">
       <div class="value-name">Manufacturer</div>
