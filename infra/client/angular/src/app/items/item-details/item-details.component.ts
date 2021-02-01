@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {DictionaryValue, isDictionaryValue, isScalarValue, Item, ItemService} from '../../shared/services/item.service';
+import {Stock} from '../../shared/services/stock.service';
 
 @Component({
   selector: 'app-item-details',
@@ -10,6 +11,7 @@ import {DictionaryValue, isDictionaryValue, isScalarValue, Item, ItemService} fr
 export class ItemDetailsComponent implements OnInit {
 
   item: Item;
+  stock: Stock;
   isScalarValue = isScalarValue;
   isDictionaryValue = isDictionaryValue;
 
@@ -19,6 +21,7 @@ export class ItemDetailsComponent implements OnInit {
     private readonly itemService: ItemService
   ) {
     this.item = activatedRoute.snapshot.data.item;
+    this.stock = activatedRoute.snapshot.data.stock;
   }
 
   ngOnInit(): void {

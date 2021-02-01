@@ -13,6 +13,7 @@ import {CreateItemResolver} from './items/create-item.resolver';
 import {ItemClassEditResolver} from './items/item-class-edit/item-class-edit.resolver';
 import {AttributesResolver} from './items/attributes-resolver.service';
 import {ManufacturerResolver} from './items/manufacturer.resolver';
+import {ItemStockResolver} from './items/item-stock.resolver';
 
 const routes: Routes = [
   {
@@ -56,7 +57,8 @@ const routes: Routes = [
     path: 'items/:name',
     component: ItemDetailsComponent,
     resolve: {
-      item: ItemResolver
+      item: ItemResolver,
+      stock: ItemStockResolver
     }
   },
   {

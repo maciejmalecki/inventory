@@ -8,6 +8,9 @@
     </button>
   </h1>
   <mat-divider></mat-divider>
+  <div>
+    On stock: {{ stock.amount }}.
+  </div>
   <mat-list role="list">
     <mat-list-item role="listitem" *ngIf="item.manufacturer">
       <div class="value-name">Manufacturer</div>
