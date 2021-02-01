@@ -10,6 +10,7 @@ import {ItemsComponent} from './items/items.component';
 import {ItemDetailsComponent} from './item-details/item-details.component';
 import { ItemEditComponent } from './item-edit/item-edit.component';
 import {DragDropModule} from '@angular/cdk/drag-drop';
+import {SharedModule} from '../shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
     MatModule,
     FormsModule,
     ReactiveFormsModule,
-    DragDropModule
+    DragDropModule,
+    SharedModule
   ]
 })
 export class ItemsModule {
