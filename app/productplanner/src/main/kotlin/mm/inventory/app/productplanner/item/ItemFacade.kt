@@ -3,10 +3,11 @@ package mm.inventory.app.productplanner.item
 import kotlinx.collections.immutable.ImmutableList
 import mm.inventory.app.productplanner.ITEMS_ROLE
 import mm.inventory.app.productplanner.ITEMS_WRITER_ROLE
+import mm.inventory.app.productplanner.manufacturer.ManufacturerCrudRepository
 import mm.inventory.domain.items.item.Item
 import mm.inventory.domain.items.item.ItemFactory
 import mm.inventory.domain.items.item.ItemRepository
-import mm.inventory.domain.items.item.Manufacturer
+import mm.inventory.domain.items.manufacturer.Manufacturer
 import mm.inventory.domain.shared.security.SecurityGuard
 import mm.inventory.domain.shared.transactions.BusinessTransaction
 import mm.inventory.domain.shared.types.ItemClassId
@@ -40,13 +41,7 @@ class ItemFacade(
     ): Item =
         sec.requireAllRoles(ITEMS_ROLE, ITEMS_WRITER_ROLE) {
             // create new manufacturer when needed
-            val persistentManufacturer = manufacturer?.let {
-                if (manufacturer.id.empty) {
-                    manufacturerCrudRepository.persist(manufacturer)
-                } else {
-                    manufacturer
-                }
-            }
+            val persistentManufacturer = manufacturer?.let { persistOrGet(manufacturer) }
 
             // create new item
             itemFactory.create(
@@ -62,11 +57,13 @@ class ItemFacade(
      * Update item aggregate according to provided modifications.
      * @param id of the aggregate
      * @param manufacturer manufacturer
+     * @param manufacturersCode code of the manufacturer
      * @param inValues valuation changes
      */
     fun updateItem(
         id: ItemId,
         manufacturer: Manufacturer?,
+        manufacturersCode: String?,
         inValues: Map<String, String>
     ): Unit =
         sec.requireAllRoles(ITEMS_ROLE, ITEMS_WRITER_ROLE) {
@@ -75,14 +72,8 @@ class ItemFacade(
                 item.updateValues(inValues)
                 if (manufacturer == null && item.item.manufacturer != null) {
                     item.removeManufacturer()
-                } else if (manufacturer != null && item.item.manufacturer != manufacturer) {
-                    item.updateManufacturer(
-                        if (manufacturer.id.empty) {
-                            manufacturerCrudRepository.persist(manufacturer)
-                        } else {
-                            manufacturer
-                        }
-                    )
+                } else if (manufacturer != null && (item.item.manufacturer != manufacturer || item.item.manufacturersCode != manufacturersCode)) {
+                    item.updateManufacturer(persistOrGet(manufacturer), manufacturersCode)
                 }
                 itemRepository.save(item)
             }
@@ -95,4 +86,10 @@ class ItemFacade(
                 itemRepository.delete(item)
             }
         }
+
+    private fun persistOrGet(manufacturer: Manufacturer): Manufacturer = if (manufacturer.id.empty) {
+        manufacturerCrudRepository.persist(manufacturer)
+    } else {
+        manufacturerCrudRepository.get(manufacturer.id)
+    }
 }

@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {
   AttributeValuation,
   isDictionaryValue,
@@ -9,13 +9,15 @@ import {
 import {ActivatedRoute, Router} from '@angular/router';
 import {FormControl, FormGroup} from '@angular/forms';
 import {Manufacturer} from '../../shared/services/manufacturer.service';
+import {Subject} from 'rxjs';
+import {distinctUntilChanged, takeUntil} from 'rxjs/operators';
 
 @Component({
   selector: 'app-item-edit',
   templateUrl: './item-edit.component.html',
   styleUrls: ['./item-edit.component.scss']
 })
-export class ItemEditComponent implements OnInit {
+export class ItemEditComponent implements OnInit, OnDestroy {
 
   createMode: boolean;
   item: Item;
@@ -27,6 +29,8 @@ export class ItemEditComponent implements OnInit {
   private valuesFormGroup: FormGroup;
   private nameFormControl: FormControl;
   private manufacturerFormControl: FormControl;
+  private manufacturersCodeFormControl: FormControl;
+  private readonly unsubscribe = new Subject();
 
   constructor(
     private readonly activatedRoute: ActivatedRoute,
@@ -44,6 +48,10 @@ export class ItemEditComponent implements OnInit {
       disabled: !this.createMode
     });
     this.manufacturerFormControl = new FormControl(this.item.manufacturer);
+    this.manufacturersCodeFormControl = new FormControl({
+      value: this.item.manufacturersCode,
+      disabled: this.item.manufacturer == null
+    });
     this.valuesFormGroup = new FormGroup(
       Object.assign({},
         ...this.item.values.map(value => ({
@@ -53,8 +61,28 @@ export class ItemEditComponent implements OnInit {
       {
         itemName: this.nameFormControl,
         manufacturer: this.manufacturerFormControl,
+        manufacturersCode: this.manufacturersCodeFormControl,
         values: this.valuesFormGroup
       });
+
+    // change manufacturers code disabled state depending on manufacturer's selection
+    this.manufacturerFormControl.valueChanges.pipe(
+      takeUntil(this.unsubscribe),
+      distinctUntilChanged()
+    ).subscribe(value => {
+      if (value == null || (typeof value === 'string' && value.trim().length === 0)) {
+        this.manufacturersCodeFormControl.disable();
+      } else {
+        if (this.manufacturersCodeFormControl.disabled) {
+          this.manufacturersCodeFormControl.enable();
+        }
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe.next();
+    this.unsubscribe.complete();
   }
 
   manufacturerDisplayFn = (manufacturer: Manufacturer) => manufacturer ? manufacturer.name : '';
@@ -71,7 +99,20 @@ export class ItemEditComponent implements OnInit {
       this.item.name = this.nameFormControl.value;
     }
     if (this.manufacturerFormControl.dirty) {
-      this.item.manufacturer = this.manufacturerFormControl.value;
+      const manufacturerValue = this.manufacturerFormControl.value;
+      if (manufacturerValue == null || (typeof manufacturerValue === 'string' && manufacturerValue.trim().length === 0)) {
+        this.item.manufacturer = null;
+      } else if (typeof manufacturerValue === 'string') {
+        this.item.manufacturer = {
+          id: null,
+          name: manufacturerValue.trim()
+        };
+      } else {
+        this.item.manufacturer = this.manufacturerFormControl.value;
+      }
+    }
+    if (this.manufacturersCodeFormControl.dirty) {
+      this.item.manufacturersCode = this.manufacturersCodeFormControl.value;
     }
 
     for (const prop in this.valuesFormGroup.controls) {
@@ -88,10 +129,11 @@ export class ItemEditComponent implements OnInit {
 
     if (this.createMode) {
       this.itemService.createItem(this.item.name, this.item.itemClassId.id, this.item.itemClassId.version, changes).subscribe(_ => {
+        // TODO handle manufacturer store
         this.router.navigate(['items', this.item.name]).catch(reason => console.warn(reason));
       });
     } else if (this.formGroup.dirty) {
-      this.itemService.updateItem(this.item.name, this.item.manufacturer, changes).subscribe(response => {
+      this.itemService.updateItem(this.item.name, this.item.manufacturer, this.item.manufacturersCode, changes).subscribe(response => {
         if (response.ok) {
           this.router.navigate(['items', this.item.name]).catch(reason => console.warn(reason));
         } else {

@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {isDictionaryType, isScalarType, ItemClass} from '../../shared/services/item-class.service';
+import {isDictionaryAttribute, isScalarAttribute, ItemClass} from '../../shared/services/item-class.service';
 
 @Component({
   selector: 'app-item-class-details',
@@ -10,8 +10,8 @@ import {isDictionaryType, isScalarType, ItemClass} from '../../shared/services/i
 export class ItemClassDetailsComponent implements OnInit {
 
   itemClass: ItemClass;
-  isScalarType = isScalarType;
-  isDictionaryType = isDictionaryType;
+  isScalar = isScalarAttribute;
+  isDictionary = isDictionaryAttribute;
 
   constructor(private readonly route: ActivatedRoute) {
     this.itemClass = route.snapshot.data.itemClass;

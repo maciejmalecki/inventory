@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {DictionaryValue, isDictionaryValue, isScalarValue, Item, ItemService} from '../../shared/services/item.service';
-import {DictionaryType} from '../../shared/services/item-class.service';
 
 @Component({
   selector: 'app-item-details',

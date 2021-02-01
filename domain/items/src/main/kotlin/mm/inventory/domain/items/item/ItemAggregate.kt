@@ -4,6 +4,7 @@ import io.vavr.kotlin.toVavrMap
 import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.toImmutableSet
 import mm.inventory.domain.items.itemclass.Attribute
+import mm.inventory.domain.items.manufacturer.Manufacturer
 import mm.inventory.domain.shared.InvalidDataException
 import mm.inventory.domain.shared.mutations.Mutable
 import mm.inventory.domain.shared.mutations.MutatingCommand
@@ -67,11 +68,12 @@ class MutableItem(_snapshot: Item) : Mutable<Item>(_snapshot) {
     /**
      * Update manufacturer command.
      * @param manufacturer to be set
+     * @param manufacturersCode to be set
      */
-    fun updateManufacturer(manufacturer: Manufacturer): MutableItem {
+    fun updateManufacturer(manufacturer: Manufacturer, manufacturersCode: String?): MutableItem {
         append(
-            UpdateManufacturerCommand(snapshot, manufacturer),
-            snapshot.copy(manufacturer = manufacturer)
+            UpdateManufacturerCommand(snapshot, manufacturer, manufacturersCode),
+            snapshot.copy(manufacturer = manufacturer, manufacturersCode = manufacturersCode)
         )
         return this
     }
@@ -109,7 +111,8 @@ data class UpdateValuesCommand(
 
 data class UpdateManufacturerCommand(
     override val base: Item,
-    val manufacturer: Manufacturer
+    val manufacturer: Manufacturer,
+    val manufacturersCode: String?
 ) : MutatingCommand<Item>
 
 data class RemoveManufacturerCommand(

@@ -21,6 +21,12 @@
         </mat-autocomplete>
       </mat-form-field>
     </div>
+    <div>
+      <mat-form-field>
+        <mat-label>Manufacturer's Code</mat-label>
+        <input type="text" formControlName="manufacturersCode" matInput>
+      </mat-form-field>
+    </div>
     <div formGroupName="values">
       <div *ngFor="let value of item.values">
         <mat-form-field class="editor" *ngIf="isScalarValue(value)">

@@ -14,7 +14,9 @@ dependencies {
     implementation(project(":domain:shared"))
     implementation(project(":domain:items"))
     implementation(project(":app:productplanner"))
-    implementation(project(":infra:store:jdbi"))
+    implementation(project(":infra:store:jdbi-common"))
+    implementation(project(":infra:store:items-store"))
+    implementation(project(":infra:store:inventory-store"))
 
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")

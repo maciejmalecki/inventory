@@ -2,8 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {
   Attribute,
-  isDictionaryType,
-  isScalarType,
+  isScalarAttribute,
   ItemClass,
   ItemClassService
 } from '../../shared/services/item-class.service';
@@ -18,9 +17,9 @@ function sub(left: Array<AttributeHeader>, right: Array<AttributeHeader>): Array
 function mapToHeader(attribute: Attribute): AttributeHeader {
   return {
     name: attribute.name,
-    scalar: isScalarType(attribute.type),
-    unitCode: isScalarType(attribute.type) ? attribute.type.unit.code : null,
-    unitName: isScalarType(attribute.type) ? attribute.type.unit.name : null
+    scalar: isScalarAttribute(attribute),
+    unitCode: isScalarAttribute(attribute) ? attribute.unit.code : null,
+    unitName: isScalarAttribute(attribute) ? attribute.unit.name : null
   };
 }
 
@@ -33,8 +32,6 @@ export class ItemClassEditComponent implements OnInit {
 
   itemClass: ItemClass;
   attributes: Array<AttributeHeader>;
-  isScalarType = isScalarType;
-  isDictionaryType = isDictionaryType;
   formGroup: FormGroup;
   selectedTypes: Array<AttributeHeader>;
   unselectedTypes: Array<AttributeHeader>;
