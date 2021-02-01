@@ -11,7 +11,6 @@ import mm.inventory.domain.inventory.stock.ReplenishCommand
 import mm.inventory.domain.shared.InvalidDataException
 import mm.inventory.domain.shared.mutations.MutatingCommand
 import mm.inventory.domain.shared.types.ItemId
-import mm.inventory.infra.store.updateAndExpect
 import org.jdbi.v3.core.Jdbi
 import java.math.BigDecimal
 
@@ -19,7 +18,7 @@ class ItemStockJdbiRepository(private val db: Jdbi) : ItemStockRepository {
 
     override fun findByItemId(itemId: ItemId): ItemStock = db.withHandle<ItemStock, RuntimeException> { handle ->
         val dao = handle.attach(ItemStockDao::class.java)
-        val itemStock = dao.selectStockAmount(itemId.asAppId()) ?: ItemStockRec(BigDecimal.ZERO, 0)
+        val itemStock = dao.selectStockAmount(itemId.asAppId()) ?: ItemStockRec(itemId.asAppId().id, BigDecimal.ZERO, 0)
         return@withHandle ItemStock(id = ItemStockAppId(itemId.asAppId(), itemStock.serial), amount = itemStock.amount)
     }
 
