@@ -6,5 +6,7 @@ interface ItemStockRepository {
 
     fun findByItemId(itemId: ItemId): ItemStock
 
+    fun findByItemIds(itemId: List<ItemId>): List<ItemStock>
+
     fun update(itemStock: MutableItemStock)
 }

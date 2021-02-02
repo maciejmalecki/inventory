@@ -2,6 +2,7 @@ package mm.inventory.infra.store.inventory.stock
 
 import mm.inventory.app.productplanner.item.ItemAppId
 import mm.inventory.app.productplanner.stock.ItemStockAppId
+import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate
 import java.math.BigDecimal
@@ -12,6 +13,9 @@ interface ItemStockDao {
 
     @SqlQuery("SELECT item_name, SUM(amount) as amount, MAX(serial) as serial FROM Item_Stock WHERE item_name=:id.id GROUP BY item_name")
     fun selectStockAmount(id: ItemAppId): ItemStockRec?
+
+    @SqlQuery("SELECT item_name, SUM(amount) as amount, MAX(serial) as serial FROM Item_Stock WHERE item_name IN (<ids>) GROUP BY item_name")
+    fun selectStockAmounts(@BindList("ids") ids: Array<String>): List<ItemStockRec>
 }
 
 data class ItemStockRec(

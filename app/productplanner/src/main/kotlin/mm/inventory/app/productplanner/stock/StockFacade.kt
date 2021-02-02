@@ -19,6 +19,10 @@ class StockFacade(
         itemStockRepository.findByItemId(itemId)
     }
 
+    fun findByItemIds(ids: List<ItemAppId>): List<ItemStock> = sec.requireRole(STOCK_ROLE) {
+        itemStockRepository.findByItemIds(ids)
+    }
+
     fun replenish(itemId: ItemAppId, amount: BigDecimal) = sec.requireAllRoles(STOCK_ROLE, STOCK_WRITER_ROLE) {
         tx.inTransaction {
             val itemStock = itemStockRepository.findByItemId(itemId).mutable()
