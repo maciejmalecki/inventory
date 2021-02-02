@@ -12,8 +12,8 @@ import java.math.BigDecimal
 
 interface ItemDao {
 
-    @SqlUpdate("INSERT INTO Items(name, item_class_name, item_class_version, manufacturer_id, manufacturers_code) VALUES (:item.name, :item.itemClassName, :item.itemClassVersion, :item.manufacturerId, :item.manufacturersCode)")
-    fun insertItem(item: ItemRec)
+    @SqlUpdate("INSERT INTO Items(name, item_class_name, item_class_version, manufacturer_id, manufacturers_code) VALUES (:name, :itemClassName, :itemClassVersion, :manufacturerId, :manufacturersCode)")
+    fun insertItem(@BindBean item: ItemRec)
 
     @SqlUpdate("INSERT INTO Scalar_Values(item_name, attribute_type, item_class_name, item_class_version, value, scale) VALUES (:value.itemName, :value.attributeType, :value.itemClassName, :value.itemClassVersion, :value.value, :value.scale)")
     fun insertValue(value: ScalarValueRec): Int
@@ -85,7 +85,6 @@ data class ItemRec(
     val manufacturersCode: String?
 )
 
-
 data class ItemWithManufacturerRec(
     val name: String,
     val itemClassName: String,
@@ -93,7 +92,7 @@ data class ItemWithManufacturerRec(
     val manufacturerId: Long?,
     val manufacturerName: String?,
     val manufacturersCode: String?
-);
+)
 
 data class ScalarValueRec(
     val itemName: String,
