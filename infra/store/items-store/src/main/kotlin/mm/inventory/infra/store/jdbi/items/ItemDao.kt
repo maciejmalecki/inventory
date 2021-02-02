@@ -2,8 +2,12 @@ package mm.inventory.infra.store.jdbi.items
 
 import mm.inventory.app.productplanner.item.ItemAppId
 import mm.inventory.app.productplanner.manufacturer.ManufacturerAppId
+import org.jdbi.v3.sqlobject.customizer.BindBean
+import org.jdbi.v3.sqlobject.customizer.BindList
+import org.jdbi.v3.sqlobject.customizer.DefineNamedBindings
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate
+import org.jdbi.v3.stringtemplate4.UseStringTemplateEngine
 import java.math.BigDecimal
 
 interface ItemDao {
@@ -25,6 +29,28 @@ interface ItemDao {
 
     @SqlQuery("SELECT items.name AS name, item_class_name, item_class_version, manufacturer_id, manufacturers.name AS manufacturer_name, manufacturers_code FROM Items LEFT OUTER JOIN Manufacturers ON items.manufacturer_id = manufacturers.id ORDER BY name")
     fun selectItems(): List<ItemWithManufacturerRec>
+
+    @SqlQuery(
+        """
+        SELECT 
+            items.name AS name, item_class_name, item_class_version, manufacturer_id, manufacturers.name AS manufacturer_name, manufacturers_code 
+        FROM 
+            Items LEFT OUTER JOIN Manufacturers ON items.manufacturer_id = manufacturers.id 
+        WHERE 
+            1=1 
+            <if(name)>AND items.name LIKE :name<endif> 
+            <if(manufacturersCode)>AND manufacturers_code LIKE :manufacturersCode<endif> 
+            <if(manufacturerIds)>AND manufacturer_id IN (<manufacturerIds>)<endif>
+            <if(itemClassIds)>AND item_class_name IN (<itemClassIds>)<endif>
+        ORDER BY name"""
+    )
+    @DefineNamedBindings
+    @UseStringTemplateEngine
+    fun selectItemsByCriteria(
+        @BindBean criteria: ItemSearchJdbiCriteria,
+        @BindList("manufacturerIds", onEmpty = BindList.EmptyHandling.NULL_VALUE) manufacturerIds: List<Long>?,
+        @BindList("itemClassIds", onEmpty = BindList.EmptyHandling.NULL_VALUE) itemClassIds: List<String>?
+    ): List<ItemWithManufacturerRec>
 
     @SqlQuery("SELECT items.name AS name, item_class_name, item_class_version, manufacturer_id, manufacturers.name AS manufacturer_name, manufacturers_code FROM Items LEFT OUTER JOIN Manufacturers ON items.manufacturer_id = manufacturers.id WHERE items.name=?")
     fun selectItem(name: String): ItemWithManufacturerRec?
@@ -58,6 +84,7 @@ data class ItemRec(
     val manufacturerId: Long?,
     val manufacturersCode: String?
 )
+
 
 data class ItemWithManufacturerRec(
     val name: String,

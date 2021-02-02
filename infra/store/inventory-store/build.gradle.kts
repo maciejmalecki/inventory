@@ -23,4 +23,5 @@ dependencies {
     implementation("org.jdbi:jdbi3-sqlobject")
     implementation("org.jdbi:jdbi3-kotlin")
     implementation("org.jdbi:jdbi3-kotlin-sqlobject")
+    implementation("org.jdbi:jdbi3-stringtemplate4")
 }

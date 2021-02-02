@@ -2,6 +2,7 @@ package mm.inventory.adapter.web.spring.conf.jdbi
 
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.kotlin.KotlinPlugin
+import org.jdbi.v3.core.statement.SqlStatements
 import org.jdbi.v3.postgres.PostgresPlugin
 import org.jdbi.v3.sqlobject.SqlObjectPlugin
 import org.jdbi.v3.sqlobject.kotlin.KotlinSqlObjectPlugin
@@ -23,9 +24,15 @@ class JdbiConfiguration {
         DataSourceTransactionManager(dataSource())
 
     @Bean
-    fun jdbi(): Jdbi = Jdbi.create(dataSource())
-        .installPlugin(SqlObjectPlugin())
-        .installPlugin(PostgresPlugin())
-        .installPlugin(KotlinPlugin())
-        .installPlugin(KotlinSqlObjectPlugin())
+    fun jdbi(): Jdbi {
+        val jdbi = Jdbi.create(dataSource())
+            .installPlugin(SqlObjectPlugin())
+            .installPlugin(PostgresPlugin())
+            .installPlugin(KotlinPlugin())
+            .installPlugin(KotlinSqlObjectPlugin())
+
+        jdbi.getConfig(SqlStatements::class.java).isUnusedBindingAllowed = true
+
+        return jdbi
+    }
 }

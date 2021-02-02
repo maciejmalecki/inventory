@@ -1,6 +1,5 @@
 package mm.inventory.app.productplanner.item
 
-import kotlinx.collections.immutable.ImmutableList
 import mm.inventory.app.productplanner.ITEMS_ROLE
 import mm.inventory.app.productplanner.ITEMS_WRITER_ROLE
 import mm.inventory.app.productplanner.manufacturer.ManufacturerCrudRepository
@@ -24,12 +23,16 @@ class ItemFacade(
     private val itemFactory: ItemFactory,
     private val manufacturerCrudRepository: ManufacturerCrudRepository,
 ) {
-    fun findAllItems(): ImmutableList<ItemHeader> = sec.requireRole(ITEMS_ROLE) {
+    fun findAllItems(): List<ItemHeader> = sec.requireRole(ITEMS_ROLE) {
         itemQuery.findAll()
     }
 
     fun findById(id: ItemId): Item? = sec.requireRole(ITEMS_ROLE) {
         itemRepository.findById(id)
+    }
+
+    fun findByCriteria(criteria: ItemSearchCriteria) = sec.requireRole(ITEMS_ROLE) {
+        itemQuery.findByCriteria(criteria)
     }
 
     fun createItem(

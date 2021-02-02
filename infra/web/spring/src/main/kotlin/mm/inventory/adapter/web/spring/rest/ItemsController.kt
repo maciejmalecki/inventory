@@ -3,6 +3,7 @@ package mm.inventory.adapter.web.spring.rest
 import mm.inventory.app.productplanner.item.ItemAppId
 import mm.inventory.app.productplanner.item.ItemFacade
 import mm.inventory.app.productplanner.item.ItemHeader
+import mm.inventory.app.productplanner.item.ItemSearchCriteria
 import mm.inventory.app.productplanner.item.asAppId
 import mm.inventory.app.productplanner.manufacturer.asAppId
 import mm.inventory.app.productplanner.itemclass.ItemClassAppId
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.math.BigDecimal
 import java.util.stream.Collectors
@@ -86,6 +88,22 @@ class ItemsController(
 
     @GetMapping("/items")
     fun items(): ResponseEntity<List<ItemHeader>> = ResponseEntity.ok(itemFacade.findAllItems())
+
+    @GetMapping("/items/search")
+    fun searchItems(
+        @RequestParam("name") name: String?,
+        @RequestParam("manufacturersCode") manufacturersCode: String?,
+        @RequestParam("manufacturerIds") manufacturerIds: Array<Long>?,
+        @RequestParam("itemClassIds") itemClassIds: Array<String>?
+    ): ResponseEntity<List<ItemHeader>> {
+        val criteria = ItemSearchCriteria(
+            name = name,
+            manufacturersCode = manufacturersCode,
+            manufacturerIds = manufacturerIds?.map { ManufacturerAppId(it) },
+            itemClassIds = itemClassIds?.map { ItemClassAppId(it) }
+        )
+        return ResponseEntity.ok(itemFacade.findByCriteria(criteria))
+    }
 
     @PostMapping("/items")
     fun createItem(@RequestBody requestData: CreateItemRequest): ResponseEntity<ItemProjection> =
