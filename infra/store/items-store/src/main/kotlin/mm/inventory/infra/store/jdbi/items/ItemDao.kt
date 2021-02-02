@@ -15,17 +15,17 @@ interface ItemDao {
     @SqlUpdate("INSERT INTO Items(name, item_class_name, item_class_version, manufacturer_id, manufacturers_code) VALUES (:name, :itemClassName, :itemClassVersion, :manufacturerId, :manufacturersCode)")
     fun insertItem(@BindBean item: ItemRec)
 
-    @SqlUpdate("INSERT INTO Scalar_Values(item_name, attribute_type, item_class_name, item_class_version, value, scale) VALUES (:value.itemName, :value.attributeType, :value.itemClassName, :value.itemClassVersion, :value.value, :value.scale)")
-    fun insertValue(value: ScalarValueRec): Int
+    @SqlUpdate("INSERT INTO Scalar_Values(item_name, attribute_type, item_class_name, item_class_version, value, scale) VALUES (:itemName, :attributeType, :itemClassName, :itemClassVersion, :value, :scale)")
+    fun insertValue(@BindBean value: ScalarValueRec): Int
 
-    @SqlUpdate("UPDATE Scalar_Values SET value=:value.value, scale=:value.scale WHERE item_name=:value.itemName AND attribute_type=:value.attributeType AND item_class_name=:value.itemClassName AND item_class_version=:value.itemClassVersion")
-    fun updateValue(value: ScalarValueRec): Int
+    @SqlUpdate("UPDATE Scalar_Values SET value=:value, scale=:scale WHERE item_name=:itemName AND attribute_type=:attributeType AND item_class_name=:itemClassName AND item_class_version=:itemClassVersion")
+    fun updateValue(@BindBean value: ScalarValueRec): Int
 
-    @SqlUpdate("INSERT INTO Dictionary_Values(item_name, attribute_type, item_class_name, item_class_version, attribute_type_name, code) VALUES (:value.itemName, :value.attributeType, :value.itemClassName, :value.itemClassVersion, :value.attributeTypeName, :value.code)")
-    fun insertValue(value: DictionaryValueRec): Int
+    @SqlUpdate("INSERT INTO Dictionary_Values(item_name, attribute_type, item_class_name, item_class_version, attribute_type_name, code) VALUES (:itemName, :attributeType, :itemClassName, :itemClassVersion, :attributeTypeName, :code)")
+    fun insertValue(@BindBean value: DictionaryValueRec): Int
 
-    @SqlUpdate("UPDATE Dictionary_Values SET code=:value.code WHERE item_name=:value.itemName AND attribute_type=:value.attributeType AND item_class_name=:value.itemClassName AND item_class_version=:value.itemClassVersion")
-    fun updateValue(value: DictionaryValueRec): Int
+    @SqlUpdate("UPDATE Dictionary_Values SET code=:code WHERE item_name=:itemName AND attribute_type=:attributeType AND item_class_name=:itemClassName AND item_class_version=:itemClassVersion")
+    fun updateValue(@BindBean value: DictionaryValueRec): Int
 
     @SqlQuery("SELECT items.name AS name, item_class_name, item_class_version, manufacturer_id, manufacturers.name AS manufacturer_name, manufacturers_code FROM Items LEFT OUTER JOIN Manufacturers ON items.manufacturer_id = manufacturers.id ORDER BY name")
     fun selectItems(): List<ItemWithManufacturerRec>

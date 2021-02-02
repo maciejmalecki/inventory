@@ -11,14 +11,17 @@ header {
   background-color: blueviolet;
 }
 
-footer {
-  text-align: center;
+footer.fixed {
+  background-color: darkblue;
   position: fixed;
-  padding: 6px;
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: darkblue;
+}
+
+footer {
+  text-align: center;
+  padding: 6px;
   a,a:visited {
     color: antiquewhite;
     text-decoration: none;
