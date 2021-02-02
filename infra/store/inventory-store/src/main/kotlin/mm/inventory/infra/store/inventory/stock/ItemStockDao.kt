@@ -13,3 +13,9 @@ interface ItemStockDao {
     @SqlQuery("SELECT item_name, SUM(amount) as amount, MAX(serial) as serial FROM Item_Stock WHERE item_name=:id.id GROUP BY item_name")
     fun selectStockAmount(id: ItemAppId): ItemStockRec?
 }
+
+data class ItemStockRec(
+    val itemName: String,
+    val amount: BigDecimal,
+    val serial: Int
+)

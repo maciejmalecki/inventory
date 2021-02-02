@@ -16,7 +16,9 @@ include(":app:importcategories")
 // -- infrastructure circle
 
 // store implementations
-include(":infra:store:r2dbc")
+// ...R2DBC
+include(":infra:store:categories-store")
+// ...JDBI
 include(":infra:store:jdbi-common")
 include(":infra:store:items-store")
 include(":infra:store:inventory-store")

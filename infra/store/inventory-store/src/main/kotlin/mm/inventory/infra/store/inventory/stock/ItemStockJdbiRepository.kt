@@ -22,7 +22,7 @@ class ItemStockJdbiRepository(private val db: Jdbi) : ItemStockRepository {
         return@withHandle ItemStock(id = ItemStockAppId(itemId.asAppId(), itemStock.serial), amount = itemStock.amount)
     }
 
-    override fun update(itemStock: MutableItemStock): Unit = db.useTransaction<RuntimeException> { handle ->
+    override fun update(itemStock: MutableItemStock) = db.useTransaction<RuntimeException> { handle ->
         val dao = handle.attach(ItemStockDao::class.java)
         itemStock.consume { command: MutatingCommand<ItemStock>, itemStockAppId: ItemStockAppId? ->
             // we use it to increment serial (optimistic lock)
