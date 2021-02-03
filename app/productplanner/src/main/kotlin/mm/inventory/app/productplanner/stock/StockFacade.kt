@@ -12,7 +12,8 @@ import java.math.BigDecimal
 class StockFacade(
     private val sec: SecurityGuard,
     private val tx: BusinessTransaction,
-    private val itemStockRepository: ItemStockRepository
+    private val itemStockRepository: ItemStockRepository,
+    private val itemStockQuery: ItemStockQuery
 ) {
 
     fun findByItemId(itemId: ItemAppId): ItemStock = sec.requireRole(STOCK_ROLE) {
@@ -21,6 +22,10 @@ class StockFacade(
 
     fun findByItemIds(ids: List<ItemAppId>): List<ItemStock> = sec.requireRole(STOCK_ROLE) {
         itemStockRepository.findByItemIds(ids)
+    }
+
+    fun findAllStock(): List<ItemStockHeader> = sec.requireRole(STOCK_ROLE) {
+        itemStockQuery.findAllStock()
     }
 
     fun replenish(itemId: ItemAppId, amount: BigDecimal) = sec.requireAllRoles(STOCK_ROLE, STOCK_WRITER_ROLE) {

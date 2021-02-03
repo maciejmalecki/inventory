@@ -2,6 +2,7 @@ package mm.inventory.adapter.web.spring.rest
 
 import mm.inventory.app.productplanner.item.ItemAppId
 import mm.inventory.app.productplanner.item.asAppId
+import mm.inventory.app.productplanner.stock.ItemStockHeader
 import mm.inventory.app.productplanner.stock.StockFacade
 import mm.inventory.domain.inventory.stock.ItemStock
 import mm.inventory.domain.shared.InvalidDataException
@@ -29,6 +30,9 @@ class StockController(private val stockFacade: StockFacade) {
     @GetMapping("/stock")
     fun stock(@RequestParam("id") ids: Array<String>): ResponseEntity<List<ItemStockProjection>> =
         ResponseEntity.ok(stockFacade.findByItemIds(ids.map { ItemAppId(it) }).map { it.toProjection() })
+
+    @GetMapping("/stock/items")
+    fun stockItems(): ResponseEntity<List<ItemStockHeader>> = ResponseEntity.ok(stockFacade.findAllStock())
 
     @PostMapping("/stock/{id}")
     fun changeStock(

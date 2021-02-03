@@ -1,5 +1,6 @@
 package mm.inventory.adapter.web.spring.conf.jdbi
 
+import mm.inventory.infra.store.inventory.stock.ItemStockJdbiQuery
 import mm.inventory.infra.store.inventory.stock.ItemStockJdbiRepository
 import mm.inventory.infra.store.jdbi.itemclasses.AttributeJdbiQuery
 import mm.inventory.infra.store.jdbi.itemclasses.AttributeJdbiRepository
@@ -51,4 +52,7 @@ class JdbiRepositoriesConfiguration(
 
     @Bean
     fun itemStockRepository() = ItemStockJdbiRepository(jdbi)
+
+    @Bean
+    fun itemStockQuery() = ItemStockJdbiQuery(jdbi)
 }
