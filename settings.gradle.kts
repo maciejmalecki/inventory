@@ -27,5 +27,5 @@ include(":infra:store:inventory-store")
 include(":infra:web:product-planner-backend")
 include(":infra:web:categories-backend")
 if(!skipFrontend) {
-    include(":infra:client:angular")
+    include(":infra:client:product-planner-ng")
 }

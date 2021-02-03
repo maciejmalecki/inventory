@@ -2,7 +2,7 @@
 **/build/
 **/out/
 **/node_modules/
-infra/client/angular/node/
+infra/client/product-planner-ng/node/
 
 # Ignore Gradle GUI config
 gradle-app.setting
