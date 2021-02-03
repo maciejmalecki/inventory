@@ -128,8 +128,13 @@ export class ItemEditComponent implements OnInit, OnDestroy {
     }
 
     if (this.createMode) {
-      this.itemService.createItem(this.item.name, this.item.itemClassId.id, this.item.itemClassId.version, changes).subscribe(_ => {
-        // TODO handle manufacturer store
+      this.itemService.createItem(
+        this.item.name,
+        this.item.itemClassId.id,
+        this.item.itemClassId.version,
+        this.item.manufacturer,
+        this.item.manufacturersCode,
+        changes).subscribe(_ => {
         this.router.navigate(['items', this.item.name]).catch(reason => console.warn(reason));
       });
     } else if (this.formGroup.dirty) {

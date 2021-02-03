@@ -11,12 +11,7 @@ data class ItemSearchJdbiCriteria(
     val manufacturersCode: String?
 )
 
-private fun like(value: String?) =
-    if (value != null) {
-        "%$value%"
-    } else {
-        null
-    }
+private fun like(value: String?) = value?.let { "%$value%" }
 
 internal fun ItemSearchCriteria.toJdbiCriteria() =
     ItemSearchJdbiCriteria(like(name), like(manufacturersCode))
@@ -26,7 +21,7 @@ class ItemJdbiQuery(private val db: Jdbi) : ItemQuery {
     override fun findAll(): List<ItemHeader> =
         db.withHandle<List<ItemHeader>, RuntimeException> { handle ->
             handle.attach(ItemDao::class.java).selectItems().map { itemRec ->
-                ItemHeader(ItemAppId(itemRec.name), itemRec.name, itemRec.itemClassName)
+                ItemHeader(ItemAppId(itemRec.name), itemRec.name, itemRec.itemClassName, itemRec.manufacturersCode)
             }
         }
 
@@ -41,7 +36,8 @@ class ItemJdbiQuery(private val db: Jdbi) : ItemQuery {
                 ItemHeader(
                     id = ItemAppId(it.name),
                     name = it.name,
-                    itemClassName = it.itemClassName
+                    itemClassName = it.itemClassName,
+                    manufacturersCode = it.manufacturersCode
                 )
             }
         }

@@ -75,11 +75,19 @@ export class ItemService {
     }, {observe: 'response'});
   }
 
-  createItem(name: string, itemClassName: string, itemClassVersion: number, attributeValuations: Array<AttributeValuation>): Observable<Item> {
+  createItem(
+    name: string,
+    itemClassName: string,
+    itemClassVersion: number,
+    manufacturer: Manufacturer | null,
+    manufacturersCode: string | null,
+    attributeValuations: Array<AttributeValuation>): Observable<Item> {
     return this.httpClient.post<Item>(`${apiPrefix}`, {
       name,
       itemClassName,
       itemClassVersion,
+      manufacturer,
+      manufacturersCode,
       inValues: attributeValuations
     });
   }
