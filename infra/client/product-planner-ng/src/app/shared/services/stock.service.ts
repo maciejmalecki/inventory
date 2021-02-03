@@ -6,6 +6,14 @@ export interface Stock {
   amount: number;
 }
 
+export interface ItemStockHeader {
+  name: string;
+  manufacturersCode: string | null;
+  amount: number;
+  unitCode: string;
+  unitName: string;
+}
+
 const apiPrefix = '/api/stock';
 
 @Injectable({
@@ -17,6 +25,10 @@ export class StockService {
 
   getStock(name: string): Observable<Stock> {
     return this.httpClient.get<Stock>(`${apiPrefix}/${name}`);
+  }
+
+  getStockList(): Observable<Array<ItemStockHeader>> {
+    return this.httpClient.get<Array<ItemStockHeader>>(`${apiPrefix}/items`);
   }
 
   replenish(name: string, amount: number): Observable<Stock> {

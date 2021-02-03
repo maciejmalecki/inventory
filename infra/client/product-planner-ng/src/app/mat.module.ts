@@ -10,6 +10,7 @@ import {MatListModule} from '@angular/material/list';
 import {MatSelectModule} from '@angular/material/select';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatExpansionModule} from '@angular/material/expansion';
+import {MatTableModule} from '@angular/material/table';
 
 @NgModule({
   imports: [
@@ -23,7 +24,8 @@ import {MatExpansionModule} from '@angular/material/expansion';
     MatListModule,
     MatSelectModule,
     MatAutocompleteModule,
-    MatExpansionModule
+    MatExpansionModule,
+    MatTableModule
   ],
   exports: [
     MatButtonModule,
@@ -36,7 +38,8 @@ import {MatExpansionModule} from '@angular/material/expansion';
     MatListModule,
     MatSelectModule,
     MatAutocompleteModule,
-    MatExpansionModule
+    MatExpansionModule,
+    MatTableModule
   ]
 })
 export class MatModule {

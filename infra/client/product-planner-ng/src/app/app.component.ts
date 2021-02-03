@@ -23,4 +23,8 @@ export class AppComponent {
   goItems(): void {
     this.router.navigate(['/items']).catch(reason => console.log(reason));
   }
+
+  goItemStock(): void {
+    this.router.navigate(['/item-stock']).catch(reason => console.log(reason));
+  }
 }

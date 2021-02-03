@@ -14,6 +14,8 @@ import {ItemClassEditResolver} from './items/item-class-edit/item-class-edit.res
 import {AttributesResolver} from './items/attributes-resolver.service';
 import {ManufacturerResolver} from './items/manufacturer.resolver';
 import {ItemStockResolver} from './items/item-stock.resolver';
+import {ItemStockListComponent} from './items/item-stock-list/item-stock-list.component';
+import {ItemStockListResolver} from './items/item-stock-list.resolver';
 
 const routes: Routes = [
   {
@@ -83,6 +85,13 @@ const routes: Routes = [
       manufacturers: ManufacturerResolver
     }
   },
+  {
+    path: 'item-stock',
+    component: ItemStockListComponent,
+    resolve: {
+      itemStockList: ItemStockListResolver
+    }
+  }
 ];
 
 @NgModule({

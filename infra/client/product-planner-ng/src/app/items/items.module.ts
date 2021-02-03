@@ -11,6 +11,8 @@ import {ItemDetailsComponent} from './item-details/item-details.component';
 import { ItemEditComponent } from './item-edit/item-edit.component';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import {SharedModule} from '../shared/shared.module';
+import { ItemStockListComponent } from './item-stock-list/item-stock-list.component';
+import {CdkTableModule} from '@angular/cdk/table';
 
 @NgModule({
   declarations: [
@@ -19,7 +21,8 @@ import {SharedModule} from '../shared/shared.module';
     ItemClassEditComponent,
     ItemsComponent,
     ItemDetailsComponent,
-    ItemEditComponent],
+    ItemEditComponent,
+    ItemStockListComponent],
   imports: [
     CommonModule,
     RouterModule,
@@ -27,7 +30,8 @@ import {SharedModule} from '../shared/shared.module';
     FormsModule,
     ReactiveFormsModule,
     DragDropModule,
-    SharedModule
+    SharedModule,
+    CdkTableModule
   ]
 })
 export class ItemsModule {
