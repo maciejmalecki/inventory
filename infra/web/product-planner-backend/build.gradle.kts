@@ -15,7 +15,7 @@ dependencies {
     implementation(project(":domain:items"))
     implementation(project(":domain:inventory"))
 
-    implementation(project(":app:productplanner"))
+    implementation(project(":app:product-planner"))
 
     implementation(project(":infra:store:jdbi-common"))
     implementation(project(":infra:store:items-store"))

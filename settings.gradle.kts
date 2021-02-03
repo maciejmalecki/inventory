@@ -9,7 +9,7 @@ include(":domain:inventory")
 include(":domain:production")
 
 // -- application circle
-include(":app:productplanner")
+include(":app:product-planner")
 include(":app:categories")
 include(":app:importcategories")
 
@@ -24,8 +24,8 @@ include(":infra:store:items-store")
 include(":infra:store:inventory-store")
 
 // web app implementations
-include(":infra:web:spring")
-include(":infra:web:webflux")
+include(":infra:web:product-planner-backend")
+include(":infra:web:categories-backend")
 if(!skipFrontend) {
     include(":infra:client:angular")
 }

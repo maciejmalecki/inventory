@@ -11,7 +11,7 @@ dependencies {
     implementation(project(":domain:inventory"))
 
     implementation(project(":infra:store:jdbi-common"))
-    implementation(project(":app:productplanner"))
+    implementation(project(":app:product-planner"))
 
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
