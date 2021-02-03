@@ -1,4 +1,4 @@
-package mm.inventory.app.categories.import
+package mm.inventory.app.categories
 
 import kotlinx.collections.immutable.ImmutableList
 import mm.inventory.app.categories.CategoryCrudRepository

@@ -3,7 +3,7 @@ package mm.inventory.adapter.web.webflux.rest
 import kotlinx.coroutines.reactive.awaitSingle
 import mm.inventory.adapter.web.spring.rest.dto.NewCategoryDto
 import mm.inventory.app.categories.CategoryCrudRepository
-import mm.inventory.app.categories.import.CategoryImporter
+import mm.inventory.app.categories.CategoryImporter
 import mm.inventory.app.categories.import.simpleParser
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.RestController

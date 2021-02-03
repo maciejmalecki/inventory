@@ -13,7 +13,6 @@ val postgresqlJdbcVersion: String by project
 
 dependencies {
     implementation(project(":app:categories"))
-    implementation(project(":app:importcategories"))
     implementation(project(":infra:store:categories-store"))
 
     implementation("org.springframework.boot:spring-boot-starter-webflux")

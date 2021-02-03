@@ -11,7 +11,6 @@ include(":domain:production")
 // -- application circle
 include(":app:product-planner")
 include(":app:categories")
-include(":app:importcategories")
 
 // -- infrastructure circle
 

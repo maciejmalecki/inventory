@@ -1,7 +1,7 @@
 package mm.inventory.adapter.web.webflux.db
 
 import mm.inventory.app.categories.CategoryCrudRepository
-import mm.inventory.app.categories.import.CategoryImporter
+import mm.inventory.app.categories.CategoryImporter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
