@@ -9,21 +9,22 @@ include(":domain:inventory")
 include(":domain:production")
 
 // -- application circle
-include(":app:productplanner")
+include(":app:product-planner")
 include(":app:categories")
-include(":app:importcategories")
 
 // -- infrastructure circle
 
 // store implementations
-include(":infra:store:r2dbc")
+// ...R2DBC
+include(":infra:store:categories-store")
+// ...JDBI
 include(":infra:store:jdbi-common")
 include(":infra:store:items-store")
 include(":infra:store:inventory-store")
 
 // web app implementations
-include(":infra:web:spring")
-include(":infra:web:webflux")
+include(":infra:web:product-planner-backend")
+include(":infra:web:categories-backend")
 if(!skipFrontend) {
-    include(":infra:client:angular")
+    include(":infra:client:product-planner-ng")
 }

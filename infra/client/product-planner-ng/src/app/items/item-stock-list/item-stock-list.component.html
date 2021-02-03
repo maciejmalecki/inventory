@@ -1,0 +1,23 @@
+<section class="mat-typography">
+  <h1>Items on stock</h1>
+<table cdk-table [dataSource]="datasource">
+  <ng-container cdkColumnDef="name">
+    <th cdk-header-cell *cdkHeaderCellDef>Name</th>
+    <td cdk-cell *cdkCellDef="let element"><a [routerLink]="['/items/', element.itemName]">{{ element.itemName }}</a></td>
+  </ng-container>
+  <ng-container cdkColumnDef="manufacturersCode">
+    <th cdk-header-cell *cdkHeaderCellDef>Code</th>
+    <td cdk-cell *cdkCellDef="let element">{{ element.manufacturersCode }}</td>
+  </ng-container>
+  <ng-container cdkColumnDef="amount">
+    <th cdk-header-cell *cdkHeaderCellDef>On stock</th>
+    <td cdk-cell *cdkCellDef="let element">{{ element.amount }}</td>
+  </ng-container>
+  <ng-container cdkColumnDef="unit">
+    <th cdk-header-cell *cdkHeaderCellDef>Unit</th>
+    <td cdk-cell *cdkCellDef="let element">{{ element.unitCode }}</td>
+  </ng-container>
+  <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+  <tr cdk-row *cdkRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+</section>

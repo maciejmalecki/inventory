@@ -77,8 +77,12 @@ This is the only place where dependencies to technologies such as Spring, JPA, J
 ### Store
 Store holds implementation of repositories (from `domain`), CRUD repositories and queries (from `app`) using given persistence technology. Store modules depend on concrete persistence library: Hibernate, R2BCD, Reactive Hibernate, JOOQ, JDBI.
 
+![Product planner stores](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.github.com/maciejmalecki/inventory/develop/doc/dia/items-store.puml)
+
 ### Web
 Here we place web servers (usually exposing REST interface that may be used by clients or other systems). Currently, our example provides two client applications: one with Springboot based REST server and one with Springboot based Webflux reactive server.
+
+![Product planner backend](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.github.com/maciejmalecki/inventory/develop/doc/dia/product-planner-backend.puml)
 
 ### Client
 In this specialized area we place all clients to the application including graphical clients, web clients and CLI. In this example we have an Angular client implementation.

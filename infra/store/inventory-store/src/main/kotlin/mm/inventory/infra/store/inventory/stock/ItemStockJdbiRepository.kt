@@ -1,5 +1,6 @@
 package mm.inventory.infra.store.inventory.stock
 
+import mm.inventory.app.productplanner.item.ItemAppId
 import mm.inventory.app.productplanner.item.asAppId
 import mm.inventory.app.productplanner.stock.ItemStockAppId
 import mm.inventory.app.productplanner.stock.asAppId
@@ -22,7 +23,21 @@ class ItemStockJdbiRepository(private val db: Jdbi) : ItemStockRepository {
         return@withHandle ItemStock(id = ItemStockAppId(itemId.asAppId(), itemStock.serial), amount = itemStock.amount)
     }
 
-    override fun update(itemStock: MutableItemStock): Unit = db.useTransaction<RuntimeException> { handle ->
+    override fun findByItemIds(itemIds: List<ItemId>): List<ItemStock> =
+        db.withHandle<List<ItemStock>, RuntimeException> { handle ->
+            val dao = handle.attach(ItemStockDao::class.java)
+            val result = dao.selectStockAmounts(itemIds.map { itemId -> itemId.asAppId().id }.toTypedArray())
+            return@withHandle result.map { rec ->
+                ItemStock(
+                    id = ItemStockAppId(
+                        ItemAppId(rec.itemName),
+                        rec.serial
+                    ), amount = rec.amount
+                )
+            }
+        }
+
+    override fun update(itemStock: MutableItemStock) = db.useTransaction<RuntimeException> { handle ->
         val dao = handle.attach(ItemStockDao::class.java)
         itemStock.consume { command: MutatingCommand<ItemStock>, itemStockAppId: ItemStockAppId? ->
             // we use it to increment serial (optimistic lock)

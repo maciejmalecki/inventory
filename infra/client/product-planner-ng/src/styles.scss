@@ -1,0 +1,33 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import '~@angular/material/prebuilt-themes/purple-green.css';
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+header {
+  text-align: center;
+  padding: 10px;
+  background-color: blueviolet;
+}
+
+footer.fixed {
+  background-color: darkblue;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+footer {
+  text-align: center;
+  padding: 6px;
+  a,a:visited {
+    color: antiquewhite;
+    text-decoration: none;
+  }
+}
+
+section.mat-typography {
+  margin: 5px 8px 0 8px;
+}

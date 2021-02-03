@@ -1,0 +1,34 @@
+@startuml
+package infra/web <<Rectangle>> #lightcyan{
+    package product-planner-backend as ppbackend {
+    }
+ }
+package infra/store <<Rectangle>> #lightgreen{
+    package items-store as itemsstore {
+    }
+    package inventory-store as inventorystore {
+    }
+    package jdbi-common as jdbicommon {
+    }
+}
+package app <<Rectangle>> #lightblue {
+    package product-planner as productplanner {
+    }
+}
+package domain <<Rectangle>> #lightyellow {
+    package shared {
+    }
+    package items {
+    }
+    package inventory {
+    }
+}
+productplanner ...> items
+productplanner ...> inventory
+productplanner ...> shared
+itemsstore ...> productplanner
+inventorystore ...> productplanner
+ppbackend ...> productplanner
+ppbackend ...> itemsstore
+ppbackend ...> inventorystore
+@enduml
