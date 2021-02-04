@@ -17,15 +17,23 @@ The project is organized in source modules, these fall into three major categori
 The category to which given module belongs determines dependencies that are allowed for that module. The categories in fact form an onion-like structure, where domain modules are located in the centre and infrastructure modules belong to the most outer layer. Dependencies always point inwards.
 
 ## Domain
-The domain area is where we model business logic, the most critical enterprise business rules and data structures. In general, this is a digital model of real business that is usually well establish since years or decades. We do not expect these rules to change rapidly, but rather evolve slowly. It is then worth of investing, to get the cleanest and more correct implementation. In ideal world, this layer should survive he most intense technological revolutions.
+The domain area is where we model business logic, the most critical enterprise business rules and data structures. In general, this is a digital model of real business that is usually well establish since years or decades. We do not expect these rules to change rapidly, but rather to evolve slowly. It is then worth of investing, to get the cleanest and more correct implementation. In ideal world, this layer should survive he most intense technological revolutions.
 
 ### Shared kernel
-A shared kernel is realized as Gradle module that can be imported by other domain modules. Shared kernel provides common domain functionalities that are shared across domain and in particular: the subdomains.
+A shared kernel is realized as a separate module that can be imported by other domain modules. The shared kernel provides common domain functionalities that are shared across domain and in particular: the subdomains.
+
+In this particular example shared kernel defines:
+* business transaction port that can be used to demarcate transaction scope in domain level,
+* commonly used business level exceptions,
+* common data types such as entity identifiers, that can be used to bound one aggregate to another aggregate and communicate with repositories,
+* useful utilities such as mutable entity support.
 
 ### Subdomains
-If domain is big enough that it consist on several subdomains, these can be represented by separate modules on domain level. Subdomains should not depend on each other.
+If domain is big enough that it consist on several subdomains, these can be represented by separate modules on domain level. 
 
 ![Subdomains](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.github.com/maciejmalecki/inventory/develop/doc/dia/domain.puml)
+
+Subdomains should not depend on each other. If there is a need for a communication between subdomains, we would rather go in loosely coupled integration model by using ports & adapters approach. With this approach we're free to choose exact integration solution: local call vs remote call, synchronous vs asynchronous, event based etc. Because hard dependency between subdomains is forbidden (discouraged), the concrete wiring is done on `app` level or even on `infra` level.
 
 ### Business components
 Within a subdomain, the primary packaging scheme should follow business component split. Usually there is one component per one aggregate but this is not a hard restriction.
