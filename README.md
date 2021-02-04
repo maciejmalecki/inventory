@@ -87,6 +87,13 @@ Store holds implementation of repositories (from `domain`), CRUD repositories an
 
 ![Product planner stores](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.github.com/maciejmalecki/inventory/develop/doc/dia/items-store.puml)
 
+#### JDBI
+JDBI is a lightweight SQL-to-POJO wrapper library. It allows for nothing more than:
+* writing native SQL queries (SELECTS), parametrize them, execute them and then map results into the Java(Kotlin) types: POJOs, collections of POJOs, simple types;
+* writing native SQL updates (INSERTs/UPDATEs/DELETEs), parametrize it with Java(Kotlin) values, execute them and sense the results.
+
+JDBI does not provide any support for sophisticated ORM functionalities such as associations, first level caches, object change detections, proxies and lazy fetches, abstraction over native SQL etc. You'll only get what you code self.
+
 ### Web
 Here we place web servers (usually exposing REST interface that may be used by clients or other systems). Currently, our example provides two client applications: one with Springboot based REST server and one with Springboot based Webflux reactive server.
 
