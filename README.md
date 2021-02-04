@@ -92,7 +92,69 @@ JDBI is a lightweight SQL-to-POJO wrapper library. It allows for nothing more th
 * writing native SQL queries (SELECTS), parametrize them, execute them and then map results into the Java(Kotlin) types: POJOs, collections of POJOs, simple types;
 * writing native SQL updates (INSERTs/UPDATEs/DELETEs), parametrize it with Java(Kotlin) values, execute them and sense the results.
 
-JDBI does not provide any support for sophisticated ORM functionalities such as associations, first level caches, object change detections, proxies and lazy fetches, abstraction over native SQL etc. You'll only get what you code self.
+JDBI does not provide any support for sophisticated ORM functionalities such as associations, first level caches, object change detections, proxies and lazy fetches, abstraction over native SQL etc. You'll only get what you code yourself.
+
+JDBI seems to be useful each time we have a simple interaction with a database: i.e. our application is mainly reading data by executing series of more or less complex SQL queries, or our application is mass-updating database with series of INSERTs or UPDATEs. As we will see in this example, simple SQL mappers can be useful only with regular business-class applications as long as set of legal data modification is well-defined and restricted (and this should be the case for 90%+ of all business apps!).
+
+Here we solely use so-called declarative way of SQL mapping. With JDBI it is realized via usage of SQL Objects. SQL Objects allows us to write so-called DAOs which are in fact interfaces with method stubs and SQL's declared with appropriate annotation. JDBI and SQL Object extension will generate appropriate implementation of these interfaces in runtime.
+
+Let's look at the following example:
+```kotlin
+interface ItemStockDao {
+    @SqlUpdate("INSERT INTO Item_Stock (item_name, serial, amount) VALUES (:id.itemId.id, :id.serial+1, :amount)")
+    fun insertItemStock(id: ItemStockAppId, amount: BigDecimal): Int
+
+    @SqlQuery("SELECT item_name, SUM(amount) AS amount, MAX(serial) AS serial FROM Item_Stock WHERE item_name=:id.id GROUP BY item_name")
+    fun selectStockAmount(id: ItemAppId): ItemStockRec?
+
+    @SqlQuery("SELECT item_name, SUM(amount) AS amount, MAX(serial) AS serial FROM Item_Stock WHERE item_name IN (<ids>) GROUP BY item_name")
+    fun selectStockAmounts(@BindList("ids") ids: Array<String>): List<ItemStockRec>
+
+    @SqlQuery("""SELECT item_name, MAX(serial) AS serial, manufacturers_code, code AS unit_code, u.name AS unit_name, SUM(amount) AS amount
+        FROM Item_Stock its 
+            JOIN Items i ON its.item_name = i.name 
+            JOIN Item_classes ic ON i.item_class_name = ic.name AND i.item_class_version = ic.version 
+            JOIN Units u ON ic.unit = u.code 
+        GROUP BY item_name, manufacturers_code, code, u.name
+        ORDER BY item_name""")
+    fun selectStockWithItems(): List<StockWithItemRec>
+}
+```
+That's it: here we have four SQL queries that handles whole life cycle and all use cases needed to handle `ItemStock` entity. For clarity, each time we need to map a tuple result into the POJO, we declare dedicated class for it (but honestly, we can even map SQL result into business data structures directly, if possible).
+```kotlin
+data class ItemStockRec(
+    val itemName: String,
+    val amount: BigDecimal,
+    val serial: Int
+)
+
+data class StockWithItemRec(
+    val itemName: String,
+    val serial: Int,
+    val manufacturersCode: String?,
+    val unitCode: String,
+    val unitName: String,
+    val amount: BigDecimal
+)
+```
+It has been chosen to put `Rec` classes declarations right below DAO, in exactly the same source file.
+
+With DAO and Rec classes it is now relatively easy to provide `Repository` implementation:
+```kotlin
+class ItemStockJdbiRepository(private val db: Jdbi) : ItemStockRepository {
+
+    override fun findByItemId(itemId: ItemId): ItemStock = db.withHandle<ItemStock, RuntimeException> { handle ->
+        val dao = handle.attach(ItemStockDao::class.java) // here JDBI provided implementation for the DAO
+        val itemStock = dao.selectStockAmount(itemId.asAppId()) // here we select (and aggregate) data from DB 
+            ?: ItemStockRec(itemId.asAppId().id, BigDecimal.ZERO, 0) // and here we provide default data in case there's nothing in DB yet
+        // and below we do make the mapping from Rec structures into domain data structures
+        return@withHandle ItemStock(
+            id = ItemStockAppId(itemId.asAppId(), itemStock.serial), 
+            amount = itemStock.amount) 
+    }
+    // ...
+}
+```
 
 ### Web
 Here we place web servers (usually exposing REST interface that may be used by clients or other systems). Currently, our example provides two client applications: one with Springboot based REST server and one with Springboot based Webflux reactive server.
