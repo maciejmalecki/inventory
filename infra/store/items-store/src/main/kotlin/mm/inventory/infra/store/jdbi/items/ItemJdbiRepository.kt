@@ -8,6 +8,7 @@ import mm.inventory.app.productplanner.manufacturer.asAppId
 import mm.inventory.app.productplanner.itemclass.ItemClassAppId
 import mm.inventory.app.productplanner.itemclass.asAppId
 import mm.inventory.app.productplanner.manufacturer.ManufacturerAppId
+import mm.inventory.app.productplanner.shared.CategoryAppId
 import mm.inventory.domain.items.item.DictionaryValue
 import mm.inventory.domain.items.item.Item
 import mm.inventory.domain.items.item.ItemRepository
@@ -28,21 +29,25 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassRepository: 
     override fun findById(id: ItemId): Item? = db.withHandle<Item?, RuntimeException> { handle ->
 
         val itemDao = handle.attach(ItemDao::class.java)
+        val categoriesDao = handle.attach(ItemCategoriesDao::class.java)
+        val appId = id.asAppId()
 
-        val itemRec = itemDao.selectItem(id.asAppId().id)
+        val itemRec = itemDao.selectItem(appId.id)
             ?: return@withHandle null
         val itemClass = itemClassRepository.get(ItemClassAppId(itemRec.itemClassName, itemRec.itemClassVersion))
 
-        val scalarValues = itemDao.selectScalars(id.asAppId().id).map {
+        val scalarValues = itemDao.selectScalars(appId.id).map {
             val attribute = itemClass.getAttribute(it.attributeType)
             ScalarValue(attribute, it.value!!, it.scale)
         }.toSet()
 
-        val dictionaryValues = itemDao.selectDictionaryValues(id.asAppId().id).map {
+        val dictionaryValues = itemDao.selectDictionaryValues(appId.id).map {
             val attribute = itemClass.getAttribute(it.attributeType)
             val code = it.code!!
             attribute.parse(code)
         }.toSet()
+
+        val categories = categoriesDao.selectForItem(appId)
 
         Item(
             id = ItemAppId(itemRec.name),
@@ -55,7 +60,8 @@ class ItemJdbiRepository(private val db: Jdbi, private val itemClassRepository: 
                 )
             },
             manufacturersCode = itemRec.manufacturersCode,
-            values = (scalarValues union dictionaryValues).toImmutableSet()
+            values = (scalarValues union dictionaryValues).toImmutableSet(),
+            categories = categories.map { CategoryAppId(it) }.toImmutableSet()
         )
     }
 

@@ -1,8 +1,10 @@
 package mm.inventory.domain.items.itemclass
 
 import kotlinx.collections.immutable.toImmutableSet
+import mm.inventory.domain.shared.InvalidDataException
 import mm.inventory.domain.shared.mutations.Mutable
 import mm.inventory.domain.shared.mutations.MutatingCommand
+import mm.inventory.domain.shared.types.CategoryId
 
 data class DraftItemClass(val itemClass: ItemClass) {
     fun mutable() = MutableDraftItemClass(this)
@@ -31,8 +33,7 @@ class MutableDraftItemClass(_snapshot: DraftItemClass) : Mutable<DraftItemClass>
 
     fun addAttribute(value: Attribute): MutableDraftItemClass {
         append(
-            AddAttributeCommand(snapshot, value),
-            snapshot.copy(
+            AddAttributeCommand(snapshot, value), snapshot.copy(
                 itemClass = snapshot.itemClass.copy(
                     attributes = (snapshot.itemClass.attributes + value).toImmutableSet()
                 ),
@@ -43,10 +44,37 @@ class MutableDraftItemClass(_snapshot: DraftItemClass) : Mutable<DraftItemClass>
 
     fun removeAttribute(value: Attribute): MutableDraftItemClass {
         append(
-            RemoveAttributeCommand(snapshot, value),
-            snapshot.copy(
+            RemoveAttributeCommand(snapshot, value), snapshot.copy(
                 itemClass = snapshot.itemClass.copy(
                     attributes = (snapshot.itemClass.attributes - value).toImmutableSet()
+                )
+            )
+        )
+        return this
+    }
+
+    fun addProposedCategory(value: CategoryId): MutableDraftItemClass {
+        if (snapshot.itemClass.proposedCategories.contains(value)) {
+            throw InvalidDataException("The $value is already assigned to the ${snapshot.itemClass.id}.")
+        }
+        append(
+            AddProposedCategoryCommand(snapshot, value), snapshot.copy(
+                itemClass = snapshot.itemClass.copy(
+                    proposedCategories = (snapshot.itemClass.proposedCategories + value).toImmutableSet()
+                )
+            )
+        )
+        return this
+    }
+
+    fun removeProposedCategory(value: CategoryId): MutableDraftItemClass {
+        if (!snapshot.itemClass.proposedCategories.contains(value)) {
+            throw InvalidDataException("The $value is not assigned to the ${snapshot.itemClass.id}.")
+        }
+        append(
+            RemoveProposedCategoryCommand(snapshot, value), snapshot.copy(
+                itemClass = snapshot.itemClass.copy(
+                    proposedCategories = (snapshot.itemClass.proposedCategories - value).toImmutableSet()
                 )
             )
         )
@@ -68,4 +96,12 @@ data class AddAttributeCommand(
 
 data class RemoveAttributeCommand(
     override val base: DraftItemClass, val attribute: Attribute
+) : MutatingCommand<DraftItemClass>
+
+data class AddProposedCategoryCommand(
+    override val base: DraftItemClass, val category: CategoryId
+) : MutatingCommand<DraftItemClass>
+
+data class RemoveProposedCategoryCommand(
+    override val base: DraftItemClass, val category: CategoryId
 ) : MutatingCommand<DraftItemClass>

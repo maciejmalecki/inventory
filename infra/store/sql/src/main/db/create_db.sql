@@ -118,3 +118,22 @@ CREATE TABLE Item_Stock
     PRIMARY KEY (item_name, serial),
     FOREIGN KEY (item_name) REFERENCES Items (name)
 );
+
+CREATE TABLE Proposed_Categories
+(
+    name        VARCHAR(50) NOT NULL,
+    version     BIGINT      NOT NULL,
+    category_id BIGINT      NOT NULL,
+    PRIMARY KEY (name, version, category_id),
+    FOREIGN KEY (name, version) REFERENCES Item_Classes (name, version),
+    FOREIGN KEY (category_id) REFERENCES Categories (category_id)
+);
+
+CREATE TABLE Item_Categories
+(
+    item_name   VARCHAR(50) NOT NULL,
+    category_id BIGINT      NOT NULL,
+    PRIMARY KEY (item_name, category_id),
+    FOREIGN KEY (item_name) REFERENCES Items (name),
+    FOREIGN KEY (category_id) REFERENCES Categories (category_id)
+);

@@ -50,7 +50,7 @@ export function isDictionaryAttribute(attribute: Attribute): attribute is Dictio
   return (attribute as DictionaryAttribute).items !== undefined;
 }
 
-const apiPrefix = '/api/itemClasses';
+const apiPrefix = '/api/planner/itemClasses';
 
 @Injectable({
   providedIn: 'root'

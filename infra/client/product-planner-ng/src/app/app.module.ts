@@ -10,6 +10,7 @@ import {ItemsModule} from './items/items.module';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {SharedModule} from './shared/shared.module';
+import {CategoriesModule} from './categories/categories.module';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import {SharedModule} from './shared/shared.module';
     SharedModule,
     DashboardModule,
     ItemsModule,
+    CategoriesModule,
     MatButtonModule,
     MatIconModule
   ],

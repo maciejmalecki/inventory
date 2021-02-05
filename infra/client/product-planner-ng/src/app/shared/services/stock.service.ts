@@ -14,7 +14,7 @@ export interface ItemStockHeader {
   unitName: string;
 }
 
-const apiPrefix = '/api/stock';
+const apiPrefix = '/api/planner/stock';
 
 @Injectable({
   providedIn: 'root'

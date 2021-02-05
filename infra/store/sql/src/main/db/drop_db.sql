@@ -1,4 +1,6 @@
 DROP TABLE Item_Stock;
+DROP TABLE Item_Categories;
+DROP TABLE Proposed_Categories;
 DROP TABLE Categories_Tree_Path;
 DROP TABLE Categories;
 DROP TABLE Dictionary_Values;

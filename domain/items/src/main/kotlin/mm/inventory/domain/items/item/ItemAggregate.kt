@@ -1,13 +1,13 @@
 package mm.inventory.domain.items.item
 
 import io.vavr.kotlin.toVavrMap
-import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.toImmutableSet
 import mm.inventory.domain.items.itemclass.Attribute
 import mm.inventory.domain.items.manufacturer.Manufacturer
 import mm.inventory.domain.shared.InvalidDataException
 import mm.inventory.domain.shared.mutations.Mutable
 import mm.inventory.domain.shared.mutations.MutatingCommand
+import mm.inventory.domain.shared.types.CategoryId
 import mm.inventory.domain.shared.types.ItemClassId
 import mm.inventory.domain.shared.types.ItemId
 import java.math.BigDecimal
@@ -23,7 +23,7 @@ import io.vavr.collection.Map as VavrMap
  * @param manufacturer item's manufacturer link if specified
  * @param manufacturersCode serial code of the item when specified by manufacturer
  * @param values of the aggregate
- * @param mutations list of aggregate mutations
+ * @param categories to which given item belongs
  */
 data class Item(
     val id: ItemId,
@@ -31,7 +31,8 @@ data class Item(
     val itemClassId: ItemClassId,
     val manufacturer: Manufacturer? = null,
     val manufacturersCode: String? = null,
-    val values: ImmutableSet<Value>
+    val values: Set<Value>,
+    val categories: Set<CategoryId>
 ) {
     /**
      * Values indexed by name for sake of convenience.
@@ -88,6 +89,28 @@ class MutableItem(_snapshot: Item) : Mutable<Item>(_snapshot) {
         )
         return this
     }
+
+    fun addCategory(category: CategoryId): MutableItem {
+        if (snapshot.categories.contains(category)) {
+            throw InvalidDataException("Category $category is already assigned to the ${snapshot.id}.")
+        }
+        append(
+            AddCategoryCommand(snapshot, category),
+            snapshot.copy(categories = (snapshot.categories + category).toImmutableSet())
+        )
+        return this
+    }
+
+    fun removeCategory(category: CategoryId): MutableItem {
+        if (!snapshot.categories.contains(category)) {
+            throw InvalidDataException("Category $category is not assigned to the ${snapshot.id}.")
+        }
+        append(
+            RemoveCategoryCommand(snapshot, category),
+            snapshot.copy(categories = (snapshot.categories - category).toImmutableSet())
+        )
+        return this
+    }
 }
 
 interface Value {
@@ -106,7 +129,7 @@ data class DictionaryValue(override val attribute: Attribute, val value: String)
 
 data class UpdateValuesCommand(
     override val base: Item,
-    val values: ImmutableSet<Value>
+    val values: Set<Value>
 ) : MutatingCommand<Item>
 
 data class UpdateManufacturerCommand(
@@ -117,6 +140,16 @@ data class UpdateManufacturerCommand(
 
 data class RemoveManufacturerCommand(
     override val base: Item
+) : MutatingCommand<Item>
+
+data class AddCategoryCommand(
+    override val base: Item,
+    val category: CategoryId
+) : MutatingCommand<Item>
+
+data class RemoveCategoryCommand(
+    override val base: Item,
+    val category: CategoryId
 ) : MutatingCommand<Item>
 
 private fun toMap(values: Set<Value>): VavrMap<String, Value> =

@@ -16,6 +16,7 @@ import {ManufacturerResolver} from './items/manufacturer.resolver';
 import {ItemStockResolver} from './items/item-stock.resolver';
 import {ItemStockListComponent} from './items/item-stock-list/item-stock-list.component';
 import {ItemStockListResolver} from './items/item-stock-list.resolver';
+import {EditCategoriesComponent} from './categories/edit-categories/edit-categories.component';
 
 const routes: Routes = [
   {
@@ -91,6 +92,10 @@ const routes: Routes = [
     resolve: {
       itemStockList: ItemStockListResolver
     }
+  },
+  {
+    path: 'categories',
+    component: EditCategoriesComponent
   }
 ];
 

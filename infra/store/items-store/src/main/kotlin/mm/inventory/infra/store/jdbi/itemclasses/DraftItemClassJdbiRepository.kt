@@ -76,6 +76,7 @@ class DraftItemClassJdbiRepository(private val db: Jdbi, private val itemClassRe
                 is RemoveAttributeCommand -> updateAndExpect(1) {
                     itemClassDao.deleteAttribute(AttributeRec(id.id, id.version, command.attribute.name))
                 }
+                // TODO categories
                 else -> throw IllegalArgumentException("Unknown command: ${command.javaClass.name}.")
             }
         }

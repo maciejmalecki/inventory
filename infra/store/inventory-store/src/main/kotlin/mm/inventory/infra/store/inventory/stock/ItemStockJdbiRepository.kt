@@ -19,20 +19,24 @@ class ItemStockJdbiRepository(private val db: Jdbi) : ItemStockRepository {
 
     override fun findByItemId(itemId: ItemId): ItemStock = db.withHandle<ItemStock, RuntimeException> { handle ->
         val dao = handle.attach(ItemStockDao::class.java)
-        val itemStock = dao.selectStockAmount(itemId.asAppId()) ?: ItemStockRec(itemId.asAppId().id, BigDecimal.ZERO, 0)
-        return@withHandle ItemStock(id = ItemStockAppId(itemId.asAppId(), itemStock.serial), amount = itemStock.amount)
+        val itemStock = dao.selectStockAmount(itemId.asAppId())
+            ?: ItemStockRec(itemId.asAppId().id, BigDecimal.ZERO, 0)
+        return@withHandle ItemStock(
+            id = ItemStockAppId(itemId.asAppId(), itemStock.serial),
+            amount = itemStock.amount
+        )
     }
 
     override fun findByItemIds(itemIds: List<ItemId>): List<ItemStock> =
         db.withHandle<List<ItemStock>, RuntimeException> { handle ->
             val dao = handle.attach(ItemStockDao::class.java)
-            val result = dao.selectStockAmounts(itemIds.map { itemId -> itemId.asAppId().id }.toTypedArray())
+            val result = dao.selectStockAmounts(itemIds.map { itemId ->
+                itemId.asAppId().id
+            }.toTypedArray())
             return@withHandle result.map { rec ->
                 ItemStock(
-                    id = ItemStockAppId(
-                        ItemAppId(rec.itemName),
-                        rec.serial
-                    ), amount = rec.amount
+                    id = ItemStockAppId(ItemAppId(rec.itemName), rec.serial),
+                    amount = rec.amount
                 )
             }
         }
@@ -45,12 +49,11 @@ class ItemStockJdbiRepository(private val db: Jdbi) : ItemStockRepository {
             when (command) {
                 is ReplenishCommand -> {
                     dao.insertItemStock(command.base.id.asAppId(), command.amount)
-                    id.copy(serial = id.serial + 1)
+                    return@consume id.copy(serial = id.serial + 1)
                 }
-
                 is DeductCommand -> {
                     dao.insertItemStock(command.base.id.asAppId(), -command.amount)
-                    id.copy(serial = id.serial + 1)
+                    return@consume id.copy(serial = id.serial + 1)
                 }
                 else -> throw InvalidDataException("Unsupported command ${command.javaClass.name}.")
             }

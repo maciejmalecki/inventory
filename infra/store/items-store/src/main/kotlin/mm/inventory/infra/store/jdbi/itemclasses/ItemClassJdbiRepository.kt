@@ -4,6 +4,7 @@ import kotlinx.collections.immutable.toImmutableSet
 import mm.inventory.infra.store.jdbi.units.UnitDao
 import mm.inventory.app.productplanner.itemclass.ItemClassAppId
 import mm.inventory.app.productplanner.itemclass.asAppId
+import mm.inventory.app.productplanner.shared.CategoryAppId
 import mm.inventory.domain.items.itemclass.Attribute
 import mm.inventory.domain.items.itemclass.DictionaryItem
 import mm.inventory.domain.items.itemclass.DictionaryType
@@ -24,6 +25,7 @@ class ItemClassJdbiRepository(private val db: Jdbi) : ItemClassRepository {
 
             val itemClassDao = handle.attach(ItemClassDao::class.java)
             val unitDao = handle.attach(UnitDao::class.java)
+            val categoriesDao = handle.attach(ProposedCategoriesDao::class.java)
             val jdbiId = resolve(itemClassDao, id.asAppId())
 
             // load bare item class
@@ -43,13 +45,16 @@ class ItemClassJdbiRepository(private val db: Jdbi) : ItemClassRepository {
                 itemClassDao.selectAttributeValuesForItemClass(itemClassRec.name, itemClassRec.version)
                     .groupBy { it.attributeTypeName }
 
+            val categories = categoriesDao.selectForItemClass(jdbiId)
+
             // build up the aggregate out of fetched data
             ItemClass(
                 ItemClassAppId(itemClassRec.name, itemClassRec.version),
                 itemClassRec.name,
                 itemClassRec.description,
                 UnitOfMeasurement(unitRec.code, unitRec.name),
-                attributeRecList.map(map(dictionaryValueRecMap)).toImmutableSet()
+                attributeRecList.map(map(dictionaryValueRecMap)).toImmutableSet(),
+                categories.map { CategoryAppId(it) }.toImmutableSet()
             )
         }
 
