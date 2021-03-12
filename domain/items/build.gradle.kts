@@ -14,6 +14,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:$collectionsImmutableVersion")
     implementation("io.vavr:vavr-kotlin:$vavrKotlinVersion")
+
     testImplementation("com.tngtech.archunit:archunit-junit5:$archUnitVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitPlatformVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:$junitPlatformVersion")
