@@ -11,6 +11,19 @@ Zero dependency:: Architecture avoids tight coupling with technical libraries an
 Reduced ripple effect:: The maintenance efforts scales well with the application size, i.e. there are no combinatorial effects on changes in this architecture.
 Self describing:: So-called _screaming architecture_ -- that is by a folder and source file structure it becomes apparent what purpose the application serves and where to find existing or create new code artefacts.
 
+[ditaa,title,png]
+....
++--------+   +-------+    +-------+
+|        +---+ ditaa +--> |       |
+|  Text  |   +-------+    |diagram|
+|Document|   |!magic!|    |       |
+|     {d}|   |       |    |       |
++---+----+   +-------+    +-------+
+  :                         ^
+  |       Lots of work      |
+  +-------------------------+
+....
+
 == Abstraction layers
 
 The model foresees at least three abstraction layers:
