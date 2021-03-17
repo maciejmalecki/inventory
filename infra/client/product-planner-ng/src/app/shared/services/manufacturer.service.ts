@@ -2,7 +2,7 @@ import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 
-const apiPrefix = '/api/manufacturers';
+const apiPrefix = '/api/planner/manufacturers';
 
 export interface Manufacturer {
   id: number | null;

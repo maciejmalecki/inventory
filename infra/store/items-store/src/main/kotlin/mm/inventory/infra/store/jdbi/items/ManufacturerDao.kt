@@ -17,4 +17,6 @@ interface ManufacturerDao {
     fun insert(@BindBean manufacturer: ManufacturerRec): Long
 }
 
-data class ManufacturerRec(val id: Long, val name: String)
+data class ManufacturerRec(
+    val id: Long,
+    val name: String)

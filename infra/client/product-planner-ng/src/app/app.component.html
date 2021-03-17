@@ -2,18 +2,21 @@
   <h1 class="mat-display-1">Product planner</h1>
 </header>
 <div class="mat-toolbar app-toolbar">
-  <button mat-fab color="primary" (click)="goHome()">
+  <a mat-fab color="primary" [routerLink]="['/']">
     <mat-icon>home</mat-icon>
-  </button>
-  <button mat-fab color="accent" (click)="goItemClasses()">
+  </a>
+  <a mat-fab color="accent" [routerLink]="['/itemClasses']">
     <mat-icon>architecture</mat-icon>
-  </button>
-  <button mat-fab color="accent" (click)="goItems()">
+  </a>
+  <a mat-fab color="accent" [routerLink]="['/items']">
     <mat-icon>category</mat-icon>
-  </button>
-  <button mat-fab color="accent" (click)="goItemStock()">
+  </a>
+  <a mat-fab color="accent" [routerLink]="['/item-stock']">
     <mat-icon>functions</mat-icon>
-  </button>
+  </a>
+  <a mat-fab color="accent" [routerLink]="['/categories']">
+    <mat-icon>account_tree</mat-icon>
+  </a>
 </div>
 <router-outlet></router-outlet>
 <footer>

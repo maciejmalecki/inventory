@@ -1,9 +1,16 @@
 {
-  "/api": {
+  "/api/planner": {
     "target": "http://localhost:8081/",
     "secure": false,
     "pathRewrite": {
-      "^/api": ""
+      "^/api/planner": ""
+    }
+  },
+  "/api/categories": {
+    "target": "http://localhost:8082/",
+    "secure": false,
+    "pathRewrite": {
+      "^/api/categories": ""
     }
   }
 }

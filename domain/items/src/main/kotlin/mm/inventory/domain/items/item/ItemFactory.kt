@@ -45,7 +45,8 @@ class ItemFactory(
                 itemClassId = itemClassId,
                 manufacturer = manufacturer,
                 manufacturersCode = manufacturersCode,
-                values = values.toImmutableSet()
+                values = values.toImmutableSet(),
+                categories = itemClass.proposedCategories
             )
             return@inTransaction itemRepository.persist(item)
         }

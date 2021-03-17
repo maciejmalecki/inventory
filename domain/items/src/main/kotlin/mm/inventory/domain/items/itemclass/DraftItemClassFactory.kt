@@ -22,7 +22,8 @@ class DraftItemClassFactory(
             name = name,
             description = "",
             amountUnit = amountUnitOfMeasurement,
-            attributes = emptySet<Attribute>().toImmutableSet()
+            attributes = emptySet<Attribute>().toImmutableSet(),
+            proposedCategories = emptySet()
         )
         return@inTransaction draftItemClassRepository.persist(DraftItemClass(emptyItemClass))
     }

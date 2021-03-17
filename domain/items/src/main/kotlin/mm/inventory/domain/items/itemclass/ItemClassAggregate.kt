@@ -1,8 +1,8 @@
 package mm.inventory.domain.items.itemclass
 
-import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.toImmutableMap
 import mm.inventory.domain.shared.NotFoundException
+import mm.inventory.domain.shared.types.CategoryId
 import mm.inventory.domain.shared.types.ItemClassId
 import java.util.stream.Collectors
 
@@ -14,7 +14,8 @@ data class ItemClass(
     val name: String,
     val description: String,
     val amountUnit: UnitOfMeasurement,
-    val attributes: ImmutableSet<Attribute>
+    val attributes: Set<Attribute>,
+    val proposedCategories: Set<CategoryId>
 ) {
     private val attributesByName = attributes.stream().collect(Collectors.toMap({ it.name }, { it })).toImmutableMap()
 

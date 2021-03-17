@@ -15,6 +15,7 @@ import mm.inventory.domain.shared.InvalidDataException
 import mm.inventory.domain.shared.NotFoundException
 import mm.inventory.domain.shared.security.SecurityGuard
 import mm.inventory.domain.shared.transactions.BusinessTransaction
+import mm.inventory.domain.shared.types.CategoryId
 import mm.inventory.domain.shared.types.ItemClassId
 
 class DraftItemClassFacade(
@@ -36,7 +37,9 @@ class DraftItemClassFacade(
         description: String? = null,
         unitCode: String? = null,
         addedAttributeTypes: List<String> = emptyList(),
-        removedAttributeTypes: List<String> = emptyList()
+        removedAttributeTypes: List<String> = emptyList(),
+        addedCategories: List<CategoryId> = emptyList(),
+        removedCategories: List<CategoryId> = emptyList()
     ) =
         sec.requireAllRoles(ITEMS_ROLE, ITEM_CLASSES_ROLE, ITEM_CLASSES_WRITER_ROLE) {
             tx.inTransaction {
@@ -62,6 +65,12 @@ class DraftItemClassFacade(
                     // it throws NotFound if attribute does not exist in item class, it is ok...
                     val attribute = draftItemClass.itemClass.getAttribute(attrName)
                     draftItemClass.removeAttribute(attribute)
+                }
+                addedCategories.forEach { categoryId ->
+                    draftItemClass.addProposedCategory(categoryId)
+                }
+                removedCategories.forEach { categoryId ->
+                    draftItemClass.removeProposedCategory(categoryId)
                 }
                 if (draftItemClass.hasMutations) {
                     draftItemClassRepository.save(draftItemClass)

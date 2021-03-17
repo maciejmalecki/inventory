@@ -17,15 +17,23 @@ The project is organized in source modules, these fall into three major categori
 The category to which given module belongs determines dependencies that are allowed for that module. The categories in fact form an onion-like structure, where domain modules are located in the centre and infrastructure modules belong to the most outer layer. Dependencies always point inwards.
 
 ## Domain
-The domain area is where we model business logic, the most critical enterprise business rules and data structures. In general, this is a digital model of real business that is usually well establish since years or decades. We do not expect these rules to change rapidly, but rather evolve slowly. It is then worth of investing, to get the cleanest and more correct implementation. In ideal world, this layer should survive he most intense technological revolutions.
+The domain area is where we model business logic, the most critical enterprise business rules and data structures. In general, this is a digital model of real business that is usually well establish since years or decades. We do not expect these rules to change rapidly, but rather to evolve slowly. It is then worth of investing, to get the cleanest and more correct implementation. In ideal world, this layer should survive he most intense technological revolutions.
 
 ### Shared kernel
-A shared kernel is realized as Gradle module that can be imported by other domain modules. Shared kernel provides common domain functionalities that are shared across domain and in particular: the subdomains.
+A shared kernel is realized as a separate module that can be imported by other domain modules. The shared kernel provides common domain functionalities that are shared across domain and in particular: the subdomains.
+
+In this particular example shared kernel defines:
+* business transaction port that can be used to demarcate transaction scope in domain level,
+* commonly used business level exceptions,
+* common data types such as entity identifiers, that can be used to bound one aggregate to another aggregate and communicate with repositories,
+* useful utilities such as mutable entity support.
 
 ### Subdomains
-If domain is big enough that it consist on several subdomains, these can be represented by separate modules on domain level. Subdomains should not depend on each other.
+If domain is big enough that it consist on several subdomains, these can be represented by separate modules on domain level. 
 
 ![Subdomains](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.github.com/maciejmalecki/inventory/develop/doc/dia/domain.puml)
+
+Subdomains should not depend on each other. If there is a need for a communication between subdomains, we would rather go in loosely coupled integration model by using ports & adapters approach. With this approach we're free to choose exact integration solution: local call vs remote call, synchronous vs asynchronous, event based etc. Because hard dependency between subdomains is forbidden (discouraged), the concrete wiring is done on `app` level or even on `infra` level.
 
 ### Business components
 Within a subdomain, the primary packaging scheme should follow business component split. Usually there is one component per one aggregate but this is not a hard restriction.
@@ -78,6 +86,75 @@ This is the only place where dependencies to technologies such as Spring, JPA, J
 Store holds implementation of repositories (from `domain`), CRUD repositories and queries (from `app`) using given persistence technology. Store modules depend on concrete persistence library: Hibernate, R2BCD, Reactive Hibernate, JOOQ, JDBI.
 
 ![Product planner stores](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.github.com/maciejmalecki/inventory/develop/doc/dia/items-store.puml)
+
+#### JDBI
+JDBI is a lightweight SQL-to-POJO wrapper library. It allows for nothing more than:
+* writing native SQL queries (SELECTS), parametrize them, execute them and then map results into the Java(Kotlin) types: POJOs, collections of POJOs, simple types;
+* writing native SQL updates (INSERTs/UPDATEs/DELETEs), parametrize it with Java(Kotlin) values, execute them and sense the results.
+
+JDBI does not provide any support for sophisticated ORM functionalities such as associations, first level caches, object change detections, proxies and lazy fetches, abstraction over native SQL etc. You'll only get what you code yourself.
+
+JDBI seems to be useful each time we have a simple interaction with a database: i.e. our application is mainly reading data by executing series of more or less complex SQL queries, or our application is mass-updating database with series of INSERTs or UPDATEs. As we will see in this example, simple SQL mappers can be useful only with regular business-class applications as long as set of legal data modification is well-defined and restricted (and this should be the case for 90%+ of all business apps!).
+
+Here we solely use so-called declarative way of SQL mapping. With JDBI it is realized via usage of SQL Objects. SQL Objects allows us to write so-called DAOs which are in fact interfaces with method stubs and SQL's declared with appropriate annotation. JDBI and SQL Object extension will generate appropriate implementation of these interfaces in runtime.
+
+Let's look at the following example:
+```kotlin
+interface ItemStockDao {
+    @SqlUpdate("INSERT INTO Item_Stock (item_name, serial, amount) VALUES (:id.itemId.id, :id.serial+1, :amount)")
+    fun insertItemStock(id: ItemStockAppId, amount: BigDecimal): Int
+
+    @SqlQuery("SELECT item_name, SUM(amount) AS amount, MAX(serial) AS serial FROM Item_Stock WHERE item_name=:id.id GROUP BY item_name")
+    fun selectStockAmount(id: ItemAppId): ItemStockRec?
+
+    @SqlQuery("SELECT item_name, SUM(amount) AS amount, MAX(serial) AS serial FROM Item_Stock WHERE item_name IN (<ids>) GROUP BY item_name")
+    fun selectStockAmounts(@BindList("ids") ids: Array<String>): List<ItemStockRec>
+
+    @SqlQuery("""SELECT item_name, MAX(serial) AS serial, manufacturers_code, code AS unit_code, u.name AS unit_name, SUM(amount) AS amount
+        FROM Item_Stock its 
+            JOIN Items i ON its.item_name = i.name 
+            JOIN Item_classes ic ON i.item_class_name = ic.name AND i.item_class_version = ic.version 
+            JOIN Units u ON ic.unit = u.code 
+        GROUP BY item_name, manufacturers_code, code, u.name
+        ORDER BY item_name""")
+    fun selectStockWithItems(): List<StockWithItemRec>
+}
+```
+That's it: here we have four SQL queries that handles whole life cycle and all use cases needed to handle `ItemStock` entity. For clarity, each time we need to map a tuple result into the POJO, we declare dedicated class for it (but honestly, we can even map SQL result into business data structures directly, if possible).
+```kotlin
+data class ItemStockRec(
+    val itemName: String,
+    val amount: BigDecimal,
+    val serial: Int
+)
+
+data class StockWithItemRec(
+    val itemName: String,
+    val serial: Int,
+    val manufacturersCode: String?,
+    val unitCode: String,
+    val unitName: String,
+    val amount: BigDecimal
+)
+```
+It has been chosen to put `Rec` classes declarations right below DAO, in exactly the same source file.
+
+With DAO and Rec classes it is now relatively easy to provide `Repository` implementation:
+```kotlin
+class ItemStockJdbiRepository(private val db: Jdbi) : ItemStockRepository {
+
+    override fun findByItemId(itemId: ItemId): ItemStock = db.withHandle<ItemStock, RuntimeException> { handle ->
+        val dao = handle.attach(ItemStockDao::class.java) // here JDBI provided implementation for the DAO
+        val itemStock = dao.selectStockAmount(itemId.asAppId()) // here we select (and aggregate) data from DB 
+            ?: ItemStockRec(itemId.asAppId().id, BigDecimal.ZERO, 0) // and here we provide default data in case there's nothing in DB yet
+        // and below we do make the mapping from Rec structures into domain data structures
+        return@withHandle ItemStock(
+            id = ItemStockAppId(itemId.asAppId(), itemStock.serial), 
+            amount = itemStock.amount) 
+    }
+    // ...
+}
+```
 
 ### Web
 Here we place web servers (usually exposing REST interface that may be used by clients or other systems). Currently, our example provides two client applications: one with Springboot based REST server and one with Springboot based Webflux reactive server.

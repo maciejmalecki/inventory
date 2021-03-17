@@ -9,7 +9,7 @@ export interface AttributeHeader {
   unitName: string | null;
 }
 
-const apiPrefix = '/api/attributes';
+const apiPrefix = '/api/planner/attributes';
 
 @Injectable({
   providedIn: 'root'

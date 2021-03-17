@@ -12,22 +12,37 @@ import java.math.BigDecimal
 
 interface ItemDao {
 
-    @SqlUpdate("INSERT INTO Items(name, item_class_name, item_class_version, manufacturer_id, manufacturers_code) VALUES (:name, :itemClassName, :itemClassVersion, :manufacturerId, :manufacturersCode)")
+    @SqlUpdate("""
+        INSERT INTO Items(name, item_class_name, item_class_version, manufacturer_id, manufacturers_code) 
+        VALUES (:name, :itemClassName, :itemClassVersion, :manufacturerId, :manufacturersCode)""")
     fun insertItem(@BindBean item: ItemRec)
 
-    @SqlUpdate("INSERT INTO Scalar_Values(item_name, attribute_type, item_class_name, item_class_version, value, scale) VALUES (:itemName, :attributeType, :itemClassName, :itemClassVersion, :value, :scale)")
+    @SqlUpdate("""
+        INSERT INTO Scalar_Values(item_name, attribute_type, item_class_name, item_class_version, value, scale) 
+        VALUES (:itemName, :attributeType, :itemClassName, :itemClassVersion, :value, :scale)""")
     fun insertValue(@BindBean value: ScalarValueRec): Int
 
-    @SqlUpdate("UPDATE Scalar_Values SET value=:value, scale=:scale WHERE item_name=:itemName AND attribute_type=:attributeType AND item_class_name=:itemClassName AND item_class_version=:itemClassVersion")
+    @SqlUpdate("""
+        UPDATE Scalar_Values 
+        SET value=:value, scale=:scale 
+        WHERE item_name=:itemName AND attribute_type=:attributeType AND item_class_name=:itemClassName AND item_class_version=:itemClassVersion""")
     fun updateValue(@BindBean value: ScalarValueRec): Int
 
-    @SqlUpdate("INSERT INTO Dictionary_Values(item_name, attribute_type, item_class_name, item_class_version, attribute_type_name, code) VALUES (:itemName, :attributeType, :itemClassName, :itemClassVersion, :attributeTypeName, :code)")
+    @SqlUpdate("""
+        INSERT INTO Dictionary_Values(item_name, attribute_type, item_class_name, item_class_version, attribute_type_name, code) 
+        VALUES (:itemName, :attributeType, :itemClassName, :itemClassVersion, :attributeTypeName, :code)""")
     fun insertValue(@BindBean value: DictionaryValueRec): Int
 
-    @SqlUpdate("UPDATE Dictionary_Values SET code=:code WHERE item_name=:itemName AND attribute_type=:attributeType AND item_class_name=:itemClassName AND item_class_version=:itemClassVersion")
+    @SqlUpdate("""
+        UPDATE Dictionary_Values 
+        SET code=:code 
+        WHERE item_name=:itemName AND attribute_type=:attributeType AND item_class_name=:itemClassName AND item_class_version=:itemClassVersion""")
     fun updateValue(@BindBean value: DictionaryValueRec): Int
 
-    @SqlQuery("SELECT items.name AS name, item_class_name, item_class_version, manufacturer_id, manufacturers.name AS manufacturer_name, manufacturers_code FROM Items LEFT OUTER JOIN Manufacturers ON items.manufacturer_id = manufacturers.id ORDER BY name")
+    @SqlQuery("""
+        SELECT items.name AS name, item_class_name, item_class_version, manufacturer_id, manufacturers.name AS manufacturer_name, manufacturers_code 
+        FROM Items LEFT OUTER JOIN Manufacturers ON items.manufacturer_id = manufacturers.id 
+        ORDER BY name""")
     fun selectItems(): List<ItemWithManufacturerRec>
 
     @SqlQuery(
@@ -52,10 +67,16 @@ interface ItemDao {
         @BindList("itemClassIds", onEmpty = BindList.EmptyHandling.NULL_VALUE) itemClassIds: List<String>?
     ): List<ItemWithManufacturerRec>
 
-    @SqlQuery("SELECT items.name AS name, item_class_name, item_class_version, manufacturer_id, manufacturers.name AS manufacturer_name, manufacturers_code FROM Items LEFT OUTER JOIN Manufacturers ON items.manufacturer_id = manufacturers.id WHERE items.name=?")
+    @SqlQuery("""
+        SELECT items.name AS name, item_class_name, item_class_version, manufacturer_id, manufacturers.name AS manufacturer_name, manufacturers_code 
+        FROM Items LEFT OUTER JOIN Manufacturers ON items.manufacturer_id = manufacturers.id 
+        WHERE items.name=?""")
     fun selectItem(name: String): ItemWithManufacturerRec?
 
-    @SqlUpdate("UPDATE Items SET manufacturer_id=:manufacturerId.id, manufacturers_code=:manufacturersCode WHERE name=:itemId.id")
+    @SqlUpdate("""
+        UPDATE Items 
+        SET manufacturer_id=:manufacturerId.id, manufacturers_code=:manufacturersCode 
+        WHERE name=:itemId.id""")
     fun updateManufacturer(manufacturerId: ManufacturerAppId, manufacturersCode: String?, itemId: ItemAppId): Int
 
     @SqlUpdate("UPDATE Items SET manufacturer_id=NULL, manufacturers_code=NULL WHERE name=:itemId.id")
@@ -64,13 +85,18 @@ interface ItemDao {
     @SqlUpdate("DELETE FROM Items where name=?")
     fun deleteItem(name: String): Int
 
-    @SqlQuery("SELECT item_name, attribute_type, item_class_name, item_class_version, value, scale FROM Scalar_values WHERE item_name=?")
+    @SqlQuery("""
+        SELECT item_name, attribute_type, item_class_name, item_class_version, value, scale 
+        FROM Scalar_values 
+        WHERE item_name=?""")
     fun selectScalars(itemName: String): List<ScalarValueRec>
 
     @SqlUpdate("DELETE FROM Scalar_values WHERE item_name=?")
     fun deleteScalars(itemName: String): Int
 
-    @SqlQuery("SELECT item_name, attribute_type, item_class_name, item_class_version, attribute_type_name, code FROM Dictionary_Values WHERE item_name=?")
+    @SqlQuery("""
+        SELECT item_name, attribute_type, item_class_name, item_class_version, attribute_type_name, code 
+        FROM Dictionary_Values WHERE item_name=?""")
     fun selectDictionaryValues(itemName: String): List<DictionaryValueRec>
 
     @SqlUpdate("DELETE FROM Dictionary_values WHERE item_name=?")

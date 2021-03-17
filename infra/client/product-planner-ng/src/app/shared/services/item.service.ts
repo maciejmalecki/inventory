@@ -46,7 +46,7 @@ export function isDictionaryValue(value: Value): value is DictionaryValue {
   return (value as DictionaryValue).items !== undefined;
 }
 
-const apiPrefix = '/api/items';
+const apiPrefix = '/api/planner/items';
 
 @Injectable({
   providedIn: 'root'
