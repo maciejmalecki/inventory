@@ -53,10 +53,10 @@ workflows:
           filters:
             branches:
               only:
-                - master
+                - main
       - build:
           filters:
             branches:
               only:
-                - master
+                - main
                 - develop
