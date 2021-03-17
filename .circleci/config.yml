@@ -32,9 +32,10 @@ jobs:
 
   build-adoc:
     docker:
-      - image: circleci/ruby:3.0.0
+      - image: circleci/jruby:latest
     working_directory: ~/repo
     steps:
+      - run: sudo apt install graphviz
       - checkout
       - run: bundle install
       - run: bash .circleci/build-adoc.sh

@@ -1,3 +1,20 @@
-= Inventory
+= Hexagonal architecture in enterprise applications
+:toc: left
+:icons: font
+:sectnums:
 
-Hexagonal architecture in enterprise applications.
+== Preface
+
+The goal of this document is to propose a generic model of enterprise application architecture. There are a few principles that the model should fulfil:
+
+Zero dependency:: Architecture avoids tight coupling with technical libraries and frameworks.
+Reduced ripple effect:: The maintenance efforts scales well with the application size, i.e. there are no combinatorial effects on changes in this architecture.
+Self describing:: So-called _screaming architecture_ -- that is by a folder and source file structure it becomes apparent what purpose the application serves and where to find existing or create new code artefacts.
+
+== Abstraction layers
+
+The model foresees at least three abstraction layers:
+
+Domain:: Contains code artefacts solely connected with business domain.
+Application:: Contains code artefacts connected with application logic.
+Infrastructure:: Contains code artefacts that realize concrete technical solutions such as web applications, batch processes, event processors, storage implementations, etc.
