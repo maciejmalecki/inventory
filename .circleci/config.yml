@@ -41,7 +41,7 @@ jobs:
       - deploy:
           name: Deploy Release to GitHub
           command: |
-            if [ $CIRCLE_BRANCH == 'master' ]; then
+            if [ $CIRCLE_BRANCH == 'main' ]; then
               bash .circleci/setup-github.sh
             fi
 
