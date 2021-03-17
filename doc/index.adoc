@@ -1,0 +1,3 @@
+= Inventory
+
+Hexagonal architecture in enterprise applications.

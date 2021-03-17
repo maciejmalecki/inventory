@@ -1,23 +1,12 @@
-# Java Gradle CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-java/ for more details
-#
 version: 2
 jobs:
   build:
     docker:
-      # specify the version you desire here
       - image: circleci/openjdk:15-jdk-buster
-
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/postgres:9.4
 
     working_directory: ~/repo
 
     environment:
-      # Customize the JVM maximum heap limit
       JVM_OPTS: -Xmx3200m
       TERM: dumb
 
@@ -41,3 +30,33 @@ jobs:
       # run tests!
       - run: ./gradlew build
 
+  build-adoc:
+    docker:
+      - image: circleci/ruby:3.0.0
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - run: bundle install
+      - run: bash .circleci/build-adoc.sh
+      - deploy:
+          name: Deploy Release to GitHub
+          command: |
+            if [ $CIRCLE_BRANCH == 'master' ]; then
+              bash .circleci/setup-github.sh
+            fi
+
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - build-adoc:
+          filters:
+            branches:
+              only:
+                - master
+      - build:
+          filters:
+            branches:
+              only:
+                - master
+                - develop
