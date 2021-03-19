@@ -85,10 +85,11 @@ Such separation is exceptionally well suited for microservice projects:
 \----------------------------------------------------------/
 ....
 
+There are no strict rules saying: one subdomain -- one application module. One application module can use two or more domain modules (subdomains) if it implements functions that spans across several subdomains (rarely useful in modern solutions). It is also perfectly okay that there are multiple application modules using the same domain -- it is more frequent case when we can have for instance streaming processor and bulk (batch) processor working with the same domain objects.
 
 === Can we have fewer layers?
 
-Of course, we can. The absolute minimum is split into business logic (usually dubbed as _domain_) and infrastructure. In this case we would usually like to merge _a domain_ and _an application_ together.
+Of course, we can. The absolute minimum is split into business logic (usually dubbed as _domain_) and infrastructure. In this case we would usually like to merge _a domain_ and _an application_ together. This model is applicable for most of the very simple projects that usually consist of just single domain module (no subdomains). Nevertheless, even with such simple projects it may be still beneficial to keep split into the technical part (infrastructure) and logical part.
 
 [ditaa, "hexagonal-architecture-simplified"]
 ....
