@@ -1,9 +1,0 @@
-server:
-  port: 8081
-spring:
-  datasource:
-    platform: postgres
-    url: jdbc:postgresql://localhost:5432/inventory
-    username: inventory
-    password: inventory
-    driver-class-name: org.postgresql.Driver
